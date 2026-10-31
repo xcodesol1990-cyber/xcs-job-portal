@@ -15,12 +15,10 @@ describe("loadEnv", () => {
   it("accepts a complete valid environment", () => {
     const parsed = loadEnv(validEnv);
     expect(parsed.APP_URL).toBe("http://localhost:3000");
-    expect(parsed.SENTRY_DSN).toBeUndefined();
   });
 
   it("treats empty optional strings as undefined", () => {
-    const parsed = loadEnv({ ...validEnv, SENTRY_DSN: "", AUTH_GOOGLE_ID: "" });
-    expect(parsed.SENTRY_DSN).toBeUndefined();
+    const parsed = loadEnv({ ...validEnv, AUTH_GOOGLE_ID: "" });
     expect(parsed.AUTH_GOOGLE_ID).toBeUndefined();
   });
 

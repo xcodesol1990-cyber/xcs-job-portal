@@ -4,7 +4,6 @@ packages:
 onlyBuiltDependencies:
   - "@prisma/client"
   - "@prisma/engines"
-  - "@sentry/cli"
   - argon2
   - esbuild
   - prisma
@@ -13,7 +12,6 @@ onlyBuiltDependencies:
 allowBuilds:
   "@prisma/client": true
   "@prisma/engines": true
-  "@sentry/cli": true
   argon2: true
   esbuild: true
   prisma: true
