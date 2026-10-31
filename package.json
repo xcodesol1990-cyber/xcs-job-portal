@@ -26,7 +26,7 @@
     "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
-    "@prisma/client": "^6.17.1",
+    "@prisma/client": "^7.10.1",
     "@vercel/blob": "^2.8.2",
     "argon2": "^0.44.0",
     "lucide-react": "^1.65.0",
