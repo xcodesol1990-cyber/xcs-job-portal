@@ -1,6 +1,16 @@
 import { prisma } from "@/server/db/prisma";
 
 export class NotificationService {
+  static async notify(input: { userId: string; type: string; payload: any }) {
+    return prisma.notification.create({
+      data: {
+        userId: input.userId,
+        type: input.type,
+        payload: input.payload,
+      },
+    });
+  }
+
   static async getUserNotifications(userId: string, limit = 20) {
     return prisma.notification.findMany({
       where: { userId },
@@ -24,3 +34,4 @@ export class NotificationService {
   }
 }
 
+export const notificationService = NotificationService;

@@ -371,18 +371,32 @@ export class ContractService {
   /**
    * Retrieves a contract by ID.
    */
-  static async getContract(contractId: string, userId: string) {
+  static async getContract(contractId: string, userId: string, isAdmin = false) {
+    const where: any = { id: contractId };
+    if (!isAdmin) {
+      where.OR = [{ clientId: userId }, { freelancerId: userId }];
+    }
+
     const contract = await prisma.contract.findFirst({
-      where: {
-        id: contractId,
-        OR: [{ clientId: userId }, { freelancerId: userId }],
-      },
+      where,
       include: {
         client: { select: { id: true, name: true, clientProfile: true } },
         freelancer: { select: { id: true, name: true, freelancerProfile: true } },
         job: { select: { id: true, title: true } },
         milestones: { orderBy: { position: "asc" } },
         ledgerEntries: { orderBy: { createdAt: "desc" } },
+        reviews: {
+          include: {
+            reviewer: { select: { id: true, name: true } },
+          },
+        },
+        disputes: {
+          include: {
+            openedBy: { select: { id: true, name: true } },
+            resolvedBy: { select: { id: true, name: true } },
+          },
+          orderBy: { createdAt: "desc" },
+        },
       },
     });
 
