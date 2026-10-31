@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "@prisma/client": "^6.17.1",
-    "@sentry/nextjs": "^10.22.0",
+    "@sentry/nextjs": "^11.9.0",
     "argon2": "^0.44.0",
     "next": "15.5.28",
     "pino": "^10.1.0",
