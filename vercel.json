@@ -1,27 +1,10 @@
 {
   "framework": "nextjs",
   "regions": ["iad1"],
-  "buildCommand": "prisma generate && prisma migrate deploy && prisma db seed && next build",
   "crons": [
     {
-      "path": "/api/cron/outbox",
-      "schedule": "* * * * *"
-    },
-    {
-      "path": "/api/cron/auto-approve",
-      "schedule": "0 * * * *"
-    },
-    {
-      "path": "/api/cron/expire-contracts",
-      "schedule": "0 2 * * *"
-    },
-    {
-      "path": "/api/cron/reconcile-ledger",
-      "schedule": "0 3 * * *"
-    },
-    {
-      "path": "/api/cron/cleanup",
-      "schedule": "0 4 * * *"
+      "path": "/api/cron/daily",
+      "schedule": "0 0 * * *"
     }
   ]
 }

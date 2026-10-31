@@ -8,7 +8,7 @@
   },
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "prisma generate && prisma migrate deploy && prisma db seed && next build",
+    "build": "prisma generate && prisma migrate deploy && tsx prisma/seed.ts && next build",
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
@@ -18,12 +18,12 @@
     "test:watch": "vitest",
     "postinstall": "prisma generate",
     "db:migrate": "prisma migrate deploy",
-    "db:seed": "prisma db seed",
+    "db:seed": "tsx prisma/seed.ts",
     "db:studio": "prisma studio",
     "prisma:validate": "prisma validate"
   },
   "prisma": {
-    "seed": "node --experimental-strip-types prisma/seed.ts"
+    "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
     "@prisma/client": "^6.17.1",
@@ -36,6 +36,7 @@
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "stripe": "^23.1.0",
+    "tsx": "^4.23.15",
     "zod": "^4.1.12"
   },
   "devDependencies": {

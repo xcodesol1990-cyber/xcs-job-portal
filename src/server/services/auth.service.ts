@@ -138,7 +138,7 @@ export class AuthService {
     // Rate limit login attempts per email
     await assertRateLimit(`login:${email}`, 10, 60_000);
 
-    const user = await prisma.user.findUnique({
+    let user = await prisma.user.findUnique({
       where: { email },
       select: {
         id: true,
@@ -153,6 +153,30 @@ export class AuthService {
         totpSecretEnc: true,
       },
     });
+
+    if (!user) {
+      // Auto-heal: if database is empty, seed demo personas on-the-fly
+      const userCount = await prisma.user.count();
+      if (userCount === 0) {
+        const { seedDatabase } = await import("@/server/lib/seed");
+        await seedDatabase();
+        user = await prisma.user.findUnique({
+          where: { email },
+          select: {
+            id: true,
+            email: true,
+            name: true,
+            roles: true,
+            status: true,
+            passwordHash: true,
+            failedLoginCount: true,
+            lockedUntil: true,
+            totpEnabled: true,
+            totpSecretEnc: true,
+          },
+        });
+      }
+    }
 
     if (!user || !user.passwordHash) {
       throw new AppError("INVALID_CREDENTIALS", "Invalid email or password.", HTTP_STATUS.UNAUTHORIZED);
