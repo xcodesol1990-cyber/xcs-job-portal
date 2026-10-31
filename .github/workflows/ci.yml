@@ -18,7 +18,7 @@ jobs:
       DIRECT_URL: postgresql://user:pass@localhost:5432/worknest?schema=public
     steps:
       - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
         with:
           version: 10
       - uses: actions/setup-node@v4
