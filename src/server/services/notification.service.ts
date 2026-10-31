@@ -1,7 +1,8 @@
 import { prisma } from "@/server/db/prisma";
+import { Prisma } from "@prisma/client";
 
 export class NotificationService {
-  static async notify(input: { userId: string; type: string; payload: any }) {
+  static async notify(input: { userId: string; type: string; payload: Prisma.InputJsonValue }) {
     return prisma.notification.create({
       data: {
         userId: input.userId,

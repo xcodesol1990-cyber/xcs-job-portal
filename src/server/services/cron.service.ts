@@ -197,7 +197,7 @@ export class CronService {
           data: { doneAt: now, attempts: { increment: 1 } },
         });
         outboxSuccessCount++;
-      } catch (err: unknown) {
+      } catch {
         await prisma.outbox.update({
           where: { id: job.id },
           data: {
@@ -226,3 +226,4 @@ export class CronService {
 }
 
 export const cronService = new CronService();
+

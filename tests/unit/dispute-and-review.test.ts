@@ -125,3 +125,4 @@ describe("DisputeService", () => {
     ).rejects.toThrow("This dispute has already been resolved");
   });
 });
+

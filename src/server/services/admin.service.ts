@@ -1,6 +1,6 @@
 import { prisma } from "@/server/db/prisma";
 import { AppError, HTTP_STATUS } from "@/server/lib/errors";
-import { UserRole, UserStatus } from "@prisma/client";
+import { Prisma, UserRole, UserStatus, DisputeStatus } from "@prisma/client";
 
 export class AdminService {
   async getKpis() {
@@ -88,7 +88,7 @@ export class AdminService {
     const limit = Math.min(100, Math.max(1, params.limit ?? 20));
     const skip = (page - 1) * limit;
 
-    const where: any = {};
+    const where: Prisma.UserWhereInput = {};
     if (params.status) where.status = params.status;
     if (params.role) where.roles = { has: params.role };
     if (params.search) {
@@ -192,12 +192,12 @@ export class AdminService {
     });
   }
 
-  async listDisputes(params: { page?: number; limit?: number; status?: string }) {
+  async listDisputes(params: { page?: number; limit?: number; status?: DisputeStatus }) {
     const page = Math.max(1, params.page ?? 1);
     const limit = Math.min(100, Math.max(1, params.limit ?? 20));
     const skip = (page - 1) * limit;
 
-    const where: any = {};
+    const where: Prisma.DisputeWhereInput = {};
     if (params.status) where.status = params.status;
 
     const [disputes, total] = await Promise.all([
@@ -230,7 +230,7 @@ export class AdminService {
     const limit = Math.min(100, Math.max(1, params.limit ?? 20));
     const skip = (page - 1) * limit;
 
-    const where: any = {};
+    const where: Prisma.ReportWhereInput = {};
     if (params.status) where.status = params.status;
 
     const [reports, total] = await Promise.all([
@@ -283,7 +283,7 @@ export class AdminService {
     const limit = Math.min(100, Math.max(1, params.limit ?? 20));
     const skip = (page - 1) * limit;
 
-    const where: any = {};
+    const where: Prisma.LedgerEntryWhereInput = {};
     if (params.contractId) where.contractId = params.contractId;
 
     const [entries, total] = await Promise.all([

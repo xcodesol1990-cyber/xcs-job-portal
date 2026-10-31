@@ -2,7 +2,7 @@ import { prisma } from "@/server/db/prisma";
 import { AppError, HTTP_STATUS } from "@/server/lib/errors";
 import { notificationService } from "./notification.service";
 import { assertContractTransition, assertMilestoneTransition } from "@/server/policies/state-machines";
-import { DisputeStatus, LedgerType, MilestoneStatus } from "@prisma/client";
+import { DisputeStatus, LedgerType } from "@prisma/client";
 
 export interface OpenDisputeInput {
   contractId: string;

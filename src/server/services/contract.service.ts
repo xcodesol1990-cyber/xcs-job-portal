@@ -1,5 +1,5 @@
 import { prisma } from "@/server/db/prisma";
-import { ContractStatus, LedgerType, MilestoneStatus, ProposalStatus } from "@prisma/client";
+import { ContractStatus, LedgerType, MilestoneStatus, ProposalStatus, Prisma } from "@prisma/client";
 import { AppError, HTTP_STATUS } from "@/server/lib/errors";
 import { assertContractTransition, assertMilestoneTransition } from "@/server/policies/state-machines";
 import { sanitizeHtml } from "@/server/lib/sanitize";
@@ -372,7 +372,7 @@ export class ContractService {
    * Retrieves a contract by ID.
    */
   static async getContract(contractId: string, userId: string, isAdmin = false) {
-    const where: any = { id: contractId };
+    const where: Prisma.ContractWhereInput = { id: contractId };
     if (!isAdmin) {
       where.OR = [{ clientId: userId }, { freelancerId: userId }];
     }

@@ -131,3 +131,4 @@ export function OpenDisputeModal({ contractId, milestones }: OpenDisputeModalPro
     </>
   );
 }
+

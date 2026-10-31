@@ -23,7 +23,7 @@ export default async function AdminDisputesPage({ searchParams }: DisputesPagePr
   const { disputes, total, totalPages } = await adminService.listDisputes({
     page,
     limit: 25,
-    status: statusFilter,
+    status: (statusFilter as import("@prisma/client").DisputeStatus) || undefined,
   });
 
   return (
