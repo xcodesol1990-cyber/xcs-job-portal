@@ -30,3 +30,4 @@ describe("rate-limit service", () => {
     await expect(assertRateLimit(key, 1, 60_000)).rejects.toThrow(/Too many attempts/);
   });
 });
+

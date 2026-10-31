@@ -22,3 +22,4 @@ export default async function DashboardRedirectPage() {
 
   redirect("/client");
 }
+

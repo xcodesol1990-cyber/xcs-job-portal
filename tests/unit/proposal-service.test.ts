@@ -20,3 +20,4 @@ describe("proposal calculation & rules", () => {
     expect(feeCents + netCents).toBe(bidCents);
   });
 });
+

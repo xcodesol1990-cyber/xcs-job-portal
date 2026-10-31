@@ -78,3 +78,4 @@ export async function deleteJobAction(jobId: string): Promise<JobActionResult> {
     return { success: false, error: "Failed to delete job." };
   }
 }
+

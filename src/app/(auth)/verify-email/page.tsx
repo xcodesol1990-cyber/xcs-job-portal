@@ -70,3 +70,4 @@ export default async function VerifyEmailPage({ searchParams }: VerifyEmailPageP
     </AuthCard>
   );
 }
+

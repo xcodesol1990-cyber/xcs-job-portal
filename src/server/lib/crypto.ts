@@ -158,3 +158,4 @@ export function buildTotpUri(accountEmail: string, secretBase32: string, issuer 
   const encIssuer = encodeURIComponent(issuer);
   return `otpauth://totp/${label}?secret=${secretBase32}&issuer=${encIssuer}&algorithm=SHA1&digits=6&period=30`;
 }
+

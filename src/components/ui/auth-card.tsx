@@ -40,3 +40,4 @@ export function AuthCard({ title, subtitle, children }: AuthCardProps) {
     </div>
   );
 }
+

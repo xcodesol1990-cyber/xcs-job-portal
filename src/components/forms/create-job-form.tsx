@@ -269,3 +269,4 @@ export function CreateJobForm({ categories, skills }: CreateJobFormProps) {
     </form>
   );
 }
+

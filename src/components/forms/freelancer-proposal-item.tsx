@@ -94,3 +94,4 @@ export function FreelancerProposalItem({ proposal }: FreelancerProposalItemProps
     </div>
   );
 }
+

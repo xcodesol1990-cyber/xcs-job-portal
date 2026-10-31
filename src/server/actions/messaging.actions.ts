@@ -67,3 +67,4 @@ export async function markNotificationReadAction(notificationId: string): Promis
   await NotificationService.markRead(session.user.id, notificationId);
   revalidatePath("/notifications");
 }
+
