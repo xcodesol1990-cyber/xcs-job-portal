@@ -8,6 +8,8 @@ import {
   Briefcase,
   UserCheck,
   Shield,
+  MessageSquare,
+  Bell,
 } from "lucide-react";
 
 export default async function DashboardLayout({
@@ -72,6 +74,20 @@ export default async function DashboardLayout({
                   Freelancer Hub
                 </Link>
               )}
+              <Link
+                href="/messages"
+                className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:text-zinc-100 dark:hover:bg-zinc-800 transition"
+              >
+                <MessageSquare className="h-3.5 w-3.5" />
+                Messages
+              </Link>
+              <Link
+                href="/notifications"
+                className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:text-zinc-100 dark:hover:bg-zinc-800 transition"
+              >
+                <Bell className="h-3.5 w-3.5" />
+                Alerts
+              </Link>
             </nav>
           </div>
 
