@@ -122,3 +122,33 @@ export async function approveAndReleaseAction(
     return { success: false, error: "Failed to release payment." };
   }
 }
+
+export async function partialReleaseAction(
+  contractId: string,
+  milestoneId: string,
+  releaseAmountDollars: number,
+  note?: string,
+): Promise<ContractActionResult> {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return { success: false, error: "Unauthorized." };
+  }
+
+  try {
+    const releaseCents = Math.round(releaseAmountDollars * 100);
+    await ContractService.partialRelease(
+      session.user.id,
+      contractId,
+      milestoneId,
+      releaseCents,
+      note,
+    );
+    revalidatePath(`/contracts/${contractId}`);
+    return { success: true, contractId };
+  } catch (error: unknown) {
+    if (error && typeof error === "object" && "message" in error) {
+      return { success: false, error: String((error as { message: string }).message) };
+    }
+    return { success: false, error: "Failed to process partial release." };
+  }
+}

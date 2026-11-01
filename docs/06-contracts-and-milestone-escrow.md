@@ -49,6 +49,9 @@ stateDiagram-v2
 4. **Native Git Deliverable Verification**:
    - Freelancers can bind a GitHub or GitLab Pull Request or Commit URL directly inside the deliverable submission modal.
    - `GitVerifierService` inspects PR metadata, additions/deletions diff counts, and automated CI check status (`PASSED` / `FAILED`), locking in a verifiable cryptographic work record for client inspection and arbitration evidence lockers.
+5. **Micro-Escrow Streaming & Partial Milestone Releases**:
+   - In addition to binary 100% approvals, clients can release partial amounts via interactive sliders for incremental deliverables.
+   - The double-entry ledger writes an `ESCROW_RELEASE` for the exact partial net payout, while the unreleased balance remains securely locked in escrow for subsequent iterations.
 
 ---
 

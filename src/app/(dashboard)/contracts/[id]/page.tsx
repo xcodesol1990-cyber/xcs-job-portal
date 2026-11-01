@@ -248,6 +248,7 @@ export default async function ContractRoomPage({ params }: ContractPageProps) {
                     status={m.status}
                     isClient={isClient}
                     isFreelancer={isFreelancer}
+                    amountDollars={Math.round(Number(m.amountCents) / 100)}
                   />
                 </div>
               </div>

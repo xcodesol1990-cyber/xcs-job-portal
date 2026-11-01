@@ -6,6 +6,7 @@ import {
   fundMilestoneAction,
   submitDeliverableAction,
   approveAndReleaseAction,
+  partialReleaseAction,
   requestRevisionAction,
 } from "@/server/actions/contract.actions";
 import { inspectGitArtifactAction } from "@/server/actions/git.actions";
@@ -20,6 +21,7 @@ import {
   ExternalLink,
   ShieldCheck,
   AlertCircle,
+  Sliders,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
@@ -29,6 +31,7 @@ interface MilestoneActionsProps {
   status: string;
   isClient: boolean;
   isFreelancer: boolean;
+  amountDollars?: number;
 }
 
 export function ContractMilestoneActions({
@@ -37,13 +40,19 @@ export function ContractMilestoneActions({
   status,
   isClient,
   isFreelancer,
+  amountDollars = 100,
 }: MilestoneActionsProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [showSubmitModal, setShowSubmitModal] = useState(false);
   const [showRevisionModal, setShowRevisionModal] = useState(false);
+  const [showPartialModal, setShowPartialModal] = useState(false);
   const [notes, setNotes] = useState("");
   const [reason, setReason] = useState("");
+
+  // Partial Release State
+  const [partialAmount, setPartialAmount] = useState(Math.max(10, Math.floor(amountDollars * 0.7)));
+  const [partialNote, setPartialNote] = useState("");
 
   // Git Artifact Verification State
   const [gitUrl, setGitUrl] = useState("");
@@ -58,11 +67,22 @@ export function ContractMilestoneActions({
     });
   };
 
-  const handleApprove = () => {
-    if (!confirm("Are you sure you want to approve this deliverable and release escrow payment?"))
+  const handleApproveFull = () => {
+    if (
+      !confirm("Are you sure you want to approve this deliverable and release 100% escrow payment?")
+    )
       return;
     startTransition(async () => {
       await approveAndReleaseAction(contractId, milestoneId);
+      router.refresh();
+    });
+  };
+
+  const handlePartialReleaseSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    startTransition(async () => {
+      await partialReleaseAction(contractId, milestoneId, partialAmount, partialNote);
+      setShowPartialModal(false);
       router.refresh();
     });
   };
@@ -90,7 +110,6 @@ export function ContractMilestoneActions({
   const handleSubmitDeliverable = (e: React.FormEvent) => {
     e.preventDefault();
 
-    // If verified Git artifact present, format cleanly into notes
     let fullNotes = notes.trim();
     if (gitInspection) {
       const gitSummary = `\n\n---\n### 🔗 Verified Deliverable Artifact\n- **Provider:** ${gitInspection.provider.toUpperCase()} (${gitInspection.type})\n- **Artifact URL:** ${gitInspection.htmlUrl}\n- **Title:** ${gitInspection.title ?? "Pull Request"}\n- **CI Pipeline:** ${gitInspection.ciStatus}\n${gitInspection.commitHash ? `- **Commit SHA:** \`${gitInspection.commitHash}\`\n` : ""}${gitInspection.additions !== undefined ? `- **Diff:** +${gitInspection.additions} / -${gitInspection.deletions} lines across ${gitInspection.changedFiles} files\n` : ""}`;
@@ -143,12 +162,23 @@ export function ContractMilestoneActions({
             className="inline-flex items-center gap-1.5 rounded-xl border border-zinc-200 bg-white px-3 py-1.5 text-xs font-semibold text-zinc-700 shadow-xs hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-200"
           >
             <RotateCcw className="h-3.5 w-3.5" />
-            <span>Request Revision</span>
+            <span>Revision</span>
           </button>
+
           <button
             type="button"
             disabled={isPending}
-            onClick={handleApprove}
+            onClick={() => setShowPartialModal(true)}
+            className="inline-flex items-center gap-1.5 rounded-xl border border-indigo-200 bg-indigo-50/50 px-3 py-1.5 text-xs font-semibold text-indigo-700 shadow-xs hover:bg-indigo-100 dark:border-indigo-900/60 dark:bg-indigo-950/40 dark:text-indigo-300"
+          >
+            <Sliders className="h-3.5 w-3.5" />
+            <span>Partial Release</span>
+          </button>
+
+          <button
+            type="button"
+            disabled={isPending}
+            onClick={handleApproveFull}
             className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-600 px-3.5 py-1.5 text-xs font-semibold text-white shadow-sm transition hover:bg-emerald-500 disabled:opacity-60"
           >
             {isPending ? (
@@ -156,7 +186,7 @@ export function ContractMilestoneActions({
             ) : (
               <CheckCircle2 className="h-3.5 w-3.5" />
             )}
-            <span>Approve & Release Payment</span>
+            <span>Approve Full (${amountDollars})</span>
           </button>
         </div>
       )}
@@ -172,6 +202,98 @@ export function ContractMilestoneActions({
           <Send className="h-3.5 w-3.5" />
           <span>Submit Work</span>
         </button>
+      )}
+
+      {/* Partial Release Modal with Slider */}
+      {showPartialModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm animate-in fade-in duration-200">
+          <form
+            onSubmit={handlePartialReleaseSubmit}
+            className="w-full max-w-md rounded-2xl border border-zinc-200 bg-white p-6 shadow-2xl dark:border-zinc-800 dark:bg-zinc-900 space-y-4"
+          >
+            <div>
+              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
+                <Sliders className="h-4 w-4" />
+                <span>Micro-Escrow Partial Release</span>
+              </div>
+              <h3 className="font-bold text-base text-zinc-900 dark:text-zinc-100 mt-1">
+                Release Partial Milestone Funds
+              </h3>
+              <p className="text-xs text-zinc-500 mt-0.5">
+                Release immediate payment for accepted work components while retaining the remaining
+                balance in escrow.
+              </p>
+            </div>
+
+            <div className="rounded-xl border border-zinc-100 bg-zinc-50/70 p-4 dark:border-zinc-800 dark:bg-zinc-950/40 space-y-3">
+              <div className="flex items-center justify-between text-xs font-semibold">
+                <span className="text-zinc-600 dark:text-zinc-400">Release Amount</span>
+                <span className="text-base font-bold text-emerald-600 dark:text-emerald-400">
+                  ${partialAmount.toFixed(0)} of ${amountDollars.toFixed(0)}
+                </span>
+              </div>
+
+              <input
+                type="range"
+                min="10"
+                max={amountDollars}
+                step="5"
+                value={partialAmount}
+                onChange={(e) => setPartialAmount(Number(e.target.value))}
+                className="w-full accent-indigo-600 cursor-pointer"
+              />
+
+              <div className="grid grid-cols-2 gap-2 text-[11px] pt-1">
+                <div className="rounded-lg bg-white p-2 border border-zinc-200 dark:border-zinc-800 dark:bg-zinc-900">
+                  <span className="text-zinc-400">Transferred to Talent (90%)</span>
+                  <p className="font-bold text-zinc-900 dark:text-zinc-100">
+                    ${(partialAmount * 0.9).toFixed(2)}
+                  </p>
+                </div>
+                <div className="rounded-lg bg-white p-2 border border-zinc-200 dark:border-zinc-800 dark:bg-zinc-900">
+                  <span className="text-zinc-400">Retained in Escrow</span>
+                  <p className="font-bold text-indigo-600 dark:text-indigo-400">
+                    ${(amountDollars - partialAmount).toFixed(2)}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="block text-xs font-medium text-zinc-700 dark:text-zinc-300">
+                Note for Freelancer (Optional)
+              </label>
+              <textarea
+                rows={2}
+                value={partialNote}
+                onChange={(e) => setPartialNote(e.target.value)}
+                placeholder="e.g. Approved UI components, remaining balance will release after API tests pass..."
+                className="w-full rounded-xl border border-zinc-300 bg-white p-2.5 text-xs text-zinc-900 focus:border-indigo-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100"
+              />
+            </div>
+
+            <div className="flex justify-end gap-2 pt-2">
+              <button
+                type="button"
+                onClick={() => setShowPartialModal(false)}
+                className="rounded-lg px-3 py-1.5 text-xs font-medium text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={isPending || partialAmount <= 0}
+                className="inline-flex items-center gap-1.5 rounded-lg bg-indigo-600 px-4 py-1.5 text-xs font-semibold text-white shadow-sm hover:bg-indigo-500 disabled:opacity-60"
+              >
+                {isPending ? (
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                ) : (
+                  `Disburse $${partialAmount.toFixed(0)} Now`
+                )}
+              </button>
+            </div>
+          </form>
+        </div>
       )}
 
       {/* Submit Deliverables Modal with Git Verification */}

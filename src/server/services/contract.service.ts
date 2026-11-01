@@ -401,6 +401,167 @@ export class ContractService {
   /**
    * Retrieves a contract by ID.
    */
+  /**
+   * Client performs a partial escrow release on a milestone, transferring approved funds immediately
+   * and retaining the remaining balance in escrow for subsequent deliverables.
+   */
+  static async partialRelease(
+    clientId: string,
+    contractId: string,
+    milestoneId: string,
+    releaseCentsInput: bigint | number,
+    note?: string,
+  ) {
+    const releaseCents = BigInt(Math.floor(Number(releaseCentsInput)));
+    if (releaseCents <= 0n) {
+      throw new AppError(
+        "INVALID_AMOUNT",
+        "Partial release amount must be greater than zero.",
+        HTTP_STATUS.BAD_REQUEST,
+      );
+    }
+
+    const contract = await prisma.contract.findFirst({
+      where: { id: contractId, clientId },
+      include: { milestones: true },
+    });
+
+    if (!contract) {
+      throw new AppError("CONTRACT_NOT_FOUND", "Contract not found.", HTTP_STATUS.NOT_FOUND);
+    }
+
+    const milestone = contract.milestones.find((m) => m.id === milestoneId);
+    if (!milestone) {
+      throw new AppError("MILESTONE_NOT_FOUND", "Milestone not found.", HTTP_STATUS.NOT_FOUND);
+    }
+
+    if (
+      milestone.status !== MilestoneStatus.SUBMITTED &&
+      milestone.status !== MilestoneStatus.FUNDED &&
+      milestone.status !== MilestoneStatus.REVISION_REQUESTED
+    ) {
+      throw new AppError(
+        "INVALID_MILESTONE_STATUS",
+        `Cannot release funds from milestone in ${milestone.status} status.`,
+        HTTP_STATUS.BAD_REQUEST,
+      );
+    }
+
+    if (releaseCents > milestone.amountCents) {
+      throw new AppError(
+        "AMOUNT_EXCEEDS_ESCROW",
+        `Partial release amount ($${(Number(releaseCents) / 100).toFixed(2)}) exceeds available milestone escrow ($${(Number(milestone.amountCents) / 100).toFixed(2)}).`,
+        HTTP_STATUS.BAD_REQUEST,
+      );
+    }
+
+    const platformFeeBps = BigInt(contract.platformFeeBps);
+    const feeCents = (releaseCents * platformFeeBps) / 10000n;
+    const netPayoutCents = releaseCents - feeCents;
+    const isFullRelease = releaseCents === milestone.amountCents;
+
+    return prisma.$transaction(async (tx) => {
+      let updatedMilestone;
+      if (isFullRelease) {
+        updatedMilestone = await tx.milestone.update({
+          where: { id: milestoneId },
+          data: {
+            status: MilestoneStatus.RELEASED,
+            approvedAt: new Date(),
+            releasedAt: new Date(),
+            version: { increment: 1 },
+          },
+        });
+      } else {
+        const remainingCents = milestone.amountCents - releaseCents;
+        updatedMilestone = await tx.milestone.update({
+          where: { id: milestoneId },
+          data: {
+            amountCents: remainingCents,
+            version: { increment: 1 },
+          },
+        });
+      }
+
+      // Ledger: Escrow release to freelancer
+      await tx.ledgerEntry.create({
+        data: {
+          type: LedgerType.ESCROW_RELEASE,
+          contractId,
+          milestoneId,
+          amountCents: netPayoutCents,
+          currency: contract.currency,
+          userId: contract.freelancerId,
+          idempotencyKey: `partial_release_${milestoneId}_${Date.now()}`,
+        },
+      });
+
+      // Ledger: Platform fee
+      await tx.ledgerEntry.create({
+        data: {
+          type: LedgerType.PLATFORM_FEE,
+          contractId,
+          milestoneId,
+          amountCents: feeCents,
+          currency: contract.currency,
+          userId: null,
+          idempotencyKey: `partial_fee_${milestoneId}_${Date.now()}`,
+        },
+      });
+
+      // Update financial totals on profiles
+      await tx.freelancerProfile.update({
+        where: { userId: contract.freelancerId },
+        data: { totalEarnedCents: { increment: netPayoutCents } },
+      });
+
+      await tx.clientProfile.update({
+        where: { userId: clientId },
+        data: { totalSpentCents: { increment: releaseCents } },
+      });
+
+      if (isFullRelease) {
+        const allMilestones = await tx.milestone.findMany({ where: { contractId } });
+        const allReleased = allMilestones.every((m) => m.status === MilestoneStatus.RELEASED);
+        if (allReleased) {
+          await tx.contract.update({
+            where: { id: contractId },
+            data: {
+              status: ContractStatus.COMPLETED,
+              completedAt: new Date(),
+              version: { increment: 1 },
+            },
+          });
+        }
+      }
+
+      // Notify freelancer
+      await tx.notification.create({
+        data: {
+          userId: contract.freelancerId,
+          type: "MILESTONE_RELEASED",
+          payload: {
+            contractId,
+            milestoneTitle: milestone.title,
+            netPayoutDollars: Number(netPayoutCents) / 100,
+            isPartial: !isFullRelease,
+            remainingDollars: isFullRelease
+              ? 0
+              : Number(milestone.amountCents - releaseCents) / 100,
+            note: note ? sanitizeHtml(note) : undefined,
+          },
+        },
+      });
+
+      return {
+        updatedMilestone,
+        releasedNetPayoutCents: netPayoutCents,
+        feeCents,
+        isFullRelease,
+      };
+    });
+  }
+
   static async getContract(contractId: string, userId: string, isAdmin = false) {
     const where: Prisma.ContractWhereInput = { id: contractId };
     if (!isAdmin) {
