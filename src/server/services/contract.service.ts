@@ -669,7 +669,7 @@ export class ContractService {
       include: {
         client: { select: { id: true, name: true } },
         freelancer: { select: { id: true, name: true } },
-        job: { select: { title: true } },
+        job: { select: { id: true, title: true } },
         milestones: true,
       },
     });
