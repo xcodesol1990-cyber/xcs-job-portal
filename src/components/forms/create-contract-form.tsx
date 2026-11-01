@@ -122,15 +122,27 @@ export function CreateContractForm({ proposalId, bidDollars }: CreateContractFor
         ))}
       </div>
 
-      {/* Summary */}
+      {/* Summary with WorkWasl Flat $1 Fee Breakdown */}
       <div className="rounded-xl border border-indigo-100 bg-indigo-50/40 p-4 text-xs dark:border-indigo-950 dark:bg-indigo-950/20 space-y-2">
-        <div className="flex justify-between font-bold text-sm text-zinc-900 dark:text-zinc-100">
-          <span>Total Contract Budget:</span>
-          <span className="font-mono text-indigo-600 dark:text-indigo-400">${totalAmount}</span>
+        <div className="flex justify-between text-zinc-700 dark:text-zinc-300">
+          <span>Contract Milestones Sum:</span>
+          <span className="font-mono font-semibold">${totalAmount.toFixed(2)}</span>
         </div>
-        <p className="text-[11px] text-zinc-500">
-          You will only be billed when you explicitly fund each milestone into escrow. Funds are
-          released upon your approval of deliverables.
+        <div className="flex justify-between text-zinc-600 dark:text-zinc-400">
+          <span>WorkWasl Client Platform Fee (Flat Once Per Contract):</span>
+          <span className="font-mono font-semibold text-emerald-600 dark:text-emerald-400">
+            +$1.00
+          </span>
+        </div>
+        <div className="flex justify-between border-t border-indigo-200/60 pt-2 font-bold text-sm text-zinc-900 dark:text-zinc-100">
+          <span>Total Client Escrow Commitment:</span>
+          <span className="font-mono text-indigo-600 dark:text-indigo-400">
+            ${(totalAmount + 1).toFixed(2)}
+          </span>
+        </div>
+        <p className="text-[11px] text-zinc-500 pt-1">
+          Freelancer receives ${Math.max(0, totalAmount - 1).toFixed(2)} ($1 contractor fee applied
+          upon final delivery). Funds are held in milestone escrow until you approve deliverables.
         </p>
       </div>
 

@@ -437,6 +437,11 @@ model Contract {
   totalCents      BigInt          @map("total_cents")
   currency        String          @db.Char(3)
   platformFeeBps  Int             @map("platform_fee_bps")
+  clientFeeCents      BigInt      @default(100) @map("client_fee_cents")
+  freelancerFeeCents  BigInt      @default(100) @map("freelancer_fee_cents")
+  feePolicyVersion    String      @default("v1_flat_1_dollar") @map("fee_policy_version")
+  clientFeeCharged    Boolean     @default(false) @map("client_fee_charged")
+  freelancerFeeCharged Boolean    @default(false) @map("freelancer_fee_charged")
   status          ContractStatus  @default(PENDING_FUNDING)
   version         Int             @default(0)
   startedAt       DateTime?       @map("started_at") @db.Timestamptz

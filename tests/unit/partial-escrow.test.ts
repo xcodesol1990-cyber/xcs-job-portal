@@ -71,7 +71,12 @@ describe("ContractService - Partial Escrow Release", () => {
       clientId: "client-1",
       freelancerId: "dev-1",
       currency: "USD",
-      platformFeeBps: 1000, // 10%
+      platformFeeBps: 0,
+      clientFeeCents: 100n,
+      freelancerFeeCents: 100n,
+      feePolicyVersion: "v1_flat_1_dollar",
+      clientFeeCharged: false,
+      freelancerFeeCharged: false,
       milestones: [
         {
           id: "milestone-1",
@@ -98,16 +103,58 @@ describe("ContractService - Partial Escrow Release", () => {
     );
 
     expect(result.isFullRelease).toBe(false);
-    expect(result.feeCents).toBe(7000n); // 10% of 70000
-    expect(result.releasedNetPayoutCents).toBe(63000n); // 90% of 70000
+    expect(result.feeCents).toBe(100n); // WorkWasl flat $1.00 platform fee (100 cents)
+    expect(result.releasedNetPayoutCents).toBe(69900n); // $699.00 ($700 - $1 flat fee)
 
     expect(prisma.ledgerEntry.create).toHaveBeenCalledWith(
       expect.objectContaining({
         data: expect.objectContaining({
           type: "ESCROW_RELEASE",
-          amountCents: 63000n,
+          amountCents: 69900n,
         }),
       }),
     );
+  });
+
+  it("does not charge freelancer platform fee again if already charged on a prior release", async () => {
+    (
+      vi.mocked(prisma.contract.findFirst) as unknown as ReturnType<typeof vi.fn>
+    ).mockResolvedValueOnce({
+      id: "contract-1",
+      clientId: "client-1",
+      freelancerId: "dev-1",
+      currency: "USD",
+      platformFeeBps: 0,
+      clientFeeCents: 100n,
+      freelancerFeeCents: 100n,
+      feePolicyVersion: "v1_flat_1_dollar",
+      clientFeeCharged: true,
+      freelancerFeeCharged: true, // Already paid $1 on earlier milestone
+      milestones: [
+        {
+          id: "milestone-2",
+          status: "SUBMITTED",
+          amountCents: 50000n, // $500.00
+          title: "Backend API",
+        },
+      ],
+    });
+
+    (
+      vi.mocked(prisma.milestone.update) as unknown as ReturnType<typeof vi.fn>
+    ).mockResolvedValueOnce({
+      id: "milestone-2",
+      amountCents: 0n,
+    });
+
+    const result = await ContractService.partialRelease(
+      "client-1",
+      "contract-1",
+      "milestone-2",
+      50000,
+    );
+
+    expect(result.feeCents).toBe(0n); // Zero duplicate fee!
+    expect(result.releasedNetPayoutCents).toBe(50000n); // Full 100% payout to contractor
   });
 });

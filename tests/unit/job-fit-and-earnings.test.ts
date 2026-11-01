@@ -34,6 +34,20 @@ describe("Job Fit & Transparent Earnings Utilities", () => {
     expect(savings).toBe(71); // $71 more in pocket on WorkNest
   });
 
+  it("calculates WorkWasl flat $1 client and $1 freelancer fee model accurately", () => {
+    const contractTotal = 500;
+    const clientFee = 1;
+    const freelancerFee = 1;
+
+    const clientTotalPaid = contractTotal + clientFee;
+    const freelancerReceivedBeforeStripe = contractTotal - freelancerFee;
+    const platformGrossRevenue = clientFee + freelancerFee;
+
+    expect(clientTotalPaid).toBe(501);
+    expect(freelancerReceivedBeforeStripe).toBe(499);
+    expect(platformGrossRevenue).toBe(2);
+  });
+
   it("handles zero or edge bid numbers gracefully", () => {
     const bidAmount = 0;
     const stripeEstimatedFee = bidAmount > 0 ? Number((bidAmount * 0.029 + 0.3).toFixed(2)) : 0;

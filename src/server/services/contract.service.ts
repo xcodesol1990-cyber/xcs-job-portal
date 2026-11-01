@@ -83,7 +83,12 @@ export class ContractService {
           freelancerId: proposal.freelancerId,
           totalCents,
           currency: "USD",
-          platformFeeBps: 1000, // 10%
+          platformFeeBps: 0, // Legacy bps field set to 0 in favor of flat fee
+          clientFeeCents: 100n, // WorkWasl flat $1.00 platform fee snapshot
+          freelancerFeeCents: 100n, // WorkWasl flat $1.00 platform fee snapshot
+          feePolicyVersion: "v1_flat_1_dollar",
+          clientFeeCharged: false,
+          freelancerFeeCharged: false,
           status: ContractStatus.PENDING_FUNDING,
         },
       });
@@ -176,6 +181,26 @@ export class ContractService {
           idempotencyKey: `fund_${milestoneId}_${Date.now()}`,
         },
       });
+
+      // WorkWasl Business Rule: Charge flat $1 client fee once per contract
+      if (!contract.clientFeeCharged && contract.clientFeeCents > 0n) {
+        await tx.contract.update({
+          where: { id: contractId },
+          data: { clientFeeCharged: true },
+        });
+
+        await tx.ledgerEntry.create({
+          data: {
+            type: LedgerType.PLATFORM_FEE,
+            contractId,
+            milestoneId,
+            amountCents: contract.clientFeeCents,
+            currency: contract.currency,
+            userId: clientId,
+            idempotencyKey: `client_fee_${contractId}`,
+          },
+        });
+      }
 
       // Notify freelancer
       await tx.notification.create({
@@ -312,8 +337,14 @@ export class ContractService {
     assertMilestoneTransition(milestone.status, "APPROVED");
     assertMilestoneTransition("APPROVED", "RELEASED");
 
-    const platformFeeBps = BigInt(contract.platformFeeBps);
-    const feeCents = (milestone.amountCents * platformFeeBps) / BigInt(10000);
+    // WorkWasl Business Rule: Flat $1 freelancer platform fee charged ONCE per contract
+    let feeCents = 0n;
+    if (!contract.freelancerFeeCharged && contract.freelancerFeeCents > 0n) {
+      feeCents =
+        contract.freelancerFeeCents <= milestone.amountCents
+          ? contract.freelancerFeeCents
+          : milestone.amountCents;
+    }
     const netPayoutCents = milestone.amountCents - feeCents;
 
     return prisma.$transaction(async (tx) => {
@@ -328,6 +359,14 @@ export class ContractService {
         },
       });
 
+      // Update contract freelancerFeeCharged flag if fee is taken on this release
+      if (feeCents > 0n && !contract.freelancerFeeCharged) {
+        await tx.contract.update({
+          where: { id: contractId },
+          data: { freelancerFeeCharged: true },
+        });
+      }
+
       // Ledger: Escrow release to freelancer
       await tx.ledgerEntry.create({
         data: {
@@ -341,18 +380,20 @@ export class ContractService {
         },
       });
 
-      // Ledger: Platform fee
-      await tx.ledgerEntry.create({
-        data: {
-          type: LedgerType.PLATFORM_FEE,
-          contractId,
-          milestoneId,
-          amountCents: feeCents,
-          currency: contract.currency,
-          userId: null,
-          idempotencyKey: `fee_${milestoneId}_${Date.now()}`,
-        },
-      });
+      // Ledger: Platform fee (flat $1 per contract)
+      if (feeCents > 0n) {
+        await tx.ledgerEntry.create({
+          data: {
+            type: LedgerType.PLATFORM_FEE,
+            contractId,
+            milestoneId,
+            amountCents: feeCents,
+            currency: contract.currency,
+            userId: contract.freelancerId,
+            idempotencyKey: `freelancer_fee_${contractId}`,
+          },
+        });
+      }
 
       // Update financial totals on profiles
       await tx.freelancerProfile.update({
@@ -366,8 +407,10 @@ export class ContractService {
       });
 
       // Check if all milestones are released -> Complete contract!
-      const allMilestones = await tx.milestone.findMany({ where: { contractId } });
-      const allReleased = allMilestones.every((m) => m.status === MilestoneStatus.RELEASED);
+      const allMilestones = (await tx.milestone.findMany({ where: { contractId } })) ?? [];
+      const allReleased =
+        allMilestones.length > 0 &&
+        allMilestones.every((m) => m.status === MilestoneStatus.RELEASED);
 
       if (allReleased) {
         assertContractTransition(contract.status, "COMPLETED");
@@ -455,12 +498,24 @@ export class ContractService {
       );
     }
 
-    const platformFeeBps = BigInt(contract.platformFeeBps);
-    const feeCents = (releaseCents * platformFeeBps) / 10000n;
+    // WorkWasl Business Rule: Flat $1 freelancer platform fee charged ONCE per contract
+    let feeCents = 0n;
+    if (!contract.freelancerFeeCharged && contract.freelancerFeeCents > 0n) {
+      feeCents =
+        contract.freelancerFeeCents <= releaseCents ? contract.freelancerFeeCents : releaseCents;
+    }
     const netPayoutCents = releaseCents - feeCents;
     const isFullRelease = releaseCents === milestone.amountCents;
 
     return prisma.$transaction(async (tx) => {
+      // Update contract freelancerFeeCharged flag if fee is applied on this partial release
+      if (feeCents > 0n && !contract.freelancerFeeCharged) {
+        await tx.contract.update({
+          where: { id: contractId },
+          data: { freelancerFeeCharged: true },
+        });
+      }
+
       let updatedMilestone;
       if (isFullRelease) {
         updatedMilestone = await tx.milestone.update({
@@ -497,17 +552,19 @@ export class ContractService {
       });
 
       // Ledger: Platform fee
-      await tx.ledgerEntry.create({
-        data: {
-          type: LedgerType.PLATFORM_FEE,
-          contractId,
-          milestoneId,
-          amountCents: feeCents,
-          currency: contract.currency,
-          userId: null,
-          idempotencyKey: `partial_fee_${milestoneId}_${Date.now()}`,
-        },
-      });
+      if (feeCents > 0n) {
+        await tx.ledgerEntry.create({
+          data: {
+            type: LedgerType.PLATFORM_FEE,
+            contractId,
+            milestoneId,
+            amountCents: feeCents,
+            currency: contract.currency,
+            userId: contract.freelancerId,
+            idempotencyKey: `freelancer_fee_${contractId}`,
+          },
+        });
+      }
 
       // Update financial totals on profiles
       await tx.freelancerProfile.update({
@@ -521,8 +578,10 @@ export class ContractService {
       });
 
       if (isFullRelease) {
-        const allMilestones = await tx.milestone.findMany({ where: { contractId } });
-        const allReleased = allMilestones.every((m) => m.status === MilestoneStatus.RELEASED);
+        const allMilestones = (await tx.milestone.findMany({ where: { contractId } })) ?? [];
+        const allReleased =
+          allMilestones.length > 0 &&
+          allMilestones.every((m) => m.status === MilestoneStatus.RELEASED);
         if (allReleased) {
           await tx.contract.update({
             where: { id: contractId },
