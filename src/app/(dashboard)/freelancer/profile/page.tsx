@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { ProfileService } from "@/server/services/profile.service";
 import { FreelancerProfileForm } from "@/components/forms/freelancer-profile-form";
 import { PortfolioList } from "@/components/forms/portfolio-list";
+import { ProfileCompletenessCard } from "@/components/ui/profile-completeness-card";
 import { Sparkles, FolderGit2 } from "lucide-react";
 
 export default async function FreelancerProfilePage() {
@@ -16,6 +17,26 @@ export default async function FreelancerProfilePage() {
     ProfileService.getTaxonomy(),
   ]);
 
+  let score = 0;
+  const missingItems: string[] = [];
+  if (profile.headline) score += 20;
+  else missingItems.push("Professional Headline");
+
+  if (profile.bio && profile.bio.length >= 30) score += 20;
+  else missingItems.push("Overview Bio (min 30 chars)");
+
+  if (profile.hourlyRateCents && profile.hourlyRateCents > 0) score += 15;
+  else missingItems.push("Hourly Rate ($/hr)");
+
+  if (profile.skills && profile.skills.length > 0) score += 15;
+  else missingItems.push("Verified Skill Badges");
+
+  if (profile.experienceLevel) score += 10;
+  else missingItems.push("Seniority Level");
+
+  if (profile.portfolioItems && profile.portfolioItems.length > 0) score += 20;
+  else missingItems.push("Portfolio Item Case Study");
+
   return (
     <div className="mx-auto max-w-4xl space-y-10">
       <div>
@@ -26,6 +47,9 @@ export default async function FreelancerProfilePage() {
           Showcase your skills, set your hourly rate, and manage your portfolio to win contracts.
         </p>
       </div>
+
+      {/* Profile Completeness Score Card */}
+      <ProfileCompletenessCard score={score} missingItems={missingItems} role="FREELANCER" />
 
       <div className="rounded-2xl border border-zinc-200/80 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 sm:p-8">
         <div className="flex items-center gap-2 border-b border-zinc-100 pb-4 text-sm font-semibold text-zinc-900 dark:border-zinc-800 dark:text-zinc-100">

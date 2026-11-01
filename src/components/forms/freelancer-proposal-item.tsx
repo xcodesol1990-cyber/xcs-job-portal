@@ -53,7 +53,9 @@ export function FreelancerProposalItem({ proposal }: FreelancerProposalItemProps
                     ? "bg-purple-50 text-purple-700 dark:bg-purple-950/40 dark:text-purple-300"
                     : proposal.status === "REJECTED"
                       ? "bg-red-50 text-red-700 dark:bg-red-950/40 dark:text-red-300"
-                      : "bg-indigo-50 text-indigo-700 dark:bg-indigo-950/40 dark:text-indigo-300"
+                      : proposal.status === "WITHDRAWN"
+                        ? "bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400"
+                        : "bg-indigo-50 text-indigo-700 dark:bg-indigo-950/40 dark:text-indigo-300"
               }`}
             >
               {proposal.status}
@@ -72,12 +74,12 @@ export function FreelancerProposalItem({ proposal }: FreelancerProposalItemProps
         </div>
 
         <div className="flex items-center gap-2">
-          {proposal.status === "SUBMITTED" && (
+          {(proposal.status === "SUBMITTED" || proposal.status === "SHORTLISTED") && (
             <button
               type="button"
               disabled={isPending}
               onClick={handleWithdraw}
-              className="rounded-lg border border-zinc-200 bg-white px-3 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50 dark:border-zinc-800 dark:bg-zinc-900 dark:hover:bg-red-950/30"
+              className="rounded-lg border border-zinc-200 bg-white px-3 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50 dark:border-zinc-800 dark:bg-zinc-900 dark:hover:bg-red-950/30 transition disabled:opacity-50"
             >
               {isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : "Withdraw"}
             </button>

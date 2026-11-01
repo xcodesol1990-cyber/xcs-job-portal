@@ -15,6 +15,7 @@ vi.mock("@/server/db/prisma", () => ({
     freelancerProfile: {
       findUnique: vi.fn(),
       upsert: vi.fn(),
+      findMany: vi.fn().mockResolvedValue([]),
     },
     clientProfile: {
       findUnique: vi.fn(),
@@ -165,5 +166,39 @@ describe("ProfileService", () => {
       },
     });
     expect(result.name).toBe("Next.js 15");
+  });
+
+  it("filters and lists freelancers with search criteria", async () => {
+    const mockList = [
+      {
+        userId: "fl-1",
+        headline: "Principal DevOps Engineer",
+        hourlyRateCents: 12000,
+        user: { id: "fl-1", name: "DevOps Pro", country: "US" },
+        skills: [{ skill: { id: 1, name: "Kubernetes" } }],
+        _count: { portfolioItems: 3 },
+      },
+    ];
+
+    (
+      vi.mocked(prisma.freelancerProfile.findMany) as unknown as ReturnType<typeof vi.fn>
+    ).mockResolvedValueOnce(mockList);
+
+    const result = await ProfileService.listFreelancers({
+      query: "Kubernetes",
+      maxRateDollars: 150,
+      limit: 10,
+    });
+
+    expect(prisma.freelancerProfile.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        take: 11,
+        where: expect.objectContaining({
+          hourlyRateCents: { lte: 15000 },
+        }),
+      }),
+    );
+    expect(result.items).toHaveLength(1);
+    expect(result.items[0].headline).toBe("Principal DevOps Engineer");
   });
 });

@@ -630,8 +630,8 @@ export class ContractService {
     const contract = await prisma.contract.findFirst({
       where,
       include: {
-        client: { select: { id: true, name: true, clientProfile: true } },
-        freelancer: { select: { id: true, name: true, freelancerProfile: true } },
+        client: { select: { id: true, name: true, email: true, clientProfile: true } },
+        freelancer: { select: { id: true, name: true, email: true, freelancerProfile: true } },
         job: { select: { id: true, title: true } },
         milestones: { orderBy: { position: "asc" } },
         ledgerEntries: { orderBy: { createdAt: "desc" } },

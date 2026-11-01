@@ -5,6 +5,7 @@ import { JobService } from "@/server/services/job.service";
 import { PageHeader } from "@/components/ui/page-header";
 import { Badge } from "@/components/ui/badge";
 import { EmptyState } from "@/components/ui/empty-state";
+import { ClientJobStatusActions } from "@/components/forms/client-job-status-actions";
 import { Briefcase, Plus, Eye, Users } from "lucide-react";
 
 export default async function ClientJobsPage() {
@@ -97,6 +98,8 @@ export default async function ClientJobsPage() {
                   <Eye className="h-3.5 w-3.5 text-zinc-400" />
                   <span>View Post</span>
                 </Link>
+
+                <ClientJobStatusActions jobId={job.id} status={job.status} />
               </div>
             </div>
           ))}

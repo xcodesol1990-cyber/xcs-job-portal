@@ -120,6 +120,14 @@ export default async function ContractRoomPage({ params }: ContractPageProps) {
             <span>Messages</span>
           </Link>
 
+          <Link
+            href={`/contracts/${contract.id}/invoice`}
+            className="inline-flex items-center gap-1.5 rounded-xl border border-zinc-200/90 bg-white px-3.5 py-2 text-xs font-semibold text-zinc-700 shadow-xs transition hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800"
+          >
+            <Receipt className="h-3.5 w-3.5 text-indigo-600 dark:text-indigo-400" />
+            <span>Official Invoice</span>
+          </Link>
+
           {canDispute && !activeDispute && (
             <OpenDisputeModal
               contractId={contract.id}

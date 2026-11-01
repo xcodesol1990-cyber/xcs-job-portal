@@ -1,5 +1,6 @@
 import { prisma } from "@/server/db/prisma";
 import { AppError, HTTP_STATUS } from "@/server/lib/errors";
+import { Prisma, UserStatus } from "@prisma/client";
 
 export interface UpdateFreelancerInput {
   name?: string;
@@ -473,5 +474,96 @@ export class ProfileService {
     return prisma.skill.delete({
       where: { id },
     });
+  }
+
+  /**
+   * Search and filter freelancer profiles with keyword matching, skill filtering, rate bounds, and pagination.
+   */
+  static async listFreelancers(params: {
+    query?: string;
+    skillId?: number;
+    experienceLevel?: string;
+    maxRateDollars?: number;
+    availability?: string;
+    limit?: number;
+    cursor?: string;
+  }) {
+    const limit = params.limit ?? 12;
+    const where: Prisma.FreelancerProfileWhereInput = {
+      user: {
+        status: UserStatus.ACTIVE,
+        deletedAt: null,
+      },
+    };
+
+    if (params.query) {
+      const q = params.query.trim();
+      where.OR = [
+        { headline: { contains: q, mode: "insensitive" } },
+        { bio: { contains: q, mode: "insensitive" } },
+        { user: { name: { contains: q, mode: "insensitive" } } },
+        { tags: { has: q } },
+      ];
+    }
+
+    if (params.skillId) {
+      where.skills = {
+        some: {
+          skillId: params.skillId,
+        },
+      };
+    }
+
+    if (params.experienceLevel) {
+      where.experienceLevel = params.experienceLevel;
+    }
+
+    if (params.maxRateDollars) {
+      where.hourlyRateCents = {
+        lte: params.maxRateDollars * 100,
+      };
+    }
+
+    if (params.availability) {
+      where.availability = params.availability;
+    }
+
+    const items = await prisma.freelancerProfile.findMany({
+      where,
+      take: limit + 1,
+      cursor: params.cursor ? { userId: params.cursor } : undefined,
+      orderBy: [{ totalEarnedCents: "desc" }, { createdAt: "desc" }],
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            imageUrl: true,
+            country: true,
+          },
+        },
+        skills: {
+          include: {
+            skill: true,
+          },
+        },
+        _count: {
+          select: {
+            portfolioItems: true,
+          },
+        },
+      },
+    });
+
+    let nextCursor: string | undefined;
+    if (items.length > limit) {
+      const nextItem = items.pop();
+      nextCursor = nextItem?.userId;
+    }
+
+    return {
+      items,
+      nextCursor,
+    };
   }
 }

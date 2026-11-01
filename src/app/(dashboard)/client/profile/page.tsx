@@ -4,6 +4,7 @@ import { ProfileService } from "@/server/services/profile.service";
 import { OrganizationService } from "@/server/services/organization.service";
 import { ClientProfileForm } from "@/components/forms/client-profile-form";
 import { OrganizationTeamCard } from "@/components/forms/organization-team-card";
+import { ProfileCompletenessCard } from "@/components/ui/profile-completeness-card";
 import { Building, ShieldCheck, Users } from "lucide-react";
 
 export default async function ClientProfilePage() {
@@ -17,6 +18,26 @@ export default async function ClientProfilePage() {
     OrganizationService.getOrganization(session.user.id),
   ]);
 
+  let score = 0;
+  const missingItems: string[] = [];
+  if (profile.companyName) score += 20;
+  else missingItems.push("Company Name");
+
+  if (profile.website) score += 15;
+  else missingItems.push("Website URL");
+
+  if (profile.industry) score += 15;
+  else missingItems.push("Primary Industry");
+
+  if (profile.about && profile.about.length >= 30) score += 20;
+  else missingItems.push("About Brief (min 30 chars)");
+
+  if (profile.companySize) score += 15;
+  else missingItems.push("Company Size");
+
+  if (profile.paymentVerified) score += 15;
+  else missingItems.push("Payment Method Verification");
+
   return (
     <div className="mx-auto max-w-4xl space-y-10">
       <div>
@@ -28,6 +49,9 @@ export default async function ClientProfilePage() {
           verification status.
         </p>
       </div>
+
+      {/* Profile Completeness Score Card */}
+      <ProfileCompletenessCard score={score} missingItems={missingItems} role="CLIENT" />
 
       {/* Organization Details Form */}
       <div className="rounded-2xl border border-zinc-200/80 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 sm:p-8">

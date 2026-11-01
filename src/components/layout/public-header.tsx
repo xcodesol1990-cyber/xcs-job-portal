@@ -18,6 +18,7 @@ import {
   DollarSign,
   MessageSquare,
   LogOut,
+  Users,
 } from "lucide-react";
 
 interface PublicHeaderProps {
@@ -66,6 +67,14 @@ export function PublicHeader({ user }: PublicHeaderProps) {
             >
               <Search className="h-3.5 w-3.5 text-zinc-400" />
               <span>Browse Opportunities</span>
+            </Link>
+
+            <Link
+              href="/freelancers"
+              className="inline-flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-semibold text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100/70 dark:text-zinc-300 dark:hover:text-zinc-50 dark:hover:bg-zinc-800/60 transition"
+            >
+              <Users className="h-3.5 w-3.5 text-zinc-400" />
+              <span>Find Talent</span>
             </Link>
 
             <Link
@@ -161,6 +170,15 @@ export function PublicHeader({ user }: PublicHeaderProps) {
           >
             <Search className="h-4 w-4 text-indigo-500" />
             <span>Browse Opportunities</span>
+          </Link>
+
+          <Link
+            href="/freelancers"
+            onClick={() => setMobileMenuOpen(false)}
+            className="flex items-center gap-2 rounded-xl p-2.5 text-xs font-semibold text-zinc-800 hover:bg-zinc-50 dark:text-zinc-200 dark:hover:bg-zinc-900"
+          >
+            <Users className="h-4 w-4 text-indigo-500" />
+            <span>Find Talent</span>
           </Link>
 
           <Link
