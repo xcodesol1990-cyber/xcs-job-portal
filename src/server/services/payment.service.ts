@@ -133,5 +133,25 @@ export class PaymentService {
       data: { stripePayoutsEnabled: payoutsEnabled },
     });
   }
+
+  /**
+   * Handles payment failure webhook events.
+   */
+  static async handlePaymentFailed(paymentIntentId: string) {
+    await prisma.payment.updateMany({
+      where: { providerPaymentId: paymentIntentId },
+      data: { status: PaymentStatus.FAILED },
+    });
+  }
+
+  /**
+   * Handles charge refunded webhook events.
+   */
+  static async handleChargeRefunded(paymentIntentId: string) {
+    await prisma.payment.updateMany({
+      where: { providerPaymentId: paymentIntentId },
+      data: { status: PaymentStatus.REFUNDED },
+    });
+  }
 }
 

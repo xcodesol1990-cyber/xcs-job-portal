@@ -2,6 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import Stripe from "stripe";
 import { env } from "@/server/lib/env";
 import { prisma } from "@/server/db/prisma";
+import { Prisma } from "@prisma/client";
 import { PaymentService } from "@/server/services/payment.service";
 
 export const runtime = "nodejs";
@@ -52,7 +53,7 @@ export async function POST(request: NextRequest) {
       provider: "stripe",
       eventId: event.id,
       type: event.type,
-      payload: event as unknown as object,
+      payload: event as unknown as Prisma.InputJsonValue,
     },
   });
 
@@ -61,6 +62,18 @@ export async function POST(request: NextRequest) {
       case "payment_intent.succeeded": {
         const paymentIntent = event.data.object as Stripe.PaymentIntent;
         await PaymentService.handlePaymentSucceeded(paymentIntent.id);
+        break;
+      }
+      case "payment_intent.payment_failed": {
+        const paymentIntent = event.data.object as Stripe.PaymentIntent;
+        await PaymentService.handlePaymentFailed(paymentIntent.id);
+        break;
+      }
+      case "charge.refunded": {
+        const charge = event.data.object as Stripe.Charge;
+        if (charge.payment_intent && typeof charge.payment_intent === "string") {
+          await PaymentService.handleChargeRefunded(charge.payment_intent);
+        }
         break;
       }
       case "account.updated": {
@@ -78,3 +91,4 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Webhook processing failure" }, { status: 500 });
   }
 }
+

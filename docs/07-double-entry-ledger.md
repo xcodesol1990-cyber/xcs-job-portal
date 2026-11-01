@@ -7,7 +7,10 @@ WorkNest maintains mathematical integrity across all marketplace finances using 
 
 ## Key Files & Modules
 - `src/server/services/admin.service.ts`: Ledger entry insertion, account balance aggregation, and financial reconciliation.
+- `src/server/services/payment.service.ts`: Escrow payment intents, Stripe Connect onboarding, and webhook handlers (`handlePaymentSucceeded`, `handlePaymentFailed`, `handleChargeRefunded`, `handleAccountUpdated`).
+- `src/app/api/webhooks/stripe/route.ts`: Idempotent webhook receiver with signature validation and `WebhookEvent` persistence.
 - `src/app/admin/ledger/page.tsx`: Full cryptographic ledger audit log with filtering by user, contract, and account type.
+- `src/app/(dashboard)/freelancer/payouts/page.tsx`: Freelancer banking portal with Stripe Connect Express status and ledger disbursement history.
 - `src/app/api/cron/daily/route.ts`: Daily scheduled reconciliation job verifying ledger parity.
 
 ---
