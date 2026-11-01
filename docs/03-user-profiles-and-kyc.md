@@ -73,3 +73,15 @@ stateDiagram-v2
   3. Clicks **Suspend User**.
   4. User status is immediately set to `SUSPENDED`.
   5. NextAuth session middleware terminates their active sessions, preventing further job creation or bid submissions.
+
+### Use Case 3.4: Enterprise Multi-Seat Organization Workspace & Team Management
+
+- **Actor**: Enterprise Client / Employer
+- **Workflow**:
+  1. Client navigates to `/client/profile`.
+  2. Inspects their Corporate Organization Workspace with EIN / Tax ID and assigned team seats.
+  3. Clicks **Invite Colleague** and assigns specific RBAC permissions:
+     - `MANAGER`: Can create job solicitations, fund milestone escrow, and approve deliverables.
+     - `AUDITOR`: Financial read-only auditor access to corporate ledger receipts and tax summaries.
+  4. WorkNest dispatches the team invitation with 7-day validity.
+  5. The organization can download consolidated ledger billing summaries across all corporate contracts via `OrganizationService.getConsolidatedLedgerReport`.
