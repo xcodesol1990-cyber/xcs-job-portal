@@ -52,6 +52,10 @@ stateDiagram-v2
 5. **Micro-Escrow Streaming & Partial Milestone Releases**:
    - In addition to binary 100% approvals, clients can release partial amounts via interactive sliders for incremental deliverables.
    - The double-entry ledger writes an `ESCROW_RELEASE` for the exact partial net payout, while the unreleased balance remains securely locked in escrow for subsequent iterations.
+6. **Visual Milestone Escrow Timeline & Financial Telemetry Stepper**:
+   - Integrated into `/contracts/[id]` via `<ContractTimelineStepper />`.
+   - Real-time financial split displaying `Released Payouts`, `Locked in Escrow`, and `Remaining Contract` funds.
+   - Interactive checkpoint node track allowing clients and freelancers to click any milestone node to jump directly to its deliverables, code diff inspections, and release actions.
 
 ---
 

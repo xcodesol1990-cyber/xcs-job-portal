@@ -1,7 +1,30 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { GitVerifierService } from "@/server/services/git-verifier.service";
 
 describe("GitVerifierService", () => {
+  beforeEach(() => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({
+          title: "Fix hydration warning in layout",
+          state: "open",
+          merged: false,
+          additions: 120,
+          deletions: 15,
+          changed_files: 3,
+          mergeable_state: "clean",
+          head: { sha: "a1b2c3d4e5f6" },
+        }),
+      }),
+    );
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   it("rejects empty or blank artifact URLs", async () => {
     const result = await GitVerifierService.inspectArtifactUrl("");
     expect(result.isValid).toBe(false);

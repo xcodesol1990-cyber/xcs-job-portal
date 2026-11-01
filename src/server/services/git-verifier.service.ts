@@ -124,6 +124,7 @@ export class GitVerifierService {
 
       const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/pulls/${prNumber}`, {
         headers,
+        signal: AbortSignal.timeout(1500),
       });
 
       if (res.ok) {

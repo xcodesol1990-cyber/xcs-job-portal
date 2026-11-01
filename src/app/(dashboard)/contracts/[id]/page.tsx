@@ -6,6 +6,7 @@ import { ContractMilestoneActions } from "@/components/forms/contract-milestone-
 import { ContractReviewForm } from "@/components/forms/contract-review-form";
 import { OpenDisputeModal } from "@/components/forms/open-dispute-modal";
 import { ContractHuddleModal } from "@/components/chat/contract-huddle-modal";
+import { ContractTimelineStepper } from "@/components/contracts/contract-timeline-stepper";
 import { Badge } from "@/components/ui/badge";
 import {
   ArrowLeft,
@@ -212,6 +213,18 @@ export default async function ContractRoomPage({ params }: ContractPageProps) {
         </div>
       </div>
 
+      {/* Interactive Milestone Escrow Timeline & Financial Telemetry Stepper */}
+      <ContractTimelineStepper
+        milestones={contract.milestones.map((m) => ({
+          id: m.id,
+          title: m.title,
+          amountCents: m.amountCents,
+          status: m.status,
+          orderNumber: m.position,
+        }))}
+        totalCents={contract.totalCents}
+      />
+
       {/* Milestones Flow */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
@@ -225,6 +238,7 @@ export default async function ContractRoomPage({ params }: ContractPageProps) {
           {contract.milestones.map((m) => (
             <div
               key={m.id}
+              id={`milestone-${m.id}`}
               className="rounded-2xl border border-zinc-200/80 bg-white p-5 sm:p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 transition-all hover:shadow-md"
             >
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">

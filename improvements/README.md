@@ -45,3 +45,9 @@ Explore the comprehensive improvement blueprints contained in this directory:
    - **Feature 3:** Milestone Escrow Streaming & Partial Release Sliders ✅ _Shipped_
    - **Feature 4:** Enterprise Team Workspaces, Multi-Seat RBAC & Consolidated Invoicing ✅ _Shipped_
    - **Feature 5:** Real-time WebRTC Video Contract Workrooms with Screen Sharing ✅ _Shipped_
+
+4. **[04. Frontend & Client / Freelancer UI/UX Enhancements](./04-frontend-and-ui-ux-enhancements.md)**
+   - **Phase 1:** Visual Milestone Escrow Timeline & Progress Stepper
+   - **Phase 2:** Transparent Take-Home Earnings Calculator & Skill Match Badges
+   - **Phase 3:** Interactive Side-by-Side Proposal Comparison Matrix
+   - **Phase 4:** Global Command Palette (`Cmd + K`) & Unified Persona Switcher
