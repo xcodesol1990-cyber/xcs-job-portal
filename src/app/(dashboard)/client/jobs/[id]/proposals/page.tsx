@@ -55,6 +55,8 @@ export default async function ClientJobProposalsPage({ params }: ProposalsPagePr
 
       <ProposalComparisonMatrix jobId={job.id} jobTitle={job.title} proposals={proposals} />
 
+      <ProposalComparisonMatrix jobId={job.id} jobTitle={job.title} proposals={proposals} />
+
       <div className="space-y-4">
         {proposals.map((proposal) => {
           const initials = proposal.freelancer.name

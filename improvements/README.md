@@ -51,3 +51,9 @@ Explore the comprehensive improvement blueprints contained in this directory:
    - **Phase 2:** Transparent Take-Home Earnings Calculator & Skill Match Badges ✅ _Shipped_
    - **Phase 3:** Interactive Side-by-Side Proposal Comparison Matrix ✅ _Shipped_
    - **Phase 4:** Global Command Palette (`Cmd + K`) & Unified Persona Switcher ✅ _Shipped_
+
+5. **[05. Visual & UI/UX Design Overhaul](./05-visual-and-ui-ux-design-overhaul.md)**
+   - **Phase 1:** High-Density Dual-Column Freelancer Hub (`/freelancer`)
+   - **Phase 2:** High-Density Dual-Column Client Workspace (`/client`)
+   - **Phase 3:** Vibrant Marketplace Discovery with Category Pills & Guided Empty State (`/jobs`)
+   - **Phase 4:** High-Converting Landing Page with Interactive Escrow Mock & Comparison Matrix (`/`)

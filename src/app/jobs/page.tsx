@@ -2,7 +2,20 @@ import Link from "next/link";
 import { JobService } from "@/server/services/job.service";
 import { ProfileService } from "@/server/services/profile.service";
 import { JobFitBadge } from "@/components/jobs/job-fit-badge";
-import { Search, Briefcase, ShieldCheck, ArrowRight, Filter } from "lucide-react";
+import {
+  Search,
+  Briefcase,
+  ShieldCheck,
+  ArrowRight,
+  Filter,
+  Sparkles,
+  Code2,
+  Palette,
+  Cpu,
+  Cloud,
+  RotateCcw,
+  PlusCircle,
+} from "lucide-react";
 
 interface JobsPageProps {
   searchParams: Promise<{
@@ -107,6 +120,36 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
               </button>
             </div>
           </form>
+
+          {/* Quick Keyword Pills */}
+          <div className="flex flex-wrap items-center gap-1.5 pt-3 mt-3 border-t border-zinc-100 dark:border-zinc-800 text-xs">
+            <span className="text-[11px] font-semibold text-zinc-400 mr-1 flex items-center gap-1">
+              <Sparkles className="h-3 w-3 text-indigo-500" />
+              <span>Trending:</span>
+            </span>
+            {[
+              "Next.js",
+              "TypeScript",
+              "React",
+              "Python",
+              "Tailwind",
+              "PostgreSQL",
+              "AI Agents",
+              "Stripe",
+            ].map((kw) => (
+              <Link
+                key={kw}
+                href={`/jobs?q=${encodeURIComponent(kw)}`}
+                className={`rounded-lg px-2.5 py-1 text-[11px] font-medium transition ${
+                  params.q === kw
+                    ? "bg-indigo-600 text-white font-bold"
+                    : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-300"
+                }`}
+              >
+                {kw}
+              </Link>
+            ))}
+          </div>
         </div>
 
         {/* Jobs Feed Grid */}
@@ -177,14 +220,107 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
           ))}
 
           {items.length === 0 && (
-            <div className="rounded-2xl border border-dashed border-zinc-300 bg-white p-12 text-center dark:border-zinc-800 dark:bg-zinc-900">
-              <Briefcase className="mx-auto h-10 w-10 text-zinc-400" />
-              <h3 className="mt-4 text-base font-semibold text-zinc-900 dark:text-zinc-100">
-                No matching opportunities found
-              </h3>
-              <p className="mt-1 text-xs text-zinc-500">
-                Try clearing your search filters or check back shortly for new client postings.
-              </p>
+            <div className="space-y-6">
+              <div className="rounded-3xl border border-zinc-200/90 bg-white p-8 text-center shadow-xs dark:border-zinc-800 dark:bg-zinc-900">
+                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
+                  <Search className="h-6 w-6" />
+                </div>
+                <h3 className="mt-4 text-lg font-bold text-zinc-900 dark:text-zinc-100">
+                  {params.q || params.category || params.type
+                    ? `No opportunities found matching "${params.q || "your criteria"}"`
+                    : "No active job postings in this view"}
+                </h3>
+                <p className="mt-1 text-xs text-zinc-500 max-w-md mx-auto leading-relaxed">
+                  Try broadening your keyword query or explore our core engineering disciplines
+                  below.
+                </p>
+                <div className="mt-5 flex items-center justify-center gap-3">
+                  {(params.q || params.category || params.type) && (
+                    <Link
+                      href="/jobs"
+                      className="inline-flex items-center gap-1.5 rounded-xl border border-zinc-200 bg-white px-4 py-2 text-xs font-bold text-zinc-800 shadow-xs hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 transition"
+                    >
+                      <RotateCcw className="h-3.5 w-3.5 text-zinc-400" />
+                      <span>Reset Filters</span>
+                    </Link>
+                  )}
+                  <Link
+                    href="/client/jobs/new"
+                    className="inline-flex items-center gap-1.5 rounded-xl bg-indigo-600 px-4 py-2 text-xs font-bold text-white shadow-xs hover:bg-indigo-500 transition"
+                  >
+                    <PlusCircle className="h-3.5 w-3.5" />
+                    <span>Post a Job Scope</span>
+                  </Link>
+                </div>
+              </div>
+
+              {/* Exploration Discipline Grid */}
+              <div className="rounded-3xl border border-zinc-200/80 bg-zinc-50/60 p-6 dark:border-zinc-800 dark:bg-zinc-900/40">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-400 mb-4">
+                  Browse by Engineering & Design Disciplines
+                </h4>
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                  <Link
+                    href="/jobs?q=fullstack"
+                    className="flex items-center gap-3 rounded-2xl border border-zinc-200/80 bg-white p-4 shadow-2xs hover:border-indigo-500 dark:border-zinc-800 dark:bg-zinc-900 transition"
+                  >
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
+                      <Code2 className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <div className="text-xs font-bold text-zinc-900 dark:text-zinc-100">
+                        Full-Stack Engineering
+                      </div>
+                      <div className="text-[11px] text-zinc-400">Next.js, Node, React</div>
+                    </div>
+                  </Link>
+
+                  <Link
+                    href="/jobs?q=design"
+                    className="flex items-center gap-3 rounded-2xl border border-zinc-200/80 bg-white p-4 shadow-2xs hover:border-purple-500 dark:border-zinc-800 dark:bg-zinc-900 transition"
+                  >
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400">
+                      <Palette className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <div className="text-xs font-bold text-zinc-900 dark:text-zinc-100">
+                        UI/UX & Product Design
+                      </div>
+                      <div className="text-[11px] text-zinc-400">Figma, Design Systems</div>
+                    </div>
+                  </Link>
+
+                  <Link
+                    href="/jobs?q=ai"
+                    className="flex items-center gap-3 rounded-2xl border border-zinc-200/80 bg-white p-4 shadow-2xs hover:border-emerald-500 dark:border-zinc-800 dark:bg-zinc-900 transition"
+                  >
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+                      <Cpu className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <div className="text-xs font-bold text-zinc-900 dark:text-zinc-100">
+                        AI & Agentic Systems
+                      </div>
+                      <div className="text-[11px] text-zinc-400">LLMs, Python, RAG</div>
+                    </div>
+                  </Link>
+
+                  <Link
+                    href="/jobs?q=cloud"
+                    className="flex items-center gap-3 rounded-2xl border border-zinc-200/80 bg-white p-4 shadow-2xs hover:border-blue-500 dark:border-zinc-800 dark:bg-zinc-900 transition"
+                  >
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400">
+                      <Cloud className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <div className="text-xs font-bold text-zinc-900 dark:text-zinc-100">
+                        DevOps & Cloud Infra
+                      </div>
+                      <div className="text-[11px] text-zinc-400">AWS, Docker, CI/CD</div>
+                    </div>
+                  </Link>
+                </div>
+              </div>
             </div>
           )}
         </div>
