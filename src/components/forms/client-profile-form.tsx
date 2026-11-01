@@ -132,7 +132,7 @@ export function ClientProfileForm({ profile }: ClientProfileFormProps) {
         <div>
           <div className="flex items-center justify-between">
             <label className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300">
-              Primary Contact Name *
+              Primary Contact Name <span className="text-red-500">*</span>
             </label>
             <span className="text-[11px] font-mono text-zinc-400">{name.length} / 60</span>
           </div>
@@ -153,7 +153,7 @@ export function ClientProfileForm({ profile }: ClientProfileFormProps) {
         <div>
           <div className="flex items-center justify-between">
             <label className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300">
-              Company / Organization Legal Name *
+              Company / Organization Legal Name <span className="text-red-500">*</span>
             </label>
             <span className="text-[11px] font-mono text-zinc-400">{companyName.length} / 100</span>
           </div>

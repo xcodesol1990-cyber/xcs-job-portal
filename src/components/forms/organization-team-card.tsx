@@ -171,7 +171,7 @@ export function OrganizationTeamCard({
 
             <div className="space-y-1.5">
               <label className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300">
-                Work Email Address
+                Work Email Address <span className="text-red-500">*</span>
               </label>
               <input
                 type="email"

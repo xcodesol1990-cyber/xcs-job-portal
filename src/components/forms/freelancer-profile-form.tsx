@@ -245,7 +245,7 @@ export function FreelancerProfileForm({ profile, skills }: ProfileFormProps) {
           <div>
             <div className="flex items-center justify-between">
               <label className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300">
-                Full Legal Name *
+                Full Legal Name <span className="text-red-500">*</span>
               </label>
               <span className="text-[11px] font-mono text-zinc-400">{name.length} / 60</span>
             </div>
@@ -262,7 +262,7 @@ export function FreelancerProfileForm({ profile, skills }: ProfileFormProps) {
 
           <div>
             <label className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300">
-              Hourly Billing Rate (USD) *
+              Hourly Billing Rate (USD) <span className="text-red-500">*</span>
             </label>
             <div className="relative mt-1.5">
               <DollarSign className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
@@ -353,7 +353,7 @@ export function FreelancerProfileForm({ profile, skills }: ProfileFormProps) {
         <div>
           <div className="flex items-center justify-between">
             <label className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300">
-              Professional Headline *
+              Professional Headline <span className="text-red-500">*</span>
             </label>
             <span
               className={`text-[11px] font-mono ${
@@ -382,7 +382,7 @@ export function FreelancerProfileForm({ profile, skills }: ProfileFormProps) {
         <div>
           <div className="flex items-center justify-between">
             <label className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300">
-              Biography & Technical Expertise *
+              Biography & Technical Expertise <span className="text-red-500">*</span>
             </label>
             <span
               className={`text-[11px] font-mono ${

@@ -96,7 +96,7 @@ export function OpenDisputeModal({ contractId, milestones }: OpenDisputeModalPro
 
               <div>
                 <label className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300">
-                  Statement of Dispute & Evidence
+                  Statement of Dispute & Evidence <span className="text-red-500">*</span>
                 </label>
                 <textarea
                   rows={4}

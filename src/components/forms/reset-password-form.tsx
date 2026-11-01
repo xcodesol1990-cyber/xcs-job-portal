@@ -74,7 +74,7 @@ export function ResetPasswordForm() {
             htmlFor="password"
             className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300"
           >
-            New Password (at least 8 characters)
+            New Password (at least 8 characters) <span className="text-red-500">*</span>
           </label>
           <div className="relative mt-1.5">
             <Lock className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
@@ -97,7 +97,7 @@ export function ResetPasswordForm() {
             htmlFor="confirmPassword"
             className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300"
           >
-            Confirm New Password
+            Confirm New Password <span className="text-red-500">*</span>
           </label>
           <div className="relative mt-1.5">
             <Lock className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />

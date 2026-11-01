@@ -73,7 +73,7 @@ export function ReportJobModal({ jobId }: ReportJobModalProps) {
             <form onSubmit={handleSubmit} className="mt-4 space-y-4">
               <div>
                 <label className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300">
-                  Reason for Flagging
+                  Reason for Flagging <span className="text-red-500">*</span>
                 </label>
                 <p className="mt-0.5 text-[11px] text-zinc-500">
                   Help us understand why this job violates community standards (e.g. asking for

@@ -111,7 +111,7 @@ export function RegisterForm() {
             htmlFor="name"
             className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300"
           >
-            Full Name
+            Full Name <span className="text-red-500">*</span>
           </label>
           <div className="relative mt-1.5">
             <User className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
@@ -133,7 +133,7 @@ export function RegisterForm() {
             htmlFor="email"
             className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300"
           >
-            Email Address
+            Email Address <span className="text-red-500">*</span>
           </label>
           <div className="relative mt-1.5">
             <Mail className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
@@ -155,7 +155,7 @@ export function RegisterForm() {
             htmlFor="password"
             className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300"
           >
-            Password (at least 8 characters)
+            Password (at least 8 characters) <span className="text-red-500">*</span>
           </label>
           <div className="relative mt-1.5">
             <Lock className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />

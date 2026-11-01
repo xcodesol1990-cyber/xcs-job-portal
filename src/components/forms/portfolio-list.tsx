@@ -70,7 +70,7 @@ export function PortfolioList({ items }: PortfolioListProps) {
         >
           <div>
             <label className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300">
-              Project Title
+              Project Title <span className="text-red-500">*</span>
             </label>
             <input
               type="text"

@@ -68,7 +68,8 @@ export function ApplyJobForm({ jobId, budgetType, screeningQuestions = [] }: App
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
             <label className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300">
-              {budgetType === "HOURLY" ? "Hourly Bid Rate ($/hr)" : "Total Bid Amount ($)"}
+              {budgetType === "HOURLY" ? "Hourly Bid Rate ($/hr)" : "Total Bid Amount ($)"}{" "}
+              <span className="text-red-500">*</span>
             </label>
             <div className="relative mt-1.5">
               <DollarSign className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
@@ -86,7 +87,7 @@ export function ApplyJobForm({ jobId, budgetType, screeningQuestions = [] }: App
 
           <div>
             <label className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300">
-              Estimated Delivery Time (Days)
+              Estimated Delivery Time (Days) <span className="text-red-500">*</span>
             </label>
             <div className="relative mt-1.5">
               <Clock className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
@@ -174,7 +175,7 @@ export function ApplyJobForm({ jobId, budgetType, screeningQuestions = [] }: App
       <div>
         <div className="flex items-center justify-between">
           <label className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300">
-            Cover Letter & Pitch *
+            Cover Letter & Pitch <span className="text-red-500">*</span>
           </label>
           <span
             className={`text-[11px] font-mono ${

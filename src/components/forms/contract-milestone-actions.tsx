@@ -382,7 +382,7 @@ export function ContractMilestoneActions({
             {/* Deliverable Notes */}
             <div className="space-y-1.5">
               <label className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300">
-                Deliverable Summary & Handover Notes
+                Deliverable Summary & Handover Notes <span className="text-red-500">*</span>
               </label>
               <textarea
                 rows={4}

@@ -227,7 +227,7 @@ export function TaxonomyManager({ categories, skills }: TaxonomyManagerProps) {
             >
               <div className="sm:col-span-2">
                 <label className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300">
-                  Category Name *
+                  Category Name <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
@@ -415,7 +415,7 @@ export function TaxonomyManager({ categories, skills }: TaxonomyManagerProps) {
             >
               <div>
                 <label className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300">
-                  Skill Name *
+                  Skill Name <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"

@@ -57,3 +57,9 @@ Explore the comprehensive improvement blueprints contained in this directory:
    - **Phase 2:** High-Density Dual-Column Client Workspace (`/client`)
    - **Phase 3:** Vibrant Marketplace Discovery with Category Pills & Guided Empty State (`/jobs`)
    - **Phase 4:** High-Converting Landing Page with Interactive Escrow Mock & Comparison Matrix (`/`)
+
+6. **[06. WorkWasl Production Audit & Execution Plan](./06-workwasl-production-audit-and-execution-plan.md)**
+   - Granular audit of complete user journeys (Client, Freelancer, Admin).
+   - Flat \$1 client + \$1 freelancer platform fee business rules & architecture specification.
+   - P0 payment integrity, ledger verification, and server-side security checklist.
+   - Low-overhead in-house PostgreSQL architecture roadmap.
