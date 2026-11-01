@@ -3,14 +3,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { submitProposalAction } from "@/server/actions/proposal.actions";
-import {
-  Loader2,
-  DollarSign,
-  Send,
-  Clock,
-  ShieldCheck,
-  TrendingUp,
-} from "lucide-react";
+import { Loader2, DollarSign, Send, Clock, ShieldCheck, TrendingUp } from "lucide-react";
 
 interface ApplyJobFormProps {
   jobId: string;

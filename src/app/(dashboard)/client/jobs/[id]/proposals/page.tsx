@@ -4,6 +4,7 @@ import { auth } from "@/server/lib/auth";
 import { ProposalService } from "@/server/services/proposal.service";
 import { JobService } from "@/server/services/job.service";
 import { ClientProposalActions } from "@/components/forms/client-proposal-actions";
+import { ProposalComparisonMatrix } from "@/components/proposals/proposal-comparison-matrix";
 import { PageHeader } from "@/components/ui/page-header";
 import { Badge } from "@/components/ui/badge";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -51,6 +52,8 @@ export default async function ClientJobProposalsPage({ params }: ProposalsPagePr
         title={`Proposals: ${job.title}`}
         description="Review candidate credentials, compare bids, message directly, and award milestone contracts."
       />
+
+      <ProposalComparisonMatrix jobId={job.id} jobTitle={job.title} proposals={proposals} />
 
       <div className="space-y-4">
         {proposals.map((proposal) => {

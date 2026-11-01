@@ -39,8 +39,12 @@ stateDiagram-v2
    - Proposals can include structured milestone proposals (e.g., Milestone 1: Design ($500), Milestone 2: Implementation ($1,500), Milestone 3: QA ($500)).
 3. **Cover Letter & Estimated Timeline**:
    - Freelancer specifies projected turnaround time (e.g., `< 1 month`, `1 to 3 months`).
-4. **Platform Take Estimation**:
-   - System displays the estimated platform service fee and net take-home pay to the freelancer in real time before submission.
+4. **Zero-Tax Protocol & Net Take-Home Transparency**:
+   - System displays the transparent fee breakdown: 0% WorkNest platform fee for freelancers, pass-through Stripe merchant processing (2.9% + $0.30), and exact net deposited to bank.
+5. **Interactive Side-by-Side Proposal Comparison Matrix**:
+   - Integrated into `/client/jobs/[id]/proposals` via `<ProposalComparisonMatrix />`.
+   - Allows hiring managers to select up to 3 candidate bids and benchmark them side-by-side on bid price, delivery days, experience level, and strategy pitch.
+   - Highlights best value bid and fastest turnaround milestones with 1-click contract initiation.
 
 ---
 
