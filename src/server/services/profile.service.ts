@@ -43,9 +43,10 @@ export class ProfileService {
 
   /**
    * Retrieves a freelancer profile by user ID.
+   * If the profile record doesn't exist yet for an existing user, it auto-provisions a default profile.
    */
   static async getFreelancerProfile(userId: string) {
-    const profile = await prisma.freelancerProfile.findUnique({
+    let profile = await prisma.freelancerProfile.findUnique({
       where: { userId },
       include: {
         user: {
@@ -69,6 +70,61 @@ export class ProfileService {
         },
       },
     });
+
+    if (!profile) {
+      // Check if user exists in the database
+      const user = await prisma.user.findUnique({
+        where: { id: userId },
+      });
+
+      if (!user) {
+        throw new AppError(
+          "PROFILE_NOT_FOUND",
+          "Freelancer profile not found.",
+          HTTP_STATUS.NOT_FOUND,
+        );
+      }
+
+      // Auto-provision default freelancer profile for existing user
+      await prisma.freelancerProfile.upsert({
+        where: { userId },
+        update: {},
+        create: {
+          userId,
+          headline: "Freelance Specialist",
+          bio: "",
+          hourlyRateCents: 5000,
+          currency: "USD",
+          availability: "AVAILABLE",
+          experienceLevel: "Intermediate",
+        },
+      });
+
+      profile = await prisma.freelancerProfile.findUnique({
+        where: { userId },
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              imageUrl: true,
+              country: true,
+              timezone: true,
+              createdAt: true,
+            },
+          },
+          skills: {
+            include: {
+              skill: true,
+            },
+          },
+          portfolioItems: {
+            orderBy: { createdAt: "desc" },
+          },
+        },
+      });
+    }
 
     if (!profile) {
       throw new AppError(
@@ -136,9 +192,10 @@ export class ProfileService {
 
   /**
    * Retrieves a client profile by user ID.
+   * If the profile record doesn't exist yet for an existing user, it auto-provisions a default profile.
    */
   static async getClientProfile(userId: string) {
-    const profile = await prisma.clientProfile.findUnique({
+    let profile = await prisma.clientProfile.findUnique({
       where: { userId },
       include: {
         user: {
@@ -153,6 +210,45 @@ export class ProfileService {
         },
       },
     });
+
+    if (!profile) {
+      // Check if user exists in the database
+      const user = await prisma.user.findUnique({
+        where: { id: userId },
+      });
+
+      if (!user) {
+        throw new AppError("PROFILE_NOT_FOUND", "Client profile not found.", HTTP_STATUS.NOT_FOUND);
+      }
+
+      // Auto-provision default client profile for existing user
+      await prisma.clientProfile.upsert({
+        where: { userId },
+        update: {},
+        create: {
+          userId,
+          companyName: user.name ? `${user.name}'s Organization` : "Enterprise Client",
+          website: "",
+          paymentVerified: false,
+        },
+      });
+
+      profile = await prisma.clientProfile.findUnique({
+        where: { userId },
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              imageUrl: true,
+              country: true,
+              createdAt: true,
+            },
+          },
+        },
+      });
+    }
 
     if (!profile) {
       throw new AppError("PROFILE_NOT_FOUND", "Client profile not found.", HTTP_STATUS.NOT_FOUND);
@@ -173,7 +269,7 @@ export class ProfileService {
         });
       }
 
-      return tx.clientProfile.upsert({
+      const updated = await tx.clientProfile.upsert({
         where: { userId },
         update: {
           companyName: input.companyName?.trim(),
@@ -181,20 +277,22 @@ export class ProfileService {
         },
         create: {
           userId,
-          companyName: input.companyName?.trim() ?? "My Company",
+          companyName: input.companyName?.trim() ?? "My Organization",
           website: input.website?.trim(),
         },
       });
+
+      return updated;
     });
   }
 
   /**
-   * Adds a portfolio item for a freelancer.
+   * Adds a portfolio project for a freelancer.
    */
-  static async addPortfolioItem(userId: string, input: AddPortfolioItemInput) {
+  static async addPortfolioItem(freelancerId: string, input: AddPortfolioItemInput) {
     return prisma.portfolioItem.create({
       data: {
-        freelancerId: userId,
+        freelancerId,
         title: input.title.trim(),
         description: input.description?.trim(),
         url: input.url?.trim(),
@@ -203,21 +301,26 @@ export class ProfileService {
   }
 
   /**
-   * Deletes a portfolio item.
+   * Removes a portfolio project.
    */
-  static async deletePortfolioItem(userId: string, itemId: string) {
+  static async deletePortfolioItem(freelancerId: string, itemId: string) {
     const item = await prisma.portfolioItem.findFirst({
-      where: { id: itemId, freelancerId: userId },
+      where: {
+        id: itemId,
+        freelancerId,
+      },
     });
 
     if (!item) {
-      throw new AppError("ITEM_NOT_FOUND", "Portfolio item not found.", HTTP_STATUS.NOT_FOUND);
+      throw new AppError(
+        "ITEM_NOT_FOUND",
+        "Portfolio item not found or unauthorized.",
+        HTTP_STATUS.NOT_FOUND,
+      );
     }
 
-    await prisma.portfolioItem.delete({
+    return prisma.portfolioItem.delete({
       where: { id: itemId },
     });
-
-    return true;
   }
 }
