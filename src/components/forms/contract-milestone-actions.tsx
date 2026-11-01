@@ -260,7 +260,7 @@ export function ContractMilestoneActions({
             </div>
 
             <div className="space-y-1.5">
-              <label className="block text-xs font-medium text-zinc-700 dark:text-zinc-300">
+              <label className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300">
                 Note for Freelancer (Optional)
               </label>
               <textarea
@@ -381,7 +381,7 @@ export function ContractMilestoneActions({
 
             {/* Deliverable Notes */}
             <div className="space-y-1.5">
-              <label className="block text-xs font-medium text-zinc-700 dark:text-zinc-300">
+              <label className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300">
                 Deliverable Summary & Handover Notes
               </label>
               <textarea

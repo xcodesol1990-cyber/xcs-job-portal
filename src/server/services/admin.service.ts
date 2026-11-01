@@ -340,10 +340,58 @@ export class AdminService {
     });
   }
 
+  async updatePlatformSettingsBatch(
+    adminId: string,
+    settings: Record<string, Prisma.InputJsonValue>,
+  ) {
+    return await prisma.$transaction(async (tx) => {
+      const updated = [];
+      for (const [key, value] of Object.entries(settings)) {
+        const item = await tx.platformSetting.upsert({
+          where: { key },
+          update: { value },
+          create: { key, value },
+        });
+        updated.push(item);
+      }
+
+      await tx.auditLog.create({
+        data: {
+          actorId: adminId,
+          action: "PLATFORM_SETTINGS_BATCH_UPDATE",
+          entityType: "SETTING",
+          metadata: settings,
+        },
+      });
+
+      return updated;
+    });
+  }
+
   async getPlatformSettings() {
     return prisma.platformSetting.findMany({
       orderBy: { key: "asc" },
     });
+  }
+
+  async getSettingsAuditLogs(limit = 10) {
+    const logs = await prisma.auditLog.findMany({
+      where: {
+        entityType: "SETTING",
+      },
+      orderBy: { createdAt: "desc" },
+      take: limit,
+      include: {
+        actor: {
+          select: { id: true, name: true, email: true },
+        },
+      },
+    });
+
+    return logs.map((log) => ({
+      ...log,
+      id: log.id.toString(),
+    }));
   }
 }
 

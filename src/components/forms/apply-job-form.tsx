@@ -67,7 +67,7 @@ export function ApplyJobForm({ jobId, budgetType, screeningQuestions = [] }: App
       <div className="rounded-xl border border-zinc-200 bg-zinc-50 p-4 dark:border-zinc-800 dark:bg-zinc-950/40 space-y-4">
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
-            <label className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
+            <label className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300">
               {budgetType === "HOURLY" ? "Hourly Bid Rate ($/hr)" : "Total Bid Amount ($)"}
             </label>
             <div className="relative mt-1.5">
@@ -85,7 +85,7 @@ export function ApplyJobForm({ jobId, budgetType, screeningQuestions = [] }: App
           </div>
 
           <div>
-            <label className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
+            <label className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300">
               Estimated Delivery Time (Days)
             </label>
             <div className="relative mt-1.5">
@@ -173,7 +173,7 @@ export function ApplyJobForm({ jobId, budgetType, screeningQuestions = [] }: App
       {/* Cover Letter */}
       <div>
         <div className="flex items-center justify-between">
-          <label className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
+          <label className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300">
             Cover Letter & Pitch *
           </label>
           <span

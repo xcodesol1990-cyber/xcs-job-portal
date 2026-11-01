@@ -311,7 +311,7 @@ export function CreateJobForm({ categories, skills }: CreateJobFormProps) {
 
           <div>
             <div className="flex items-center justify-between">
-              <label className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
+              <label className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300">
                 Job Brief Title *
               </label>
               <span
@@ -340,7 +340,7 @@ export function CreateJobForm({ categories, skills }: CreateJobFormProps) {
 
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
             <div>
-              <label className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
+              <label className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300">
                 Primary Industry Sector (Parent) *
               </label>
               <div className="relative mt-1.5">
@@ -370,7 +370,7 @@ export function CreateJobForm({ categories, skills }: CreateJobFormProps) {
             </div>
 
             <div>
-              <label className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
+              <label className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300">
                 Specialized Subcategory *
               </label>
               <div className="relative mt-1.5">
@@ -403,7 +403,7 @@ export function CreateJobForm({ categories, skills }: CreateJobFormProps) {
           </div>
 
           <div>
-            <label className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
+            <label className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300">
               Project Scale & Scope
             </label>
             <div className="mt-1.5 grid grid-cols-1 gap-3 sm:grid-cols-3">
@@ -462,7 +462,7 @@ export function CreateJobForm({ categories, skills }: CreateJobFormProps) {
 
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
             <div>
-              <label className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
+              <label className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300">
                 Experience Desired
               </label>
               <select
@@ -477,7 +477,7 @@ export function CreateJobForm({ categories, skills }: CreateJobFormProps) {
             </div>
 
             <div>
-              <label className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
+              <label className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300">
                 Estimated Duration
               </label>
               <select
@@ -493,7 +493,7 @@ export function CreateJobForm({ categories, skills }: CreateJobFormProps) {
             </div>
 
             <div>
-              <label className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
+              <label className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300">
                 Time Commitment
               </label>
               <select
@@ -557,7 +557,7 @@ export function CreateJobForm({ categories, skills }: CreateJobFormProps) {
 
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
             <div>
-              <label className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
+              <label className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300">
                 {budgetType === "FIXED" ? "Minimum Project Budget ($)" : "Minimum Rate ($/hr)"} *
               </label>
               <div className="relative mt-1.5">
@@ -574,7 +574,7 @@ export function CreateJobForm({ categories, skills }: CreateJobFormProps) {
             </div>
 
             <div>
-              <label className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
+              <label className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300">
                 {budgetType === "FIXED" ? "Maximum Project Budget ($)" : "Maximum Rate ($/hr)"} *
               </label>
               <div className="relative mt-1.5">
@@ -610,7 +610,7 @@ export function CreateJobForm({ categories, skills }: CreateJobFormProps) {
 
           <div>
             <div className="flex items-center justify-between">
-              <label className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
+              <label className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300">
                 Detailed Project Description *
               </label>
               <span
@@ -644,7 +644,7 @@ export function CreateJobForm({ categories, skills }: CreateJobFormProps) {
 
           <div>
             <div className="flex items-center justify-between">
-              <label className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
+              <label className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300">
                 Structured Milestone Deliverables & Acceptance Criteria
               </label>
               <span
@@ -668,7 +668,7 @@ export function CreateJobForm({ categories, skills }: CreateJobFormProps) {
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-1.5">
-                <label className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
+                <label className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300">
                   Applicant Screening Questions (Optional)
                 </label>
                 <HelpCircle className="h-3.5 w-3.5 text-zinc-400" />

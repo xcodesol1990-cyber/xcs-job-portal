@@ -124,6 +124,14 @@ const COMMAND_ITEMS: CommandItem[] = [
     icon: Shield,
     keywords: ["admin", "taxonomy", "categories", "skills", "tags"],
   },
+  {
+    id: "admin-settings",
+    title: "Platform DB Settings & Rules",
+    category: "Admin",
+    href: "/admin/settings",
+    icon: Shield,
+    keywords: ["admin", "settings", "fees", "escrow", "governance", "security", "rules"],
+  },
 ];
 
 export function CommandPalette() {

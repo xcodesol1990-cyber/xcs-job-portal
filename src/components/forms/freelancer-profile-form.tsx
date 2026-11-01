@@ -244,7 +244,7 @@ export function FreelancerProfileForm({ profile, skills }: ProfileFormProps) {
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
           <div>
             <div className="flex items-center justify-between">
-              <label className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
+              <label className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300">
                 Full Legal Name *
               </label>
               <span className="text-[11px] font-mono text-zinc-400">{name.length} / 60</span>
@@ -261,7 +261,7 @@ export function FreelancerProfileForm({ profile, skills }: ProfileFormProps) {
           </div>
 
           <div>
-            <label className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
+            <label className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300">
               Hourly Billing Rate (USD) *
             </label>
             <div className="relative mt-1.5">
@@ -281,7 +281,7 @@ export function FreelancerProfileForm({ profile, skills }: ProfileFormProps) {
 
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
           <div>
-            <label className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
+            <label className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300">
               Experience Level
             </label>
             <select
@@ -297,7 +297,7 @@ export function FreelancerProfileForm({ profile, skills }: ProfileFormProps) {
           </div>
 
           <div>
-            <label className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
+            <label className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300">
               Years in Tech
             </label>
             <input
@@ -311,7 +311,7 @@ export function FreelancerProfileForm({ profile, skills }: ProfileFormProps) {
           </div>
 
           <div>
-            <label className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
+            <label className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300">
               English Proficiency
             </label>
             <select
@@ -327,7 +327,7 @@ export function FreelancerProfileForm({ profile, skills }: ProfileFormProps) {
         </div>
 
         <div>
-          <label className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
+          <label className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300">
             Current Work Availability
           </label>
           <select
@@ -352,7 +352,7 @@ export function FreelancerProfileForm({ profile, skills }: ProfileFormProps) {
 
         <div>
           <div className="flex items-center justify-between">
-            <label className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
+            <label className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300">
               Professional Headline *
             </label>
             <span
@@ -381,7 +381,7 @@ export function FreelancerProfileForm({ profile, skills }: ProfileFormProps) {
 
         <div>
           <div className="flex items-center justify-between">
-            <label className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
+            <label className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300">
               Biography & Technical Expertise *
             </label>
             <span
@@ -511,7 +511,7 @@ export function FreelancerProfileForm({ profile, skills }: ProfileFormProps) {
 
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
           <div>
-            <label className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
+            <label className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300">
               GitHub Profile
             </label>
             <div className="relative mt-1.5">
@@ -527,7 +527,7 @@ export function FreelancerProfileForm({ profile, skills }: ProfileFormProps) {
           </div>
 
           <div>
-            <label className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
+            <label className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300">
               LinkedIn Profile
             </label>
             <div className="relative mt-1.5">
@@ -543,7 +543,7 @@ export function FreelancerProfileForm({ profile, skills }: ProfileFormProps) {
           </div>
 
           <div>
-            <label className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
+            <label className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300">
               Personal Portfolio / Website
             </label>
             <div className="relative mt-1.5">

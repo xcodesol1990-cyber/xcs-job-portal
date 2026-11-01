@@ -226,7 +226,7 @@ export function TaxonomyManager({ categories, skills }: TaxonomyManagerProps) {
               className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-4"
             >
               <div className="sm:col-span-2">
-                <label className="block text-[11px] font-semibold uppercase text-zinc-500">
+                <label className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300">
                   Category Name *
                 </label>
                 <input
@@ -240,7 +240,7 @@ export function TaxonomyManager({ categories, skills }: TaxonomyManagerProps) {
               </div>
 
               <div>
-                <label className="block text-[11px] font-semibold uppercase text-zinc-500">
+                <label className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300">
                   Parent Category
                 </label>
                 <select
@@ -258,7 +258,7 @@ export function TaxonomyManager({ categories, skills }: TaxonomyManagerProps) {
               </div>
 
               <div>
-                <label className="block text-[11px] font-semibold uppercase text-zinc-500">
+                <label className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300">
                   Custom Slug (Optional)
                 </label>
                 <input
@@ -414,7 +414,7 @@ export function TaxonomyManager({ categories, skills }: TaxonomyManagerProps) {
               className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3"
             >
               <div>
-                <label className="block text-[11px] font-semibold uppercase text-zinc-500">
+                <label className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300">
                   Skill Name *
                 </label>
                 <input
@@ -428,7 +428,7 @@ export function TaxonomyManager({ categories, skills }: TaxonomyManagerProps) {
               </div>
 
               <div>
-                <label className="block text-[11px] font-semibold uppercase text-zinc-500">
+                <label className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300">
                   Custom Slug (Optional)
                 </label>
                 <input

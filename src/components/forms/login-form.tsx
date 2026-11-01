@@ -108,7 +108,7 @@ export function LoginForm() {
         <div>
           <label
             htmlFor="email"
-            className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300"
+            className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300"
           >
             Email Address
           </label>
@@ -132,7 +132,7 @@ export function LoginForm() {
           <div className="flex items-center justify-between">
             <label
               htmlFor="password"
-              className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300"
+              className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300"
             >
               Password
             </label>

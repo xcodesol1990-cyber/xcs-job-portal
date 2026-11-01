@@ -50,7 +50,7 @@ export function RegisterForm() {
     <div className="w-full space-y-6">
       {/* Role Selection */}
       <div className="space-y-2">
-        <label className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
+        <label className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300">
           I want to:
         </label>
         <div className="grid grid-cols-2 gap-3">
@@ -109,7 +109,7 @@ export function RegisterForm() {
         <div>
           <label
             htmlFor="name"
-            className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300"
+            className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300"
           >
             Full Name
           </label>
@@ -131,7 +131,7 @@ export function RegisterForm() {
         <div>
           <label
             htmlFor="email"
-            className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300"
+            className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300"
           >
             Email Address
           </label>
@@ -153,7 +153,7 @@ export function RegisterForm() {
         <div>
           <label
             htmlFor="password"
-            className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300"
+            className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300"
           >
             Password (at least 8 characters)
           </label>

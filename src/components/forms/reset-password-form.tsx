@@ -72,7 +72,7 @@ export function ResetPasswordForm() {
         <div>
           <label
             htmlFor="password"
-            className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300"
+            className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300"
           >
             New Password (at least 8 characters)
           </label>
@@ -95,7 +95,7 @@ export function ResetPasswordForm() {
         <div>
           <label
             htmlFor="confirmPassword"
-            className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300"
+            className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300"
           >
             Confirm New Password
           </label>

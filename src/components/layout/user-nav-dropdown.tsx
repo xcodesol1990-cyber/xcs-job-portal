@@ -22,6 +22,7 @@ import {
   LayoutDashboard,
   Building2,
   FolderTree,
+  Sliders,
 } from "lucide-react";
 
 export interface UserNavDropdownProps {
@@ -301,6 +302,15 @@ export function UserNavDropdown({ user }: UserNavDropdownProps) {
                 >
                   <FolderTree className="h-3.5 w-3.5 text-purple-600 dark:text-purple-400" />
                   <span>Categories & Skills Taxonomy</span>
+                </Link>
+
+                <Link
+                  href="/admin/settings"
+                  onClick={() => setIsOpen(false)}
+                  className="flex items-center gap-2.5 rounded-xl px-2.5 py-2 text-xs font-medium text-zinc-700 hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800 dark:hover:text-zinc-100 transition"
+                >
+                  <Sliders className="h-3.5 w-3.5 text-purple-600 dark:text-purple-400" />
+                  <span>Platform Settings & Rules</span>
                 </Link>
 
                 <div className="my-1.5 border-t border-zinc-100 dark:border-zinc-800" />

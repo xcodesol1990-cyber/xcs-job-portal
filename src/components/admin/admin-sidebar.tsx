@@ -16,6 +16,7 @@ import {
   ShieldCheck,
   ChevronRight,
   Tags,
+  Sliders,
   type LucideIcon,
 } from "lucide-react";
 
@@ -106,6 +107,12 @@ export function AdminSidebar({
           href: "/admin/ledger",
           icon: ReceiptText,
           badge: null,
+        },
+        {
+          label: "Platform Settings",
+          href: "/admin/settings",
+          icon: Sliders,
+          badge: "Control",
         },
       ],
     },

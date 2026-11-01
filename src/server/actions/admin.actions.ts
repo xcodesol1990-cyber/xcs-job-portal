@@ -104,11 +104,33 @@ export async function updatePlatformSettingAction(key: string, value: Prisma.Inp
   try {
     await adminService.updatePlatformSetting(session.user.id, key, value);
     revalidatePath("/admin");
+    revalidatePath("/admin/settings");
     return { success: true };
   } catch (err: unknown) {
     return {
       success: false,
       error: err instanceof Error ? err.message : "Failed to update platform setting.",
+    };
+  }
+}
+
+export async function updatePlatformSettingsBatchAction(
+  settings: Record<string, Prisma.InputJsonValue>,
+) {
+  const session = await auth();
+  if (!session?.user?.id || !session.user.roles?.includes("ADMIN")) {
+    return { success: false, error: "Forbidden: Admin access required." };
+  }
+
+  try {
+    await adminService.updatePlatformSettingsBatch(session.user.id, settings);
+    revalidatePath("/admin");
+    revalidatePath("/admin/settings");
+    return { success: true };
+  } catch (err: unknown) {
+    return {
+      success: false,
+      error: err instanceof Error ? err.message : "Failed to update platform settings.",
     };
   }
 }

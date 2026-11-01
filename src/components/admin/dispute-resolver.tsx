@@ -143,7 +143,7 @@ export function DisputeResolver({
               )}
 
               <div>
-                <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300">
+                <label className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300">
                   Ruling Decision
                 </label>
                 <div className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-3">
@@ -211,7 +211,7 @@ export function DisputeResolver({
               )}
 
               <div>
-                <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300">
+                <label className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300">
                   Judicial Reasoning & Official Resolution Note
                 </label>
                 <textarea
