@@ -46,6 +46,9 @@ stateDiagram-v2
    - When a milestone is marked `FUNDED`, funds move from the client into the platform's escrow trust account. The freelancer is notified that funding is verified, making it safe to begin work.
 3. **Double-Entry Journaling**:
    - Each state transition triggers a corresponding transaction in the double-entry ledger (see [07. Double-Entry Financial Ledger](./07-double-entry-ledger.md)).
+4. **Native Git Deliverable Verification**:
+   - Freelancers can bind a GitHub or GitLab Pull Request or Commit URL directly inside the deliverable submission modal.
+   - `GitVerifierService` inspects PR metadata, additions/deletions diff counts, and automated CI check status (`PASSED` / `FAILED`), locking in a verifiable cryptographic work record for client inspection and arbitration evidence lockers.
 
 ---
 
