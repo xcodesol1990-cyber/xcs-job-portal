@@ -1,20 +1,9 @@
 import { auth } from "@/server/lib/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { logoutAction } from "@/server/actions/auth.actions";
-import { PersonaSwitcher } from "@/components/layout/persona-switcher";
 import { CommandPalette } from "@/components/layout/command-palette";
-import {
-  ShieldCheck,
-  LogOut,
-  Briefcase,
-  UserCheck,
-  Shield,
-  MessageSquare,
-  Bell,
-  Search,
-  PlusCircle,
-} from "lucide-react";
+import { UserNavDropdown } from "@/components/layout/user-nav-dropdown";
+import { ShieldCheck, MessageSquare, Bell, Search, PlusCircle } from "lucide-react";
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
@@ -25,9 +14,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   const user = session.user;
   const roles = user.roles ?? [];
-  const isAdmin = roles.includes("ADMIN");
   const isClient = roles.includes("CLIENT");
-  const isFreelancer = roles.includes("FREELANCER");
 
   return (
     <div className="min-h-screen bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100 flex flex-col justify-between">
@@ -54,38 +41,8 @@ export default async function DashboardLayout({ children }: { children: React.Re
               </div>
             </Link>
 
-            {/* Quick links & Persona Switcher */}
+            {/* Core Header Navigation */}
             <nav className="hidden md:flex items-center gap-1.5 pl-4 border-l border-zinc-200 dark:border-zinc-800">
-              {isAdmin && (
-                <Link
-                  href="/admin"
-                  className="flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-semibold text-purple-700 bg-purple-50 hover:bg-purple-100 dark:bg-purple-950/40 dark:text-purple-300 dark:hover:bg-purple-900/50 transition"
-                >
-                  <Shield className="h-3.5 w-3.5" />
-                  <span>Admin</span>
-                </Link>
-              )}
-
-              {isClient && isFreelancer ? (
-                <PersonaSwitcher isClient={isClient} isFreelancer={isFreelancer} />
-              ) : isClient ? (
-                <Link
-                  href="/client"
-                  className="flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-semibold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/40 dark:text-indigo-300 dark:hover:bg-indigo-900/50 transition"
-                >
-                  <Briefcase className="h-3.5 w-3.5" />
-                  <span>Employer Hub</span>
-                </Link>
-              ) : (
-                <Link
-                  href="/freelancer"
-                  className="flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-semibold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/40 dark:text-emerald-300 dark:hover:bg-emerald-900/50 transition"
-                >
-                  <UserCheck className="h-3.5 w-3.5" />
-                  <span>Freelancer Hub</span>
-                </Link>
-              )}
-
               <Link
                 href="/jobs"
                 className="flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-medium text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100/80 dark:text-zinc-400 dark:hover:text-zinc-100 dark:hover:bg-zinc-800 transition"
@@ -130,30 +87,9 @@ export default async function DashboardLayout({ children }: { children: React.Re
               </Link>
             )}
 
-            <div className="flex items-center gap-2.5 pl-2 border-l border-zinc-200 dark:border-zinc-800">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 text-xs font-bold text-white shadow-xs ring-2 ring-white dark:ring-zinc-900">
-                {user.name ? user.name.slice(0, 2).toUpperCase() : "WN"}
-              </div>
-              <div className="hidden sm:block text-left">
-                <div className="text-xs font-bold text-zinc-900 dark:text-zinc-100 leading-none">
-                  {user.name}
-                </div>
-                <div className="flex items-center gap-1 text-[10px] text-zinc-500 dark:text-zinc-400 mt-1">
-                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                  <span>{isClient ? "Employer" : "Specialist"}</span>
-                </div>
-              </div>
+            <div className="pl-2 border-l border-zinc-200 dark:border-zinc-800">
+              <UserNavDropdown user={user} />
             </div>
-
-            <form action={logoutAction}>
-              <button
-                type="submit"
-                title="Sign out of WorkNest"
-                className="flex items-center justify-center rounded-xl border border-zinc-200 bg-white p-2 text-xs font-medium text-zinc-600 shadow-2xs hover:bg-zinc-100 hover:text-zinc-900 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100 transition"
-              >
-                <LogOut className="h-3.5 w-3.5" />
-              </button>
-            </form>
           </div>
         </div>
       </header>

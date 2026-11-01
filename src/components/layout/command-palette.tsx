@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
 import {
   Search,
@@ -42,6 +43,22 @@ const COMMAND_ITEMS: CommandItem[] = [
     href: "/freelancer",
     icon: UserCheck,
     keywords: ["freelancer", "proposals", "earnings", "contractor"],
+  },
+  {
+    id: "nav-client-profile",
+    title: "Company Profile & Settings",
+    category: "Navigation",
+    href: "/client/profile",
+    icon: Briefcase,
+    keywords: ["company", "organization", "profile", "settings", "client"],
+  },
+  {
+    id: "nav-freelancer-profile",
+    title: "Freelancer Profile & Portfolio",
+    category: "Navigation",
+    href: "/freelancer/profile",
+    icon: UserCheck,
+    keywords: ["freelancer", "skills", "rate", "portfolio", "bio"],
   },
   {
     id: "action-post-job",
@@ -99,14 +116,27 @@ const COMMAND_ITEMS: CommandItem[] = [
     icon: Shield,
     keywords: ["admin", "disputes", "ledger", "audit", "compliance"],
   },
+  {
+    id: "admin-taxonomy",
+    title: "Categories & Skills Taxonomy",
+    category: "Admin",
+    href: "/admin/categories",
+    icon: Shield,
+    keywords: ["admin", "taxonomy", "categories", "skills", "tags"],
+  },
 ];
 
 export function CommandPalette() {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const [search, setSearch] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Global shortcut listener (Cmd+K or Ctrl+K)
   useEffect(() => {
@@ -127,8 +157,14 @@ export function CommandPalette() {
     if (isOpen) {
       setSearch("");
       setSelectedIndex(0);
+      document.body.style.overflow = "hidden";
       setTimeout(() => inputRef.current?.focus(), 50);
+    } else {
+      document.body.style.overflow = "";
     }
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, [isOpen]);
 
   const query = search.toLowerCase().trim();
@@ -176,105 +212,118 @@ export function CommandPalette() {
         </kbd>
       </button>
 
-      {/* Modal Overlay */}
-      {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/60 p-4 pt-20 backdrop-blur-md animate-in fade-in duration-150">
-          <div className="flex w-full max-w-lg flex-col overflow-hidden rounded-3xl border border-zinc-200 bg-white shadow-2xl dark:border-zinc-800 dark:bg-zinc-950">
-            {/* Search Input Bar */}
-            <div className="flex items-center border-b border-zinc-100 px-4 py-3.5 dark:border-zinc-800">
-              <Search className="h-4 w-4 text-zinc-400 mr-3" />
-              <input
-                ref={inputRef}
-                type="text"
-                value={search}
-                onChange={(e) => {
-                  setSearch(e.target.value);
-                  setSelectedIndex(0);
-                }}
-                onKeyDown={handleInputKeyDown}
-                placeholder="Type a command or jump to page..."
-                className="w-full bg-transparent text-sm font-medium text-zinc-900 placeholder-zinc-400 focus:outline-none dark:text-zinc-100"
-              />
-              <button
-                type="button"
-                onClick={() => setIsOpen(false)}
-                className="rounded-lg p-1 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600 dark:hover:bg-zinc-800 dark:hover:text-zinc-200 text-xs"
-              >
-                <X className="h-4 w-4" />
-              </button>
-            </div>
+      {/* Modal Overlay rendered via Portal to cover full viewport */}
+      {isOpen &&
+        mounted &&
+        createPortal(
+          <div
+            className="fixed inset-0 z-[100] flex items-start justify-center bg-black/60 p-4 pt-16 sm:pt-24 backdrop-blur-sm animate-in fade-in duration-150"
+            onClick={() => setIsOpen(false)}
+            aria-modal="true"
+            role="dialog"
+          >
+            <div
+              className="flex w-full max-w-lg flex-col overflow-hidden rounded-2xl sm:rounded-3xl border border-zinc-200 bg-white shadow-2xl dark:border-zinc-800 dark:bg-zinc-950 animate-in zoom-in-95 duration-150"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Search Input Bar */}
+              <div className="flex items-center border-b border-zinc-100 px-4 py-3.5 dark:border-zinc-800">
+                <Search className="h-4 w-4 text-zinc-400 mr-3" />
+                <input
+                  ref={inputRef}
+                  type="text"
+                  value={search}
+                  onChange={(e) => {
+                    setSearch(e.target.value);
+                    setSelectedIndex(0);
+                  }}
+                  onKeyDown={handleInputKeyDown}
+                  placeholder="Type a command or jump to page..."
+                  className="w-full bg-transparent text-sm font-medium text-zinc-900 placeholder-zinc-400 focus:outline-none dark:text-zinc-100"
+                />
+                <button
+                  type="button"
+                  onClick={() => setIsOpen(false)}
+                  className="rounded-lg p-1 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600 dark:hover:bg-zinc-800 dark:hover:text-zinc-200 text-xs"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
 
-            {/* List */}
-            <div className="max-h-80 overflow-y-auto p-2">
-              {filteredItems.map((item, idx) => {
-                const isSelected = idx === selectedIndex;
-                const Icon = item.icon;
-                return (
-                  <button
-                    key={item.id}
-                    type="button"
-                    onClick={() => handleSelect(item.href)}
-                    onMouseEnter={() => setSelectedIndex(idx)}
-                    className={`flex w-full items-center justify-between rounded-xl px-3.5 py-2.5 text-xs font-semibold transition ${
-                      isSelected
-                        ? "bg-indigo-50 text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-300"
-                        : "text-zinc-700 hover:bg-zinc-50 dark:text-zinc-300 dark:hover:bg-zinc-900"
-                    }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <div
-                        className={`flex h-7 w-7 items-center justify-center rounded-lg ${
-                          isSelected
-                            ? "bg-indigo-600 text-white"
-                            : "bg-zinc-100 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400"
-                        }`}
-                      >
-                        <Icon className="h-3.5 w-3.5" />
-                      </div>
-                      <div className="text-left">
-                        <div className="font-bold text-zinc-900 dark:text-zinc-100">
-                          {item.title}
+              {/* List */}
+              <div className="max-h-80 overflow-y-auto p-2 pr-3 space-y-1">
+                {filteredItems.map((item, idx) => {
+                  const isSelected = idx === selectedIndex;
+                  const Icon = item.icon;
+                  return (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => handleSelect(item.href)}
+                      onMouseEnter={() => setSelectedIndex(idx)}
+                      className={`flex w-full items-center justify-between rounded-xl px-3.5 py-2.5 text-xs font-semibold transition ${
+                        isSelected
+                          ? "bg-indigo-50 text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-300"
+                          : "text-zinc-700 hover:bg-zinc-50 dark:text-zinc-300 dark:hover:bg-zinc-900"
+                      }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <div
+                          className={`flex h-7 w-7 items-center justify-center rounded-lg ${
+                            isSelected
+                              ? "bg-indigo-600 text-white"
+                              : "bg-zinc-100 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400"
+                          }`}
+                        >
+                          <Icon className="h-3.5 w-3.5" />
                         </div>
-                        <div className="text-[10px] text-zinc-400 font-normal">{item.category}</div>
+                        <div className="text-left">
+                          <div className="font-bold text-zinc-900 dark:text-zinc-100">
+                            {item.title}
+                          </div>
+                          <div className="text-[10px] text-zinc-400 font-normal">
+                            {item.category}
+                          </div>
+                        </div>
                       </div>
-                    </div>
 
-                    <ArrowRight
-                      className={`h-3.5 w-3.5 ${isSelected ? "opacity-100" : "opacity-0"} transition`}
-                    />
-                  </button>
-                );
-              })}
+                      <ArrowRight
+                        className={`h-3.5 w-3.5 ${isSelected ? "opacity-100" : "opacity-0"} transition`}
+                      />
+                    </button>
+                  );
+                })}
 
-              {filteredItems.length === 0 && (
-                <div className="p-8 text-center text-xs text-zinc-400">
-                  No destinations found matching &quot;{search}&quot;.
-                </div>
-              )}
+                {filteredItems.length === 0 && (
+                  <div className="p-8 text-center text-xs text-zinc-400">
+                    No destinations found matching &quot;{search}&quot;.
+                  </div>
+                )}
+              </div>
+
+              {/* Footer */}
+              <div className="border-t border-zinc-100 px-4 py-2.5 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/60 flex items-center justify-between text-[11px] text-zinc-400">
+                <span className="flex items-center gap-1">
+                  Use{" "}
+                  <kbd className="font-mono bg-zinc-200 dark:bg-zinc-800 px-1 rounded text-[10px]">
+                    ↑
+                  </kbd>{" "}
+                  <kbd className="font-mono bg-zinc-200 dark:bg-zinc-800 px-1 rounded text-[10px]">
+                    ↓
+                  </kbd>{" "}
+                  to navigate
+                </span>
+                <span className="flex items-center gap-1">
+                  <kbd className="font-mono bg-zinc-200 dark:bg-zinc-800 px-1 rounded text-[10px]">
+                    Enter
+                  </kbd>{" "}
+                  to select
+                </span>
+              </div>
             </div>
-
-            {/* Footer */}
-            <div className="border-t border-zinc-100 px-4 py-2.5 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/60 flex items-center justify-between text-[11px] text-zinc-400">
-              <span className="flex items-center gap-1">
-                Use{" "}
-                <kbd className="font-mono bg-zinc-200 dark:bg-zinc-800 px-1 rounded text-[10px]">
-                  ↑
-                </kbd>{" "}
-                <kbd className="font-mono bg-zinc-200 dark:bg-zinc-800 px-1 rounded text-[10px]">
-                  ↓
-                </kbd>{" "}
-                to navigate
-              </span>
-              <span className="flex items-center gap-1">
-                <kbd className="font-mono bg-zinc-200 dark:bg-zinc-800 px-1 rounded text-[10px]">
-                  Enter
-                </kbd>{" "}
-                to select
-              </span>
-            </div>
-          </div>
-        </div>
-      )}
+          </div>,
+          document.body,
+        )}
     </>
   );
 }

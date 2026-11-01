@@ -16,11 +16,7 @@ export default async function AdminCategoriesPage() {
     <div className="space-y-8">
       {/* Page Header */}
       <div>
-        <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
-          <FolderTree className="h-4 w-4" />
-          <span>Marketplace Taxonomies</span>
-        </div>
-        <h1 className="mt-1 text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
+        <h1 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
           Categories & Skills Management
         </h1>
         <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">

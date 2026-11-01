@@ -3,14 +3,23 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { submitProposalAction } from "@/server/actions/proposal.actions";
-import { Loader2, DollarSign, Send, Clock, ShieldCheck, TrendingUp } from "lucide-react";
+import {
+  Loader2,
+  DollarSign,
+  Send,
+  Clock,
+  ShieldCheck,
+  TrendingUp,
+  HelpCircle,
+} from "lucide-react";
 
 interface ApplyJobFormProps {
   jobId: string;
   budgetType: "FIXED" | "HOURLY";
+  screeningQuestions?: string[];
 }
 
-export function ApplyJobForm({ jobId, budgetType }: ApplyJobFormProps) {
+export function ApplyJobForm({ jobId, budgetType, screeningQuestions = [] }: ApplyJobFormProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
@@ -132,22 +141,67 @@ export function ApplyJobForm({ jobId, budgetType }: ApplyJobFormProps) {
         </div>
       </div>
 
+      {/* Screening Questions from Client */}
+      {screeningQuestions.length > 0 && (
+        <div className="rounded-xl border border-indigo-200/70 bg-indigo-50/40 p-4 dark:border-indigo-900/50 dark:bg-indigo-950/20">
+          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-indigo-700 dark:text-indigo-400">
+            <HelpCircle className="h-4 w-4" />
+            <span>Client Screening Questions ({screeningQuestions.length})</span>
+          </div>
+          <p className="mt-1 text-xs text-zinc-600 dark:text-zinc-400">
+            Please make sure to explicitly address each of the client&apos;s questions below within
+            your proposal pitch:
+          </p>
+          <div className="mt-3 space-y-2.5">
+            {screeningQuestions.map((question, i) => (
+              <div
+                key={i}
+                className="flex items-start gap-2.5 rounded-lg border border-indigo-100 bg-white p-3 text-xs shadow-2xs dark:border-indigo-900/40 dark:bg-zinc-900"
+              >
+                <span className="flex h-5 w-6 shrink-0 items-center justify-center rounded-md bg-indigo-100 font-mono text-[10px] font-bold text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300">
+                  Q{i + 1}
+                </span>
+                <p className="font-medium text-zinc-800 dark:text-zinc-200 leading-relaxed">
+                  {question}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Cover Letter */}
       <div>
-        <label className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
-          Cover Letter & Pitch
-        </label>
+        <div className="flex items-center justify-between">
+          <label className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
+            Cover Letter & Pitch *
+          </label>
+          <span
+            className={`text-[11px] font-mono ${
+              coverLetter.trim().length >= 20 && coverLetter.trim().length <= 5000
+                ? "text-zinc-400"
+                : coverLetter.trim().length > 5000
+                  ? "text-red-500 font-bold"
+                  : "text-amber-500"
+            }`}
+          >
+            {coverLetter.length.toLocaleString()} / 5,000 chars{" "}
+            {coverLetter.trim().length < 20 && "(min 20)"}
+          </span>
+        </div>
         <textarea
-          rows={6}
+          rows={7}
           required
           minLength={20}
+          maxLength={5000}
           value={coverLetter}
           onChange={(e) => setCoverLetter(e.target.value)}
-          placeholder="Explain why you are the best fit for this project, how you will approach the deliverables, and mention relevant past experience..."
-          className="mt-1.5 w-full rounded-lg border border-zinc-300 bg-white px-3.5 py-2.5 text-sm text-zinc-900 focus:border-indigo-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100"
+          placeholder="Explain why you are the best fit for this project, how you will approach the deliverables, and mention relevant past experience. Plaintext with line breaks, markdown, links, and emojis are supported..."
+          className="mt-1.5 w-full rounded-lg border border-zinc-300 bg-white px-3.5 py-2.5 text-sm text-zinc-900 focus:border-indigo-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100 whitespace-pre-wrap leading-relaxed"
         />
         <p className="mt-1 text-xs text-zinc-500">
-          Provide actionable technical context to stand out.
+          Plaintext format supported: multi-line paragraphs, numbered lists, markdown, and links are
+          preserved.
         </p>
       </div>
 

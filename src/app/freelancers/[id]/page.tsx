@@ -173,7 +173,7 @@ export default async function PublicFreelancerPage({ params }: PublicFreelancerP
               <h2 className="text-xs font-semibold uppercase tracking-wider text-zinc-500">
                 About & Expertise
               </h2>
-              <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">
+              <p className="mt-2 whitespace-pre-wrap break-words text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">
                 {profile.bio}
               </p>
             </div>

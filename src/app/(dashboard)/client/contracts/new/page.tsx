@@ -3,7 +3,7 @@ import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import { prisma } from "@/server/db/prisma";
 import { CreateContractForm } from "@/components/forms/create-contract-form";
-import { Briefcase, ArrowLeft } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 
 interface NewContractPageProps {
   searchParams: Promise<{ proposalId?: string }>;
@@ -44,11 +44,7 @@ export default async function NewContractPage({ searchParams }: NewContractPageP
       </Link>
 
       <div>
-        <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-blue-600 dark:text-blue-400">
-          <Briefcase className="h-4 w-4" />
-          <span>Hire Candidate & Milestone Setup</span>
-        </div>
-        <h1 className="mt-1 text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
+        <h1 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
           Create Milestone Contract for {proposal.freelancer.name}
         </h1>
         <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">

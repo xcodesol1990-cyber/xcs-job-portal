@@ -139,18 +139,60 @@ export function FreelancerProfileForm({ profile, skills }: ProfileFormProps) {
     setError(null);
     setSuccess(false);
 
+    const trimmedName = name.trim();
+    const trimmedHeadline = headline.trim();
+    const trimmedBio = bio.trim();
+
+    if (trimmedName.length < 2) {
+      setError("Full legal name must be at least 2 characters.");
+      return;
+    }
+    if (trimmedName.length > 60) {
+      setError("Full legal name cannot exceed 60 characters.");
+      return;
+    }
+
+    if (trimmedHeadline.length < 5) {
+      setError("Professional headline must be at least 5 characters.");
+      return;
+    }
+    if (trimmedHeadline.length > 120) {
+      setError("Professional headline cannot exceed 120 characters.");
+      return;
+    }
+
+    if (trimmedBio.length < 30) {
+      setError(`Biography must be at least 30 characters (currently ${trimmedBio.length}).`);
+      return;
+    }
+    if (trimmedBio.length > 5000) {
+      setError(`Biography cannot exceed 5,000 characters (currently ${trimmedBio.length}).`);
+      return;
+    }
+
+    const rateNum = Number(hourlyRate);
+    if (isNaN(rateNum) || rateNum < 5 || rateNum > 1000) {
+      setError("Hourly rate must be between $5 and $1,000 USD.");
+      return;
+    }
+
+    if (selectedSkills.length === 0) {
+      setError("Please select at least 1 technology skill.");
+      return;
+    }
+
     const formData = new FormData();
-    formData.append("name", name);
-    formData.append("headline", headline);
-    formData.append("bio", bio);
+    formData.append("name", trimmedName);
+    formData.append("headline", trimmedHeadline);
+    formData.append("bio", trimmedBio);
     formData.append("hourlyRate", hourlyRate);
     formData.append("experienceLevel", experienceLevel);
     formData.append("availability", availability);
     formData.append("yearsOfExperience", yearsOfExperience);
     formData.append("englishProficiency", englishProficiency);
-    formData.append("githubUrl", githubUrl);
-    formData.append("linkedinUrl", linkedinUrl);
-    formData.append("websiteUrl", websiteUrl);
+    formData.append("githubUrl", githubUrl.trim());
+    formData.append("linkedinUrl", linkedinUrl.trim());
+    formData.append("websiteUrl", websiteUrl.trim());
 
     // Append custom tags
     for (const t of tags) {
@@ -201,12 +243,17 @@ export function FreelancerProfileForm({ profile, skills }: ProfileFormProps) {
 
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
           <div>
-            <label className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
-              Full Legal Name *
-            </label>
+            <div className="flex items-center justify-between">
+              <label className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
+                Full Legal Name *
+              </label>
+              <span className="text-[11px] font-mono text-zinc-400">{name.length} / 60</span>
+            </div>
             <input
               type="text"
               required
+              minLength={2}
+              maxLength={60}
               value={name}
               onChange={(e) => setName(e.target.value)}
               className="mt-1.5 w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2.5 text-xs text-zinc-900 focus:border-indigo-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100"
@@ -304,12 +351,27 @@ export function FreelancerProfileForm({ profile, skills }: ProfileFormProps) {
         </div>
 
         <div>
-          <label className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
-            Professional Headline *
-          </label>
+          <div className="flex items-center justify-between">
+            <label className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
+              Professional Headline *
+            </label>
+            <span
+              className={`text-[11px] font-mono ${
+                headline.trim().length >= 5 && headline.trim().length <= 120
+                  ? "text-zinc-400"
+                  : headline.trim().length > 120
+                    ? "text-red-500 font-bold"
+                    : "text-amber-500"
+              }`}
+            >
+              {headline.length} / 120 chars {headline.trim().length < 5 && "(min 5)"}
+            </span>
+          </div>
           <input
             type="text"
             required
+            minLength={5}
+            maxLength={120}
             value={headline}
             onChange={(e) => setHeadline(e.target.value)}
             placeholder="e.g. Senior Full-Stack Engineer | Next.js 15, TypeScript & Distributed Escrow Systems"
@@ -322,16 +384,32 @@ export function FreelancerProfileForm({ profile, skills }: ProfileFormProps) {
             <label className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
               Biography & Technical Expertise *
             </label>
-            <span className="text-[11px] text-zinc-400">{bio.length} characters</span>
+            <span
+              className={`text-[11px] font-mono ${
+                bio.trim().length >= 30 && bio.trim().length <= 5000
+                  ? "text-zinc-400"
+                  : bio.trim().length > 5000
+                    ? "text-red-500 font-bold"
+                    : "text-amber-500"
+              }`}
+            >
+              {bio.length.toLocaleString()} / 5,000 chars {bio.trim().length < 30 && "(min 30)"}
+            </span>
           </div>
           <textarea
-            rows={5}
+            rows={8}
             required
+            minLength={30}
+            maxLength={5000}
             value={bio}
             onChange={(e) => setBio(e.target.value)}
-            placeholder="Describe your architecture experience, past production deliverables, technical strengths, and preferred engagement models..."
-            className="mt-1.5 w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2.5 text-xs text-zinc-900 focus:border-indigo-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 font-sans leading-relaxed"
+            placeholder="Describe your architecture experience, past production deliverables, technical strengths, and preferred engagement models. Plaintext format with line breaks, markdown, bullet lists, emojis, and URLs are fully supported..."
+            className="mt-1.5 w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2.5 text-xs text-zinc-900 focus:border-indigo-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 font-sans leading-relaxed whitespace-pre-wrap"
           />
+          <p className="mt-1 text-[11px] text-zinc-400">
+            Plaintext format supported: multi-line paragraphs, numbered lists, markdown, links, and
+            emojis are preserved.
+          </p>
         </div>
       </div>
 

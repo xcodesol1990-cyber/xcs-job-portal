@@ -4,7 +4,7 @@ import { ProfileService } from "@/server/services/profile.service";
 import { OrganizationService } from "@/server/services/organization.service";
 import { ClientProfileForm } from "@/components/forms/client-profile-form";
 import { OrganizationTeamCard } from "@/components/forms/organization-team-card";
-import { Briefcase, Building, ShieldCheck, Users } from "lucide-react";
+import { Building, ShieldCheck, Users } from "lucide-react";
 
 export default async function ClientProfilePage() {
   const session = await auth();
@@ -20,11 +20,7 @@ export default async function ClientProfilePage() {
   return (
     <div className="mx-auto max-w-4xl space-y-10">
       <div>
-        <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-blue-600 dark:text-blue-400">
-          <Briefcase className="h-4 w-4" />
-          <span>Employer & Company Settings</span>
-        </div>
-        <h1 className="mt-1 text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
+        <h1 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
           Company Profile & Team Workspace
         </h1>
         <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">

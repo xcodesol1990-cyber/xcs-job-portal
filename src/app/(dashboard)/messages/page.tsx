@@ -2,7 +2,7 @@ import { auth } from "@/server/lib/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { MessagingService } from "@/server/services/messaging.service";
-import { MessageSquare, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 export default async function MessagesHubPage() {
   const session = await auth();
@@ -15,11 +15,7 @@ export default async function MessagesHubPage() {
   return (
     <div className="space-y-8">
       <div>
-        <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
-          <MessageSquare className="h-4 w-4" />
-          <span>Real-time Communication</span>
-        </div>
-        <h1 className="mt-1 text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
+        <h1 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
           Direct Messages
         </h1>
         <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">

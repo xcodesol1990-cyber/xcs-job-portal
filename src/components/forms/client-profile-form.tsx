@@ -65,14 +65,41 @@ export function ClientProfileForm({ profile }: ClientProfileFormProps) {
     setError(null);
     setSuccess(false);
 
+    const trimmedName = name.trim();
+    const trimmedCompany = companyName.trim();
+    const trimmedAbout = about.trim();
+
+    if (trimmedName.length < 2) {
+      setError("Primary contact name must be at least 2 characters.");
+      return;
+    }
+    if (trimmedName.length > 60) {
+      setError("Primary contact name cannot exceed 60 characters.");
+      return;
+    }
+
+    if (trimmedCompany.length < 2) {
+      setError("Company or organization name must be at least 2 characters.");
+      return;
+    }
+    if (trimmedCompany.length > 100) {
+      setError("Company name cannot exceed 100 characters.");
+      return;
+    }
+
+    if (trimmedAbout.length > 4000) {
+      setError("About overview cannot exceed 4,000 characters.");
+      return;
+    }
+
     const formData = new FormData();
-    formData.append("name", name);
-    formData.append("companyName", companyName);
-    formData.append("website", website);
+    formData.append("name", trimmedName);
+    formData.append("companyName", trimmedCompany);
+    formData.append("website", website.trim());
     formData.append("companySize", companySize);
     formData.append("industry", industry);
-    formData.append("about", about);
-    formData.append("linkedinUrl", linkedinUrl);
+    formData.append("about", trimmedAbout);
+    formData.append("linkedinUrl", linkedinUrl.trim());
 
     startTransition(async () => {
       const res = await updateClientProfileAction(null, formData);
@@ -103,14 +130,19 @@ export function ClientProfileForm({ profile }: ClientProfileFormProps) {
       {/* Row 1: Primary Contact & Company Name */}
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
         <div>
-          <label className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
-            Primary Contact Name *
-          </label>
+          <div className="flex items-center justify-between">
+            <label className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
+              Primary Contact Name *
+            </label>
+            <span className="text-[11px] font-mono text-zinc-400">{name.length} / 60</span>
+          </div>
           <div className="relative mt-1.5">
             <User className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
             <input
               type="text"
               required
+              minLength={2}
+              maxLength={60}
               value={name}
               onChange={(e) => setName(e.target.value)}
               className="w-full rounded-xl border border-zinc-300 bg-white py-2.5 pl-9 pr-3.5 text-xs text-zinc-900 focus:border-indigo-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100"
@@ -119,14 +151,19 @@ export function ClientProfileForm({ profile }: ClientProfileFormProps) {
         </div>
 
         <div>
-          <label className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
-            Company / Organization Legal Name *
-          </label>
+          <div className="flex items-center justify-between">
+            <label className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
+              Company / Organization Legal Name *
+            </label>
+            <span className="text-[11px] font-mono text-zinc-400">{companyName.length} / 100</span>
+          </div>
           <div className="relative mt-1.5">
             <Building2 className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
             <input
               type="text"
               required
+              minLength={2}
+              maxLength={100}
               value={companyName}
               onChange={(e) => setCompanyName(e.target.value)}
               placeholder="e.g. Acme Technologies Inc."
@@ -216,16 +253,30 @@ export function ClientProfileForm({ profile }: ClientProfileFormProps) {
 
       {/* Row 4: About Company Overview */}
       <div>
-        <label className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
-          About Organization & Technical Mission
-        </label>
+        <div className="flex items-center justify-between">
+          <label className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
+            About Organization & Technical Mission
+          </label>
+          <span
+            className={`text-[11px] font-mono ${
+              about.length <= 4000 ? "text-zinc-400" : "text-red-500 font-bold"
+            }`}
+          >
+            {about.length.toLocaleString()} / 4,000 chars
+          </span>
+        </div>
         <textarea
-          rows={4}
+          rows={5}
+          maxLength={4000}
           value={about}
           onChange={(e) => setAbout(e.target.value)}
-          placeholder="Describe your organization, products, tech stack culture, and what kind of elite talent you collaborate with..."
-          className="mt-1.5 w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2.5 text-xs text-zinc-900 focus:border-indigo-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 font-sans leading-relaxed"
+          placeholder="Describe your organization, products, tech stack culture, and what kind of elite talent you collaborate with. Plaintext format with line breaks, markdown, and links are supported..."
+          className="mt-1.5 w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2.5 text-xs text-zinc-900 focus:border-indigo-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 font-sans leading-relaxed whitespace-pre-wrap"
         />
+        <p className="mt-1 text-[11px] text-zinc-400">
+          Plaintext format supported: multi-line paragraphs, numbered lists, markdown, and links are
+          preserved.
+        </p>
       </div>
 
       <div className="flex justify-end pt-4">

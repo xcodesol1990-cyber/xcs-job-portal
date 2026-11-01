@@ -19,6 +19,8 @@ import {
   ListChecks,
   HelpCircle,
   Briefcase,
+  Plus,
+  Trash2,
 } from "lucide-react";
 
 interface Category {
@@ -65,7 +67,21 @@ export function CreateJobForm({ categories, skills }: CreateJobFormProps) {
   const [budgetMax, setBudgetMax] = useState("2500");
   const [description, setDescription] = useState("");
   const [deliverables, setDeliverables] = useState("");
-  const [screeningQuestion, setScreeningQuestion] = useState("");
+  const [screeningQuestions, setScreeningQuestions] = useState<string[]>([]);
+  const [newQuestionInput, setNewQuestionInput] = useState("");
+
+  const handleAddQuestion = (textToAdd?: string) => {
+    const text = (textToAdd || newQuestionInput).trim();
+    if (!text) return;
+    if (!screeningQuestions.includes(text)) {
+      setScreeningQuestions((prev) => [...prev, text]);
+    }
+    setNewQuestionInput("");
+  };
+
+  const handleRemoveQuestion = (index: number) => {
+    setScreeningQuestions((prev) => prev.filter((_, i) => i !== index));
+  };
 
   // Skills Filter & Selection
   const [selectedSkills, setSelectedSkills] = useState<number[]>([]);
@@ -139,9 +155,47 @@ export function CreateJobForm({ categories, skills }: CreateJobFormProps) {
     e.preventDefault();
     setError(null);
 
+    const trimmedTitle = title.trim();
+    const trimmedDesc = description.trim();
+
+    if (trimmedTitle.length < 10) {
+      setError(`Job title must be at least 10 characters (currently ${trimmedTitle.length}).`);
+      return;
+    }
+    if (trimmedTitle.length > 120) {
+      setError(`Job title cannot exceed 120 characters (currently ${trimmedTitle.length}).`);
+      return;
+    }
+
+    if (trimmedDesc.length < 30) {
+      setError(`Job description must be at least 30 characters (currently ${trimmedDesc.length}).`);
+      return;
+    }
+    if (trimmedDesc.length > 10000) {
+      setError(
+        `Job description cannot exceed 10,000 characters (currently ${trimmedDesc.length}).`,
+      );
+      return;
+    }
+
+    if (deliverables.trim().length > 5000) {
+      setError("Milestone deliverables cannot exceed 5,000 characters.");
+      return;
+    }
+
+    if (Number(budgetMax) < Number(budgetMin)) {
+      setError("Maximum budget must be greater than or equal to minimum budget.");
+      return;
+    }
+
+    if (selectedSkills.length === 0) {
+      setError("Please select at least 1 required technology skill.");
+      return;
+    }
+
     const formData = new FormData();
-    formData.append("title", title);
-    formData.append("description", description);
+    formData.append("title", trimmedTitle);
+    formData.append("description", trimmedDesc);
     formData.append("categoryId", categoryId || parentCategoryId);
     formData.append("scope", scope);
     formData.append("timeCommitment", timeCommitment);
@@ -150,9 +204,9 @@ export function CreateJobForm({ categories, skills }: CreateJobFormProps) {
     formData.append("budgetType", budgetType);
     formData.append("budgetMin", budgetMin);
     formData.append("budgetMax", budgetMax);
-    formData.append("deliverables", deliverables);
-    if (screeningQuestion.trim()) {
-      formData.append("screeningQuestions", screeningQuestion.trim());
+    formData.append("deliverables", deliverables.trim());
+    for (const q of screeningQuestions) {
+      formData.append("screeningQuestions", q);
     }
 
     for (const id of selectedSkills) {
@@ -256,12 +310,27 @@ export function CreateJobForm({ categories, skills }: CreateJobFormProps) {
           </div>
 
           <div>
-            <label className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
-              Job Brief Title *
-            </label>
+            <div className="flex items-center justify-between">
+              <label className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
+                Job Brief Title *
+              </label>
+              <span
+                className={`text-[11px] font-mono ${
+                  title.trim().length >= 10 && title.trim().length <= 120
+                    ? "text-zinc-400"
+                    : title.trim().length > 120
+                      ? "text-red-500 font-bold"
+                      : "text-amber-500"
+                }`}
+              >
+                {title.length} / 120 chars {title.trim().length < 10 && "(min 10)"}
+              </span>
+            </div>
             <input
               type="text"
               required
+              minLength={10}
+              maxLength={120}
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g. Build High-Throughput Escrow Protocol with Next.js 15 & Stripe Connect"
@@ -540,46 +609,153 @@ export function CreateJobForm({ categories, skills }: CreateJobFormProps) {
           </div>
 
           <div>
-            <label className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
-              Detailed Project Description *
-            </label>
+            <div className="flex items-center justify-between">
+              <label className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
+                Detailed Project Description *
+              </label>
+              <span
+                className={`text-[11px] font-mono ${
+                  description.trim().length >= 30 && description.trim().length <= 10000
+                    ? "text-zinc-400"
+                    : description.trim().length > 10000
+                      ? "text-red-500 font-bold"
+                      : "text-amber-500"
+                }`}
+              >
+                {description.length.toLocaleString()} / 10,000 chars{" "}
+                {description.trim().length < 30 && "(min 30)"}
+              </span>
+            </div>
             <textarea
-              rows={6}
+              rows={8}
               required
+              minLength={30}
+              maxLength={10000}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Outline your application goals, target users, technical requirements, integrations (e.g. Stripe, AWS), and architecture constraints..."
-              className="mt-1.5 w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2.5 text-xs text-zinc-900 focus:border-indigo-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 font-sans leading-relaxed"
+              placeholder="Outline your application goals, target users, technical requirements, integrations (e.g. Stripe, AWS), and architecture constraints. Plaintext format with line breaks, markdown, bullet lists, emojis, and URLs are fully supported..."
+              className="mt-1.5 w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2.5 text-xs text-zinc-900 focus:border-indigo-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 font-sans leading-relaxed whitespace-pre-wrap"
             />
+            <p className="mt-1 text-[11px] text-zinc-400">
+              Plaintext format supported: multi-line paragraphs, numbered lists, markdown, links,
+              and emojis are preserved.
+            </p>
           </div>
 
           <div>
-            <label className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
-              Structured Milestone Deliverables & Acceptance Criteria
-            </label>
+            <div className="flex items-center justify-between">
+              <label className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
+                Structured Milestone Deliverables & Acceptance Criteria
+              </label>
+              <span
+                className={`text-[11px] font-mono ${
+                  deliverables.length <= 5000 ? "text-zinc-400" : "text-red-500 font-bold"
+                }`}
+              >
+                {deliverables.length.toLocaleString()} / 5,000 chars
+              </span>
+            </div>
             <textarea
               rows={4}
+              maxLength={5000}
               value={deliverables}
               onChange={(e) => setDeliverables(e.target.value)}
               placeholder="e.g.&#10;Milestone 1: Database schemas & authentication routes (25%)&#10;Milestone 2: Stripe Connect escrow integration & webhook listeners (50%)&#10;Milestone 3: Production QA, load testing & Vercel deployment (25%)"
-              className="mt-1.5 w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2.5 text-xs text-zinc-900 focus:border-indigo-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 font-mono text-[11px] leading-relaxed"
+              className="mt-1.5 w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2.5 text-xs text-zinc-900 focus:border-indigo-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 font-mono text-[11px] leading-relaxed whitespace-pre-wrap"
             />
           </div>
 
-          <div>
-            <div className="flex items-center gap-1.5">
-              <label className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
-                Applicant Screening Question (Optional)
-              </label>
-              <HelpCircle className="h-3.5 w-3.5 text-zinc-400" />
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-1.5">
+                <label className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
+                  Applicant Screening Questions (Optional)
+                </label>
+                <HelpCircle className="h-3.5 w-3.5 text-zinc-400" />
+              </div>
+              {screeningQuestions.length > 0 && (
+                <span className="text-xs font-semibold text-indigo-600 dark:text-indigo-400">
+                  {screeningQuestions.length}{" "}
+                  {screeningQuestions.length === 1 ? "question" : "questions"} added
+                </span>
+              )}
             </div>
-            <input
-              type="text"
-              value={screeningQuestion}
-              onChange={(e) => setScreeningQuestion(e.target.value)}
-              placeholder="e.g. Please link 1-2 production repos or case studies demonstrating similar Next.js architectures."
-              className="mt-1.5 w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2.5 text-xs text-zinc-900 focus:border-indigo-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100"
-            />
+
+            {/* List of current questions */}
+            {screeningQuestions.length > 0 && (
+              <div className="space-y-2">
+                {screeningQuestions.map((question, idx) => (
+                  <div
+                    key={idx}
+                    className="group flex items-start gap-3 rounded-xl border border-zinc-200/80 bg-zinc-50/70 p-3 text-xs dark:border-zinc-800 dark:bg-zinc-900/60"
+                  >
+                    <span className="flex h-5 w-6 shrink-0 items-center justify-center rounded-md bg-indigo-100 font-mono text-[10px] font-bold text-indigo-700 dark:bg-indigo-950/80 dark:text-indigo-300">
+                      Q{idx + 1}
+                    </span>
+                    <p className="flex-1 text-zinc-800 leading-relaxed dark:text-zinc-200">
+                      {question}
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveQuestion(idx)}
+                      className="text-zinc-400 opacity-60 hover:text-red-500 hover:opacity-100 group-hover:opacity-100 transition-opacity p-1"
+                      aria-label="Remove question"
+                    >
+                      <Trash2 className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Input to add dynamic question */}
+            <div className="flex items-center gap-2">
+              <input
+                type="text"
+                value={newQuestionInput}
+                onChange={(e) => setNewQuestionInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    handleAddQuestion();
+                  }
+                }}
+                placeholder="Type a custom screening question and click Add (or press Enter)..."
+                className="flex-1 rounded-xl border border-zinc-300 bg-white px-3.5 py-2.5 text-xs text-zinc-900 focus:border-indigo-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100"
+              />
+              <button
+                type="button"
+                onClick={() => handleAddQuestion()}
+                disabled={!newQuestionInput.trim()}
+                className="inline-flex items-center gap-1.5 rounded-xl bg-zinc-900 px-4 py-2.5 text-xs font-semibold text-white transition hover:bg-zinc-800 disabled:opacity-40 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
+              >
+                <Plus className="h-3.5 w-3.5" />
+                <span>Add Question</span>
+              </button>
+            </div>
+
+            {/* Suggested quick-add questions */}
+            <div className="space-y-1.5 pt-1">
+              <p className="text-[11px] font-medium text-zinc-400">Suggested questions:</p>
+              <div className="flex flex-wrap gap-1.5">
+                {[
+                  "Please link 1-2 production repos or case studies demonstrating similar tech stack architectures.",
+                  "What is your weekly availability and preferred working timezone?",
+                  "Have you worked with milestone-based escrow contracts before?",
+                ].map((sugg, i) => (
+                  <button
+                    key={i}
+                    type="button"
+                    onClick={() => handleAddQuestion(sugg)}
+                    disabled={screeningQuestions.includes(sugg)}
+                    className="inline-flex items-center gap-1 rounded-lg border border-zinc-200 bg-zinc-50 px-2.5 py-1 text-[11px] text-zinc-600 transition hover:border-indigo-300 hover:bg-indigo-50 hover:text-indigo-700 disabled:opacity-40 disabled:pointer-events-none dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-400 dark:hover:border-indigo-500/50 dark:hover:bg-indigo-950/40 dark:hover:text-indigo-300"
+                  >
+                    <Plus className="h-3 w-3" />
+                    <span className="truncate max-w-xs">{sugg}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
 

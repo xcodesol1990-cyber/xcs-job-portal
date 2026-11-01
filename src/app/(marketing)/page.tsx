@@ -25,11 +25,6 @@ export default function HomePage() {
       {/* Hero Section */}
       <main className="mx-auto w-full max-w-7xl px-6 pt-12 pb-24 lg:px-8 lg:pt-16 flex-1 space-y-24">
         <div className="mx-auto max-w-4xl text-center space-y-6">
-          <div className="inline-flex items-center gap-2 rounded-full border border-indigo-500/20 bg-indigo-500/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-indigo-700 dark:text-indigo-300">
-            <ShieldCheck className="h-4 w-4" />
-            <span>Escrow Protected Freelance Protocol</span>
-          </div>
-
           <h1 className="text-5xl font-black tracking-tight sm:text-7xl leading-tight">
             Hire elite talent.{" "}
             <span className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">

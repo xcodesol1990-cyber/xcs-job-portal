@@ -2,7 +2,7 @@ import { auth } from "@/server/lib/auth";
 import { redirect } from "next/navigation";
 import { ProfileService } from "@/server/services/profile.service";
 import { CreateJobForm } from "@/components/forms/create-job-form";
-import { Briefcase, ArrowLeft } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
 export default async function NewJobPage() {
@@ -24,11 +24,7 @@ export default async function NewJobPage() {
       </Link>
 
       <div>
-        <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-blue-600 dark:text-blue-400">
-          <Briefcase className="h-4 w-4" />
-          <span>New Opportunity</span>
-        </div>
-        <h1 className="mt-1 text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
+        <h1 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
           Publish a Job Brief
         </h1>
         <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">

@@ -2,7 +2,23 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ShieldCheck, ArrowRight, Briefcase, UserCheck, Menu, X, Search, Lock } from "lucide-react";
+import { UserNavDropdown } from "@/components/layout/user-nav-dropdown";
+import { logoutAction } from "@/server/actions/auth.actions";
+import {
+  ShieldCheck,
+  ArrowRight,
+  Briefcase,
+  UserCheck,
+  Menu,
+  X,
+  Search,
+  Lock,
+  Building2,
+  FileText,
+  DollarSign,
+  MessageSquare,
+  LogOut,
+} from "lucide-react";
 
 interface PublicHeaderProps {
   user?: {
@@ -10,6 +26,7 @@ interface PublicHeaderProps {
     name?: string | null;
     email?: string | null;
     roles?: string[];
+    imageUrl?: string | null;
   } | null;
 }
 
@@ -19,6 +36,7 @@ export function PublicHeader({ user }: PublicHeaderProps) {
   const isClient = user?.roles?.includes("CLIENT");
   const isFreelancer = user?.roles?.includes("FREELANCER");
   const dashboardLink = isClient ? "/client" : isFreelancer ? "/freelancer" : "/dashboard";
+  const profileLink = isClient ? "/client/profile" : "/freelancer/profile";
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-zinc-200/80 bg-white/80 backdrop-blur-xl dark:border-zinc-800/80 dark:bg-zinc-950/80 transition-all">
@@ -70,25 +88,15 @@ export function PublicHeader({ user }: PublicHeaderProps) {
         {/* Right CTA Actions */}
         <div className="hidden md:flex items-center gap-3">
           {user ? (
-            /* Logged-In State */
+            /* Logged-In State with Dropdown Menu */
             <div className="flex items-center gap-3">
-              <Link
-                href={dashboardLink}
-                className="inline-flex items-center gap-2 rounded-xl border border-zinc-200/90 bg-zinc-50/80 px-3.5 py-2 text-xs font-semibold text-zinc-800 hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-900/60 dark:text-zinc-200 dark:hover:bg-zinc-800 transition shadow-xs"
-              >
-                {isClient ? (
-                  <Briefcase className="h-3.5 w-3.5 text-indigo-600" />
-                ) : (
-                  <UserCheck className="h-3.5 w-3.5 text-emerald-600" />
-                )}
-                <span>{user.name?.split(" ")[0] ?? "Workspace"}</span>
-              </Link>
+              <UserNavDropdown user={user} />
 
               <Link
                 href={dashboardLink}
                 className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 px-4 py-2 text-xs font-bold text-white shadow-md shadow-indigo-500/20 hover:from-indigo-500 hover:to-purple-500 transition"
               >
-                <span>Go to Dashboard</span>
+                <span>Dashboard</span>
                 <ArrowRight className="h-3.5 w-3.5" />
               </Link>
             </div>
@@ -164,26 +172,96 @@ export function PublicHeader({ user }: PublicHeaderProps) {
             <span>Post a Job Opportunity</span>
           </Link>
 
+          {user && (
+            <div className="pt-2 border-t border-zinc-100 dark:border-zinc-800 space-y-1">
+              <div className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-zinc-400">
+                {isClient ? "Employer Workspace" : "Freelancer Account"}
+              </div>
+
+              <Link
+                href={profileLink}
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center gap-2 rounded-xl p-2 text-xs font-semibold text-zinc-800 hover:bg-zinc-50 dark:text-zinc-200 dark:hover:bg-zinc-900"
+              >
+                {isClient ? (
+                  <Building2 className="h-4 w-4 text-indigo-600" />
+                ) : (
+                  <UserCheck className="h-4 w-4 text-emerald-600" />
+                )}
+                <span>{isClient ? "Company Profile & Settings" : "Profile & Portfolio"}</span>
+              </Link>
+
+              {isClient ? (
+                <>
+                  <Link
+                    href="/client/jobs"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center gap-2 rounded-xl p-2 text-xs font-semibold text-zinc-800 hover:bg-zinc-50 dark:text-zinc-200 dark:hover:bg-zinc-900"
+                  >
+                    <FileText className="h-4 w-4 text-zinc-400" />
+                    <span>My Job Postings</span>
+                  </Link>
+                  <Link
+                    href="/client/contracts"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center gap-2 rounded-xl p-2 text-xs font-semibold text-zinc-800 hover:bg-zinc-50 dark:text-zinc-200 dark:hover:bg-zinc-900"
+                  >
+                    <ShieldCheck className="h-4 w-4 text-zinc-400" />
+                    <span>Active Contracts</span>
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link
+                    href="/freelancer/proposals"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center gap-2 rounded-xl p-2 text-xs font-semibold text-zinc-800 hover:bg-zinc-50 dark:text-zinc-200 dark:hover:bg-zinc-900"
+                  >
+                    <Briefcase className="h-4 w-4 text-zinc-400" />
+                    <span>My Proposals</span>
+                  </Link>
+                  <Link
+                    href="/freelancer/payouts"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center gap-2 rounded-xl p-2 text-xs font-semibold text-zinc-800 hover:bg-zinc-50 dark:text-zinc-200 dark:hover:bg-zinc-900"
+                  >
+                    <DollarSign className="h-4 w-4 text-emerald-500" />
+                    <span>Earnings & Payouts</span>
+                  </Link>
+                </>
+              )}
+
+              <Link
+                href="/messages"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center gap-2 rounded-xl p-2 text-xs font-semibold text-zinc-800 hover:bg-zinc-50 dark:text-zinc-200 dark:hover:bg-zinc-900"
+              >
+                <MessageSquare className="h-4 w-4 text-purple-500" />
+                <span>Messages</span>
+              </Link>
+            </div>
+          )}
+
           <div className="pt-2 border-t border-zinc-100 dark:border-zinc-800 flex flex-col gap-2">
             {!user ? (
-              <>
-                <Link
-                  href="/register"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center justify-center gap-1.5 rounded-xl bg-indigo-600 py-2.5 text-xs font-bold text-white"
-                >
-                  <Lock className="h-3.5 w-3.5" />
-                  <span>Join as Client or Freelancer</span>
-                </Link>
-              </>
-            ) : (
               <Link
-                href={dashboardLink}
+                href="/register"
                 onClick={() => setMobileMenuOpen(false)}
                 className="flex items-center justify-center gap-1.5 rounded-xl bg-indigo-600 py-2.5 text-xs font-bold text-white"
               >
-                <span>Open {isClient ? "Client Workspace" : "Freelancer Hub"}</span>
+                <Lock className="h-3.5 w-3.5" />
+                <span>Join as Client or Freelancer</span>
               </Link>
+            ) : (
+              <form action={logoutAction}>
+                <button
+                  type="submit"
+                  className="flex w-full items-center justify-center gap-2 rounded-xl border border-red-200 bg-red-50/50 py-2 text-xs font-semibold text-red-600 dark:border-red-900/40 dark:bg-red-950/20 dark:text-red-400"
+                >
+                  <LogOut className="h-3.5 w-3.5" />
+                  <span>Sign Out</span>
+                </button>
+              </form>
             )}
           </div>
         </div>

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { auth } from "@/server/lib/auth";
 import { JobService } from "@/server/services/job.service";
 import { ApplyJobForm } from "@/components/forms/apply-job-form";
-import { Send, ArrowLeft } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 
 interface ApplyPageProps {
   params: Promise<{ id: string }>;
@@ -37,11 +37,7 @@ export default async function ApplyPage({ params }: ApplyPageProps) {
 
         {/* Job Summary Banner */}
         <div className="rounded-2xl border border-zinc-200/80 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
-          <div className="flex items-center gap-2 text-xs font-semibold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider">
-            <Send className="h-4 w-4" />
-            <span>Submit a Proposal</span>
-          </div>
-          <h1 className="mt-2 text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
+          <h1 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
             {job.title}
           </h1>
           <div className="mt-2 flex items-center gap-3 text-xs text-zinc-500">
@@ -58,7 +54,11 @@ export default async function ApplyPage({ params }: ApplyPageProps) {
 
         {/* Proposal Form Card */}
         <div className="rounded-2xl border border-zinc-200/80 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 sm:p-8">
-          <ApplyJobForm jobId={job.id} budgetType={job.budgetType} />
+          <ApplyJobForm
+            jobId={job.id}
+            budgetType={job.budgetType}
+            screeningQuestions={job.screeningQuestions ?? []}
+          />
         </div>
       </div>
     </div>

@@ -227,7 +227,7 @@ export default async function JobDetailsPage({ params }: JobDetailsPageProps) {
             <h2 className="text-xs font-bold uppercase tracking-wider text-zinc-500">
               Detailed Scope of Work
             </h2>
-            <div className="whitespace-pre-line text-sm leading-relaxed text-zinc-700 dark:text-zinc-300 bg-zinc-50/50 p-5 rounded-2xl border border-zinc-100 dark:border-zinc-800/80 dark:bg-zinc-950/50">
+            <div className="whitespace-pre-wrap break-words text-sm leading-relaxed text-zinc-700 dark:text-zinc-300 bg-zinc-50/50 p-5 rounded-2xl border border-zinc-100 dark:border-zinc-800/80 dark:bg-zinc-950/50">
               {job.description}
             </div>
           </div>
@@ -238,7 +238,7 @@ export default async function JobDetailsPage({ params }: JobDetailsPageProps) {
               <h2 className="text-xs font-bold uppercase tracking-wider text-zinc-500">
                 Milestone Deliverables & Acceptance Criteria
               </h2>
-              <div className="whitespace-pre-line text-xs font-mono leading-relaxed text-zinc-700 dark:text-zinc-300 bg-zinc-50/60 p-4 rounded-xl border border-zinc-200/80 dark:border-zinc-800 dark:bg-zinc-950/60">
+              <div className="whitespace-pre-wrap break-words text-xs font-mono leading-relaxed text-zinc-700 dark:text-zinc-300 bg-zinc-50/60 p-4 rounded-xl border border-zinc-200/80 dark:border-zinc-800 dark:bg-zinc-950/60">
                 {job.deliverables}
               </div>
             </div>
