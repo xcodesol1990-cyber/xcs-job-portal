@@ -68,3 +68,4 @@ stateDiagram-v2
   3. Selects the posting to open `/jobs/[id]`.
   4. Inspects client hiring history: total spend, rating, and verified payment badge.
   5. Decides to pitch and clicks **Apply to Job**.
+

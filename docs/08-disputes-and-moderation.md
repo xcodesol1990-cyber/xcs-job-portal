@@ -89,3 +89,4 @@ sequenceDiagram
   3. Reviews reported job link.
   4. Clicks **Resolve Report**.
   5. The report is marked resolved, and admin can click the associated user link to suspend the fraudulent account.
+

@@ -84,3 +84,4 @@ graph TD
   2. `src/app/admin/layout.tsx` validates the active server session and inspects `session.user.roles`.
   3. Since `"ADMIN"` is not present in the roles array, the server triggers an immediate `redirect("/dashboard")`.
   4. If an unauthenticated visitor visits `/admin`, they are redirected to `/login`.
+

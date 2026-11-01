@@ -67,3 +67,4 @@ stateDiagram-v2
   4. Clicks **Accept Proposal & Create Contract**.
   5. The server creates a formal `Contract` entity with draft milestones matching the proposal breakdown.
   6. Status of the selected proposal transitions to `ACCEPTED`, while remaining proposals can be respectfully set to `REJECTED`.
+

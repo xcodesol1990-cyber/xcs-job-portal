@@ -67,3 +67,4 @@ graph LR
      - *Link*: `/contracts/[id]`
   3. Freelancer sees the notification bell badge increment from 0 to 1.
   4. Clicking the bell displays the notification dropdown; clicking the notification routes directly to the contract.
+

@@ -74,3 +74,4 @@ xcs-job-portal/
 
 - **Health Endpoint**: `/api/health` returns JSON uptime, database ping latency, and environment status.
 - **Auto-Healing Database Seeder**: If the database is freshly initialized or tables are empty upon login, `AuthService.verifyCredentials` automatically invokes the seeder on-the-fly to guarantee test credentials work seamlessly.
+

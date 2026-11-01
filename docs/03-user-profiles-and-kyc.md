@@ -68,3 +68,4 @@ stateDiagram-v2
   3. Clicks **Suspend User**.
   4. User status is immediately set to `SUSPENDED`.
   5. NextAuth session middleware terminates their active sessions, preventing further job creation or bid submissions.
+

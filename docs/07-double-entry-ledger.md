@@ -74,3 +74,4 @@ When an administrator resolves an arbitration claim on a $1,000.00 milestone:
   2. Aggregates all recorded `DEBIT` entries and compares against all `CREDIT` entries.
   3. If discrepancy equals 0, system records audit status `VERIFIED_BALANCED`.
   4. If discrepancy is non-zero, critical alert is dispatched to platform maintainers.
+

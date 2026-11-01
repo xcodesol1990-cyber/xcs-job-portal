@@ -77,3 +77,4 @@ stateDiagram-v2
   3. Server transitions milestone status to `APPROVED` then `RELEASED`.
   4. Platform deducts 10% platform fee and credits the remaining 90% to the Freelancer's payable ledger balance.
   5. Contract overall progress bar updates. If all milestones are released, contract marks as `COMPLETED`.
+

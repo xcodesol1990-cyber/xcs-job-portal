@@ -133,3 +133,4 @@ When deploying to a brand-new Neon database on Vercel, simply navigate to `/logi
 
 ### On-Demand Seed via Admin Topbar
 From within the Admin Console (`/admin`), Super Admins can click the **Sync Demo Data** button in the sticky topbar to reset or replenish demo fixtures at any time with real-time Sonner toast progress.
+

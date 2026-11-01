@@ -84,3 +84,4 @@ The Admin Console (`/admin`) serves as the operational headquarters for platform
   2. Clicks **Arbitrate** directly from the card.
   3. Modal opens with pre-populated figures; admin adjusts the split to 80/20 and submits resolution.
   4. Sonner fires confirmation toast; the card disappears from the urgent queue; metric counters recalculate instantly.
+

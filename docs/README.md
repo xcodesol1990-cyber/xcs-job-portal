@@ -22,6 +22,7 @@ This documentation is split into dedicated modular guides detailing each archite
 | [10. Admin Console & Platform Governance](./10-admin-console-and-governance.md) | Mission Control & Operations | Modern sidebar application shell, Tremor/Stripe-style metric sparklines, Priority Action Desk, Sonner toast feedback. |
 | [11. Background Automation & Daily Cron](./11-cron-and-background-automation.md) | Scheduled System Jobs | Vercel Hobby-compliant single daily cron (`0 0 * * *`), Auto-release of inactive milestone reviews, Ledger reconciliation. |
 | [12. Database Schema & Data Seeding](./12-database-schema-and-seeding.md) | Persistence & Demo Data | Complete Prisma schema models, Enums, Foreign key constraints, Idempotent database seeder with cross-role test accounts. |
+| [UI & UX Design Architecture](./ui-design/README.md) | Frontend Design & Workspaces | Dedicated UI design guides for Client Workspace, Freelancer Hub, Admin Console, and global Design System tokens. |
 
 ---
 
@@ -32,3 +33,4 @@ For end-to-end testing across all documented use cases, the platform includes pr
 - **Super Administrator**: `admin@worknest.dev` / `Admin@123456`
 - **Enterprise Client**: `client@worknest.dev` / `Client@123456`
 - **Senior Freelancer**: `freelancer@worknest.dev` / `Freelancer@123456`
+
