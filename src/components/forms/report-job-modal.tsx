@@ -72,7 +72,7 @@ export function ReportJobModal({ jobId }: ReportJobModalProps) {
 
             <form onSubmit={handleSubmit} className="mt-4 space-y-4">
               <div>
-                <label className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300">
+                <label className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300">
                   Reason for Flagging
                 </label>
                 <p className="mt-0.5 text-[11px] text-zinc-500">

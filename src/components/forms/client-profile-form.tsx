@@ -131,7 +131,7 @@ export function ClientProfileForm({ profile }: ClientProfileFormProps) {
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
         <div>
           <div className="flex items-center justify-between">
-            <label className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300">
+            <label className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300">
               Primary Contact Name *
             </label>
             <span className="text-[11px] font-mono text-zinc-400">{name.length} / 60</span>
@@ -152,7 +152,7 @@ export function ClientProfileForm({ profile }: ClientProfileFormProps) {
 
         <div>
           <div className="flex items-center justify-between">
-            <label className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300">
+            <label className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300">
               Company / Organization Legal Name *
             </label>
             <span className="text-[11px] font-mono text-zinc-400">{companyName.length} / 100</span>
@@ -176,7 +176,7 @@ export function ClientProfileForm({ profile }: ClientProfileFormProps) {
       {/* Row 2: Website & LinkedIn */}
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
         <div>
-          <label className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300">
+          <label className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300">
             Company Website
           </label>
           <div className="relative mt-1.5">
@@ -192,7 +192,7 @@ export function ClientProfileForm({ profile }: ClientProfileFormProps) {
         </div>
 
         <div>
-          <label className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300">
+          <label className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300">
             Company LinkedIn Profile
           </label>
           <div className="relative mt-1.5">
@@ -211,7 +211,7 @@ export function ClientProfileForm({ profile }: ClientProfileFormProps) {
       {/* Row 3: Industry & Company Size */}
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
         <div>
-          <label className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300">
+          <label className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300">
             Primary Industry Sector
           </label>
           <div className="relative mt-1.5">
@@ -231,7 +231,7 @@ export function ClientProfileForm({ profile }: ClientProfileFormProps) {
         </div>
 
         <div>
-          <label className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300">
+          <label className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300">
             Organization Headcount / Stage
           </label>
           <div className="relative mt-1.5">
@@ -254,7 +254,7 @@ export function ClientProfileForm({ profile }: ClientProfileFormProps) {
       {/* Row 4: About Company Overview */}
       <div>
         <div className="flex items-center justify-between">
-          <label className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300">
+          <label className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300">
             About Organization & Technical Mission
           </label>
           <span

@@ -76,7 +76,7 @@ export function OpenDisputeModal({ contractId, milestones }: OpenDisputeModalPro
 
               {milestones.length > 0 && (
                 <div>
-                  <label className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300">
+                  <label className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300">
                     Disputed Milestone (Optional)
                   </label>
                   <select
@@ -95,7 +95,7 @@ export function OpenDisputeModal({ contractId, milestones }: OpenDisputeModalPro
               )}
 
               <div>
-                <label className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300">
+                <label className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300">
                   Statement of Dispute & Evidence
                 </label>
                 <textarea

@@ -52,6 +52,26 @@ describe("Admin Platform Settings & Governance Module", () => {
     ]);
   });
 
+  it("updates payment, email, and integration settings batches correctly", async () => {
+    const adminId = "admin-uuid-1";
+    const paymentAndEmailPayload = {
+      stripe_environment: "LIVE",
+      stripe_connect_type: "EXPRESS",
+      stripe_payout_schedule: "DAILY",
+      email_provider: "RESEND",
+      email_from_address: "notifications@worknest.dev",
+      github_app_integration_enabled: true,
+      ai_milestone_copilot_enabled: false,
+    };
+
+    const results = await adminService.updatePlatformSettingsBatch(adminId, paymentAndEmailPayload);
+
+    expect(results).toHaveLength(7);
+    expect(results.map((r) => r.key)).toContain("stripe_environment");
+    expect(results.map((r) => r.key)).toContain("email_provider");
+    expect(results.map((r) => r.key)).toContain("github_app_integration_enabled");
+  });
+
   it("retrieves platform settings ordered alphabetically by key", async () => {
     const mockSettings = [
       { key: "auto_approve_days", value: 14, updatedAt: new Date() },

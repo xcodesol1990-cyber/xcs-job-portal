@@ -4,14 +4,16 @@ import { useState, useTransition } from "react";
 import { updatePlatformSettingsBatchAction } from "@/server/actions/admin.actions";
 import {
   DollarSign,
-  ShieldAlert,
+  CreditCard,
   Sliders,
+  Sparkles,
+  Mail,
+  Cpu,
   Lock,
   History,
   Check,
   Loader2,
   AlertTriangle,
-  Sparkles,
 } from "lucide-react";
 
 export interface PlatformSettingItem {
@@ -33,7 +35,15 @@ interface AdminSettingsTabsProps {
   auditLogs: AuditLogItem[];
 }
 
-type TabKey = "financials" | "governance" | "marketplace" | "security" | "audit";
+export type TabKey =
+  | "financials"
+  | "payments"
+  | "governance"
+  | "marketplace"
+  | "emails"
+  | "integrations"
+  | "security"
+  | "audit";
 
 export function AdminSettingsTabs({ initialSettings, auditLogs }: AdminSettingsTabsProps) {
   const [activeTab, setActiveTab] = useState<TabKey>("financials");
@@ -69,7 +79,39 @@ export function AdminSettingsTabs({ initialSettings, auditLogs }: AdminSettingsT
     getSetting<string>("settlement_currency", "USD"),
   );
 
-  // Tab 2: Governance & Dispute Lifecycle State
+  // Tab 2: Payments & Stripe Rails State
+  const [stripeEnvironment, setStripeEnvironment] = useState<string>(
+    getSetting<string>("stripe_environment", "TEST"),
+  );
+  const [stripeConnectType, setStripeConnectType] = useState<string>(
+    getSetting<string>("stripe_connect_type", "EXPRESS"),
+  );
+  const [stripePayoutSchedule, setStripePayoutSchedule] = useState<string>(
+    getSetting<string>("stripe_payout_schedule", "DAILY"),
+  );
+  const [stripePayoutDelayDays, setStripePayoutDelayDays] = useState<number>(
+    getSetting<number>("stripe_payout_delay_days", 2),
+  );
+  const [statementDescriptor, setStatementDescriptor] = useState<string>(
+    getSetting<string>("stripe_statement_descriptor", "WORKNEST ESCROW"),
+  );
+  const [minPayoutThresholdDollars, setMinPayoutThresholdDollars] = useState<number>(
+    getSetting<number>("min_payout_threshold_dollars", 25),
+  );
+  const [instantPayoutFeePercent, setInstantPayoutFeePercent] = useState<number>(
+    getSetting<number>("instant_payout_fee_percent", 1.5),
+  );
+  const [acceptedCurrencies, setAcceptedCurrencies] = useState<string>(
+    getSetting<string>("accepted_currencies", "USD, EUR, GBP, CAD, AUD"),
+  );
+  const [cryptoUsdcEnabled, setCryptoUsdcEnabled] = useState<boolean>(
+    getSetting<boolean>("crypto_usdc_escrow_enabled", false),
+  );
+  const [autoRetryFailedCharges, setAutoRetryFailedCharges] = useState<boolean>(
+    getSetting<boolean>("stripe_auto_retry_failed_charges", true),
+  );
+
+  // Tab 3: Governance & Dispute Lifecycle State
   const [autoApproveDays, setAutoApproveDays] = useState<number>(
     getSetting<number>("auto_approve_days", 14),
   );
@@ -86,7 +128,7 @@ export function AdminSettingsTabs({ initialSettings, auditLogs }: AdminSettingsT
     getSetting<boolean>("split_dispute_custom_ratios", true),
   );
 
-  // Tab 3: Marketplace & Matching Rules State
+  // Tab 4: Marketplace & Matching Rules State
   const [requireKycForBidding, setRequireKycForBidding] = useState<boolean>(
     getSetting<boolean>("require_freelancer_kyc_for_bidding", false),
   );
@@ -106,7 +148,70 @@ export function AdminSettingsTabs({ initialSettings, auditLogs }: AdminSettingsT
     ),
   );
 
-  // Tab 4: Security & Platform Policies State
+  // Tab 5: Email & Transactional Notifications State
+  const [emailProvider, setEmailProvider] = useState<string>(
+    getSetting<string>("email_provider", "RESEND"),
+  );
+  const [emailFromName, setEmailFromName] = useState<string>(
+    getSetting<string>("email_from_name", "WorkNest Notifications"),
+  );
+  const [emailFromAddress, setEmailFromAddress] = useState<string>(
+    getSetting<string>("email_from_address", "notifications@worknest.dev"),
+  );
+  const [emailSupportAddress, setEmailSupportAddress] = useState<string>(
+    getSetting<string>("email_support_address", "support@worknest.dev"),
+  );
+  const [emailBillingAddress, setEmailBillingAddress] = useState<string>(
+    getSetting<string>("email_billing_address", "billing@worknest.dev"),
+  );
+  const [emailDigestFrequency, setEmailDigestFrequency] = useState<string>(
+    getSetting<string>("email_digest_frequency", "INSTANT"),
+  );
+  const [smtpHost, setSmtpHost] = useState<string>(
+    getSetting<string>("smtp_host", "smtp.resend.com"),
+  );
+  const [smtpPort, setSmtpPort] = useState<number>(getSetting<number>("smtp_port", 587));
+  const [notifyOnNewProposal, setNotifyOnNewProposal] = useState<boolean>(
+    getSetting<boolean>("notify_on_new_proposal", true),
+  );
+  const [notifyOnMilestoneSubmitted, setNotifyOnMilestoneSubmitted] = useState<boolean>(
+    getSetting<boolean>("notify_on_milestone_submitted", true),
+  );
+  const [notifyOnEscrowFunded, setNotifyOnEscrowFunded] = useState<boolean>(
+    getSetting<boolean>("notify_on_escrow_funded", true),
+  );
+  const [notifyOnDisputeOpened, setNotifyOnDisputeOpened] = useState<boolean>(
+    getSetting<boolean>("notify_on_dispute_opened", true),
+  );
+
+  // Tab 6: Integrations, Webhooks & AI State
+  const [githubAppEnabled, setGithubAppEnabled] = useState<boolean>(
+    getSetting<boolean>("github_app_integration_enabled", true),
+  );
+  const [githubAllowedOrgs, setGithubAllowedOrgs] = useState<string>(
+    getSetting<string>("github_allowed_orgs", ""),
+  );
+  const [aiCopilotModel, setAiCopilotModel] = useState<string>(
+    getSetting<string>("ai_copilot_model", "gemini-2.5-pro"),
+  );
+  const [aiMilestoneCopilotEnabled, setAiMilestoneCopilotEnabled] = useState<boolean>(
+    getSetting<boolean>("ai_milestone_copilot_enabled", false),
+  );
+  const [aiMaxTokens, setAiMaxTokens] = useState<number>(getSetting<number>("ai_max_tokens", 4096));
+  const [slackWebhookUrl, setSlackWebhookUrl] = useState<string>(
+    getSetting<string>("slack_webhook_url", ""),
+  );
+  const [discordWebhookUrl, setDiscordWebhookUrl] = useState<string>(
+    getSetting<string>("discord_webhook_url", ""),
+  );
+  const [webhookRetryLimit, setWebhookRetryLimit] = useState<number>(
+    getSetting<number>("webhook_retry_limit", 5),
+  );
+  const [sentryMonitoringEnabled, setSentryMonitoringEnabled] = useState<boolean>(
+    getSetting<boolean>("sentry_monitoring_enabled", true),
+  );
+
+  // Tab 7: Security & Platform Policies State
   const [maintenanceMode, setMaintenanceMode] = useState<boolean>(
     getSetting<boolean>("maintenance_mode", false),
   );
@@ -156,6 +261,28 @@ export function AdminSettingsTabs({ initialSettings, auditLogs }: AdminSettingsT
         instant_payout_enabled: instantPayoutEnabled,
         settlement_currency: settlementCurrency,
       };
+    } else if (tab === "payments") {
+      if (minPayoutThresholdDollars < 1) {
+        showNotification("Minimum payout threshold must be at least $1.00.", true);
+        return;
+      }
+      if (!statementDescriptor.trim()) {
+        showNotification("Statement descriptor cannot be empty.", true);
+        return;
+      }
+
+      payload = {
+        stripe_environment: stripeEnvironment,
+        stripe_connect_type: stripeConnectType,
+        stripe_payout_schedule: stripePayoutSchedule,
+        stripe_payout_delay_days: Number(stripePayoutDelayDays),
+        stripe_statement_descriptor: statementDescriptor.trim().toUpperCase(),
+        min_payout_threshold_dollars: Number(minPayoutThresholdDollars),
+        instant_payout_fee_percent: Number(instantPayoutFeePercent),
+        accepted_currencies: acceptedCurrencies.trim(),
+        crypto_usdc_escrow_enabled: cryptoUsdcEnabled,
+        stripe_auto_retry_failed_charges: autoRetryFailedCharges,
+      };
     } else if (tab === "governance") {
       if (autoApproveDays < 1) {
         showNotification("Auto-approve window must be at least 1 day.", true);
@@ -190,6 +317,38 @@ export function AdminSettingsTabs({ initialSettings, auditLogs }: AdminSettingsT
         zero_commission_protocol: zeroCommissionProtocol,
         restricted_communication_keywords: restrictedKeywords.trim(),
       };
+    } else if (tab === "emails") {
+      if (!emailFromAddress.includes("@")) {
+        showNotification("System sender email address must be a valid email.", true);
+        return;
+      }
+
+      payload = {
+        email_provider: emailProvider,
+        email_from_name: emailFromName.trim(),
+        email_from_address: emailFromAddress.trim(),
+        email_support_address: emailSupportAddress.trim(),
+        email_billing_address: emailBillingAddress.trim(),
+        email_digest_frequency: emailDigestFrequency,
+        smtp_host: smtpHost.trim(),
+        smtp_port: Number(smtpPort),
+        notify_on_new_proposal: notifyOnNewProposal,
+        notify_on_milestone_submitted: notifyOnMilestoneSubmitted,
+        notify_on_escrow_funded: notifyOnEscrowFunded,
+        notify_on_dispute_opened: notifyOnDisputeOpened,
+      };
+    } else if (tab === "integrations") {
+      payload = {
+        github_app_integration_enabled: githubAppEnabled,
+        github_allowed_orgs: githubAllowedOrgs.trim(),
+        ai_copilot_model: aiCopilotModel,
+        ai_milestone_copilot_enabled: aiMilestoneCopilotEnabled,
+        ai_max_tokens: Number(aiMaxTokens),
+        slack_webhook_url: slackWebhookUrl.trim(),
+        discord_webhook_url: discordWebhookUrl.trim(),
+        webhook_retry_limit: Number(webhookRetryLimit),
+        sentry_monitoring_enabled: sentryMonitoringEnabled,
+      };
     } else if (tab === "security") {
       if (rateLimitPerMinute < 30) {
         showNotification("Rate limit must be at least 30 requests/min.", true);
@@ -217,8 +376,11 @@ export function AdminSettingsTabs({ initialSettings, auditLogs }: AdminSettingsT
 
   const tabs: Array<{ id: TabKey; label: string; icon: typeof DollarSign }> = [
     { id: "financials", label: "Escrow & Fees", icon: DollarSign },
+    { id: "payments", label: "Payments & Stripe", icon: CreditCard },
     { id: "governance", label: "Contracts & Disputes", icon: Sliders },
     { id: "marketplace", label: "Marketplace Rules", icon: Sparkles },
+    { id: "emails", label: "Email & Notifications", icon: Mail },
+    { id: "integrations", label: "Integrations & AI", icon: Cpu },
     { id: "security", label: "Security & Access", icon: Lock },
     { id: "audit", label: "Audit Trail", icon: History },
   ];
@@ -285,7 +447,7 @@ export function AdminSettingsTabs({ initialSettings, auditLogs }: AdminSettingsT
 
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
             <div>
-              <label className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300">
+              <label className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300">
                 Platform Commission Basis Points (bps)
               </label>
               <div className="relative mt-1.5">
@@ -299,13 +461,13 @@ export function AdminSettingsTabs({ initialSettings, auditLogs }: AdminSettingsT
                 />
               </div>
               <p className="mt-1 text-[11px] text-zinc-400">
-                1000 bps = 10.0%. Enter 0 for zero-fee community promotions.
+                1000 bps = 10.0%. For 0% protocol, set to 0.
               </p>
             </div>
 
             <div>
-              <label className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300">
-                Employer Escrow Surcharge (bps)
+              <label className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300">
+                Client Surcharge Fee Basis Points (bps)
               </label>
               <div className="relative mt-1.5">
                 <input
@@ -318,13 +480,13 @@ export function AdminSettingsTabs({ initialSettings, auditLogs }: AdminSettingsT
                 />
               </div>
               <p className="mt-1 text-[11px] text-zinc-400">
-                300 bps = 3.0% employer funding fee to offset payment gateways.
+                300 bps = 3.0% credit card processing fee charged to clients.
               </p>
             </div>
 
             <div>
-              <label className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300">
-                Minimum Milestone Escrow ($ USD)
+              <label className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300">
+                Minimum Escrow Deposit ($ USD)
               </label>
               <div className="relative mt-1.5">
                 <input
@@ -336,58 +498,60 @@ export function AdminSettingsTabs({ initialSettings, auditLogs }: AdminSettingsT
                 />
               </div>
               <p className="mt-1 text-[11px] text-zinc-400">
-                Minimum acceptable funded milestone tranche amount.
+                Minimum dollar amount permitted per contract milestone.
               </p>
             </div>
 
             <div>
-              <label className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300">
-                Maximum Single Escrow Deposit ($ USD)
+              <label className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300">
+                Maximum Escrow Milestone ($ USD)
               </label>
               <div className="relative mt-1.5">
                 <input
                   type="number"
-                  min="1000"
+                  min="100"
                   value={maxEscrowDepositDollars}
                   onChange={(e) => setMaxEscrowDepositDollars(Number(e.target.value))}
                   className="w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2 text-xs text-zinc-900 focus:border-purple-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 font-mono"
                 />
               </div>
               <p className="mt-1 text-[11px] text-zinc-400">
-                Triggers compliance anti-money laundering checks if exceeded.
+                Maximum single escrow milestone cap (default $100,000).
               </p>
             </div>
 
             <div>
-              <label className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300">
+              <label className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300">
                 Primary Settlement Currency
               </label>
-              <select
-                value={settlementCurrency}
-                onChange={(e) => setSettlementCurrency(e.target.value)}
-                className="mt-1.5 w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2 text-xs text-zinc-900 focus:border-purple-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100"
-              >
-                <option value="USD">USD ($) - United States Dollar</option>
-                <option value="EUR">EUR (€) - Eurozone</option>
-                <option value="GBP">GBP (£) - British Pound</option>
-                <option value="CAD">CAD ($) - Canadian Dollar</option>
-              </select>
+              <div className="relative mt-1.5">
+                <select
+                  value={settlementCurrency}
+                  onChange={(e) => setSettlementCurrency(e.target.value)}
+                  className="w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2 text-xs text-zinc-900 focus:border-purple-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 font-mono"
+                >
+                  <option value="USD">USD ($ - United States Dollar)</option>
+                  <option value="EUR">EUR (€ - Euro)</option>
+                  <option value="GBP">GBP (£ - British Pound)</option>
+                  <option value="CAD">CAD ($ - Canadian Dollar)</option>
+                </select>
+              </div>
             </div>
 
-            <div className="flex items-center justify-between rounded-xl border border-zinc-200 bg-zinc-50 p-4 dark:border-zinc-800 dark:bg-zinc-950/40">
+            <div className="flex items-center justify-between rounded-xl border border-zinc-200 bg-zinc-50/70 p-4 dark:border-zinc-800 dark:bg-zinc-950/40">
               <div>
                 <p className="text-xs font-semibold text-zinc-900 dark:text-zinc-100">
-                  Stripe Instant Payouts
+                  Enable Instant Payouts via Stripe
                 </p>
                 <p className="text-[11px] text-zinc-500">
-                  Allow verified freelancers to draw down earnings immediately.
+                  Allow freelancers to instantly disburse released milestone balances.
                 </p>
               </div>
               <input
                 type="checkbox"
                 checked={instantPayoutEnabled}
                 onChange={(e) => setInstantPayoutEnabled(e.target.checked)}
-                className="h-4 w-4 rounded-sm border-zinc-300 text-purple-600 focus:ring-purple-500"
+                className="h-4 w-4 rounded-sm border-zinc-300 text-purple-600 focus:ring-purple-500 dark:border-zinc-700 dark:bg-zinc-900"
               />
             </div>
           </div>
@@ -397,20 +561,231 @@ export function AdminSettingsTabs({ initialSettings, auditLogs }: AdminSettingsT
               type="button"
               disabled={isPending}
               onClick={() => handleSaveTab("financials")}
-              className="inline-flex items-center gap-2 rounded-xl bg-purple-600 px-5 py-2.5 text-xs font-semibold text-white shadow-sm hover:bg-purple-500 disabled:opacity-60 transition"
+              className="inline-flex items-center gap-2 rounded-xl bg-purple-600 px-5 py-2.5 text-xs font-bold text-white hover:bg-purple-700 disabled:opacity-50 transition shadow-xs"
             >
-              {isPending ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <Check className="h-4 w-4" />
-              )}
+              {isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
               <span>Save Financial Settings</span>
             </button>
           </div>
         </div>
       )}
 
-      {/* TAB 2: GOVERNANCE & CONTRACTS */}
+      {/* TAB 2: PAYMENTS & STRIPE RAILS */}
+      {activeTab === "payments" && (
+        <div className="rounded-2xl border border-zinc-200/80 bg-white p-6 shadow-xs dark:border-zinc-800 dark:bg-zinc-900 space-y-6">
+          <div className="border-b border-zinc-100 pb-4 dark:border-zinc-800">
+            <h2 className="text-base font-bold text-zinc-900 dark:text-zinc-100">
+              Payment Gateways & Stripe Connect Infrastructure
+            </h2>
+            <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+              Configure Stripe Connect merchant accounts, automated payout schedules, merchant
+              statement descriptors, and settlement rails.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+            <div>
+              <label className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300">
+                Stripe Gateway Operating Mode
+              </label>
+              <div className="relative mt-1.5">
+                <select
+                  value={stripeEnvironment}
+                  onChange={(e) => setStripeEnvironment(e.target.value)}
+                  className="w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2 text-xs text-zinc-900 focus:border-purple-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 font-mono"
+                >
+                  <option value="TEST">TEST / Sandbox (Mock & Test Cards)</option>
+                  <option value="LIVE">LIVE Production (Real Credit Cards & Stripe Connect)</option>
+                </select>
+              </div>
+              <p className="mt-1 text-[11px] text-zinc-400">
+                Toggles between sandbox test cards and live banking rails.
+              </p>
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300">
+                Stripe Connect Account Type
+              </label>
+              <div className="relative mt-1.5">
+                <select
+                  value={stripeConnectType}
+                  onChange={(e) => setStripeConnectType(e.target.value)}
+                  className="w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2 text-xs text-zinc-900 focus:border-purple-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 font-mono"
+                >
+                  <option value="EXPRESS">Express (Hosted onboarding & automatic payouts)</option>
+                  <option value="STANDARD">
+                    Standard (Freelancers manage full Stripe dashboard)
+                  </option>
+                  <option value="CUSTOM">Custom (White-labeled embedded onboarding)</option>
+                </select>
+              </div>
+              <p className="mt-1 text-[11px] text-zinc-400">
+                Express provides the fastest contractor onboarding with zero KYC overhead.
+              </p>
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300">
+                Automated Payout Cadence
+              </label>
+              <div className="relative mt-1.5">
+                <select
+                  value={stripePayoutSchedule}
+                  onChange={(e) => setStripePayoutSchedule(e.target.value)}
+                  className="w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2 text-xs text-zinc-900 focus:border-purple-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 font-mono"
+                >
+                  <option value="DAILY">Daily Rolling Automatic Payouts</option>
+                  <option value="WEEKLY">Weekly Batch Payouts (Every Monday)</option>
+                  <option value="MONTHLY">Monthly Batch Payouts (1st of month)</option>
+                  <option value="MANUAL">Manual On-Demand Freelancer Withdrawals</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300">
+                Payout Holding Reserve (Days)
+              </label>
+              <div className="relative mt-1.5">
+                <input
+                  type="number"
+                  min="0"
+                  max="14"
+                  value={stripePayoutDelayDays}
+                  onChange={(e) => setStripePayoutDelayDays(Number(e.target.value))}
+                  className="w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2 text-xs text-zinc-900 focus:border-purple-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 font-mono"
+                />
+              </div>
+              <p className="mt-1 text-[11px] text-zinc-400">
+                Holding duration before milestone release becomes withdrawable to mitigate fraud.
+              </p>
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300">
+                Credit Card Statement Descriptor (Max 22 Chars)
+              </label>
+              <div className="relative mt-1.5">
+                <input
+                  type="text"
+                  maxLength={22}
+                  value={statementDescriptor}
+                  onChange={(e) => setStatementDescriptor(e.target.value)}
+                  placeholder="WORKNEST ESCROW"
+                  className="w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2 text-xs text-zinc-900 focus:border-purple-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 font-mono uppercase"
+                />
+              </div>
+              <p className="mt-1 text-[11px] text-zinc-400">
+                Text that appears on client credit card & bank statements.
+              </p>
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300">
+                Minimum Payout Withdrawal ($ USD)
+              </label>
+              <div className="relative mt-1.5">
+                <input
+                  type="number"
+                  min="5"
+                  value={minPayoutThresholdDollars}
+                  onChange={(e) => setMinPayoutThresholdDollars(Number(e.target.value))}
+                  className="w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2 text-xs text-zinc-900 focus:border-purple-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 font-mono"
+                />
+              </div>
+              <p className="mt-1 text-[11px] text-zinc-400">
+                Minimum contractor balance required to initiate a withdrawal.
+              </p>
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300">
+                Instant Payout Processing Fee (%)
+              </label>
+              <div className="relative mt-1.5">
+                <input
+                  type="number"
+                  step="0.1"
+                  min="0"
+                  max="5"
+                  value={instantPayoutFeePercent}
+                  onChange={(e) => setInstantPayoutFeePercent(Number(e.target.value))}
+                  className="w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2 text-xs text-zinc-900 focus:border-purple-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 font-mono"
+                />
+              </div>
+              <p className="mt-1 text-[11px] text-zinc-400">
+                Pass-through fee for Visa Direct / Mastercard Send instant transfers (typically
+                1.5%).
+              </p>
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300">
+                Accepted Checkout Currencies
+              </label>
+              <div className="relative mt-1.5">
+                <input
+                  type="text"
+                  value={acceptedCurrencies}
+                  onChange={(e) => setAcceptedCurrencies(e.target.value)}
+                  placeholder="USD, EUR, GBP, CAD, AUD"
+                  className="w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2 text-xs text-zinc-900 focus:border-purple-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 font-mono"
+                />
+              </div>
+              <p className="mt-1 text-[11px] text-zinc-400">Comma-separated ISO currency codes.</p>
+            </div>
+
+            <div className="flex items-center justify-between rounded-xl border border-zinc-200 bg-zinc-50/70 p-4 dark:border-zinc-800 dark:bg-zinc-950/40">
+              <div>
+                <p className="text-xs font-semibold text-zinc-900 dark:text-zinc-100">
+                  USDC / Crypto Escrow Settlement
+                </p>
+                <p className="text-[11px] text-zinc-500">
+                  Allow institutional clients to fund milestone vaults via USDC smart contracts.
+                </p>
+              </div>
+              <input
+                type="checkbox"
+                checked={cryptoUsdcEnabled}
+                onChange={(e) => setCryptoUsdcEnabled(e.target.checked)}
+                className="h-4 w-4 rounded-sm border-zinc-300 text-purple-600 focus:ring-purple-500 dark:border-zinc-700 dark:bg-zinc-900"
+              />
+            </div>
+
+            <div className="flex items-center justify-between rounded-xl border border-zinc-200 bg-zinc-50/70 p-4 dark:border-zinc-800 dark:bg-zinc-950/40">
+              <div>
+                <p className="text-xs font-semibold text-zinc-900 dark:text-zinc-100">
+                  Auto-Retry Failed Stripe Escrow Captures
+                </p>
+                <p className="text-[11px] text-zinc-500">
+                  Automatically retry card authorizations before flagging payment errors.
+                </p>
+              </div>
+              <input
+                type="checkbox"
+                checked={autoRetryFailedCharges}
+                onChange={(e) => setAutoRetryFailedCharges(e.target.checked)}
+                className="h-4 w-4 rounded-sm border-zinc-300 text-purple-600 focus:ring-purple-500 dark:border-zinc-700 dark:bg-zinc-900"
+              />
+            </div>
+          </div>
+
+          <div className="flex justify-end pt-4 border-t border-zinc-100 dark:border-zinc-800">
+            <button
+              type="button"
+              disabled={isPending}
+              onClick={() => handleSaveTab("payments")}
+              className="inline-flex items-center gap-2 rounded-xl bg-purple-600 px-5 py-2.5 text-xs font-bold text-white hover:bg-purple-700 disabled:opacity-50 transition shadow-xs"
+            >
+              {isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
+              <span>Save Payment Gateway Settings</span>
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* TAB 3: GOVERNANCE & DISPUTES */}
       {activeTab === "governance" && (
         <div className="rounded-2xl border border-zinc-200/80 bg-white p-6 shadow-xs dark:border-zinc-800 dark:bg-zinc-900 space-y-6">
           <div className="border-b border-zinc-100 pb-4 dark:border-zinc-800">
@@ -418,96 +793,104 @@ export function AdminSettingsTabs({ initialSettings, auditLogs }: AdminSettingsT
               Contract Lifecycle & Dispute Arbitration
             </h2>
             <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
-              Automated escrow release windows, revision limitations, and judicial mediation rules.
+              Set automated approval deadlines, revision thresholds, and dispute cooling-off
+              windows.
             </p>
           </div>
 
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
             <div>
-              <label className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300">
-                Milestone Inactivity Auto-Release (Days)
+              <label className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300">
+                Milestone Auto-Approval Grace Window (Days)
               </label>
-              <input
-                type="number"
-                min="3"
-                max="60"
-                value={autoApproveDays}
-                onChange={(e) => setAutoApproveDays(Number(e.target.value))}
-                className="mt-1.5 w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2 text-xs text-zinc-900 focus:border-purple-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 font-mono"
-              />
+              <div className="relative mt-1.5">
+                <input
+                  type="number"
+                  min="1"
+                  max="60"
+                  value={autoApproveDays}
+                  onChange={(e) => setAutoApproveDays(Number(e.target.value))}
+                  className="w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2 text-xs text-zinc-900 focus:border-purple-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 font-mono"
+                />
+              </div>
               <p className="mt-1 text-[11px] text-zinc-400">
-                If the client takes no action after deliverable submission, escrow automatically
-                releases to talent.
+                If the client doesn&apos;t review submitted work, escrow releases automatically
+                after this time.
               </p>
             </div>
 
             <div>
-              <label className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300">
-                Unfunded Contract Auto-Cancellation (Days)
+              <label className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300">
+                Unfunded Contract Auto-Cancel (Days)
               </label>
-              <input
-                type="number"
-                min="1"
-                max="30"
-                value={unfundedContractCancelDays}
-                onChange={(e) => setUnfundedContractCancelDays(Number(e.target.value))}
-                className="mt-1.5 w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2 text-xs text-zinc-900 focus:border-purple-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 font-mono"
-              />
+              <div className="relative mt-1.5">
+                <input
+                  type="number"
+                  min="1"
+                  max="30"
+                  value={unfundedContractCancelDays}
+                  onChange={(e) => setUnfundedContractCancelDays(Number(e.target.value))}
+                  className="w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2 text-xs text-zinc-900 focus:border-purple-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 font-mono"
+                />
+              </div>
               <p className="mt-1 text-[11px] text-zinc-400">
-                Draft or accepted contracts without escrow deposit are purged after this window.
+                Pending draft contracts not funded into escrow are automatically purged.
               </p>
             </div>
 
             <div>
-              <label className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300">
-                Maximum Revision Rounds Per Milestone
+              <label className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300">
+                Maximum Milestone Revision Requests
               </label>
-              <input
-                type="number"
-                min="1"
-                max="10"
-                value={maxMilestoneRevisions}
-                onChange={(e) => setMaxMilestoneRevisions(Number(e.target.value))}
-                className="mt-1.5 w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2 text-xs text-zinc-900 focus:border-purple-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 font-mono"
-              />
+              <div className="relative mt-1.5">
+                <input
+                  type="number"
+                  min="1"
+                  max="10"
+                  value={maxMilestoneRevisions}
+                  onChange={(e) => setMaxMilestoneRevisions(Number(e.target.value))}
+                  className="w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2 text-xs text-zinc-900 focus:border-purple-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 font-mono"
+                />
+              </div>
               <p className="mt-1 text-[11px] text-zinc-400">
-                Limits scope-creep; exceeding this threshold allows the freelancer to escalate to a
-                formal dispute.
+                Exceeding this revision limit flags the engagement for judicial moderation.
               </p>
             </div>
 
             <div>
-              <label className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300">
-                Arbitration Ruling Grace Period (Hours)
+              <label className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300">
+                Dispute Evidence Grace Period (Hours)
               </label>
-              <input
-                type="number"
-                min="0"
-                max="168"
-                value={disputeGraceHours}
-                onChange={(e) => setDisputeGraceHours(Number(e.target.value))}
-                className="mt-1.5 w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2 text-xs text-zinc-900 focus:border-purple-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 font-mono"
-              />
+              <div className="relative mt-1.5">
+                <input
+                  type="number"
+                  min="12"
+                  max="168"
+                  value={disputeGraceHours}
+                  onChange={(e) => setDisputeGraceHours(Number(e.target.value))}
+                  className="w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2 text-xs text-zinc-900 focus:border-purple-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 font-mono"
+                />
+              </div>
               <p className="mt-1 text-[11px] text-zinc-400">
-                Notice period before admin dispute ledger transfers become irreversible.
+                Window for client/freelancer to submit commit logs & work proof upon dispute.
               </p>
             </div>
 
-            <div className="sm:col-span-2 flex items-center justify-between rounded-xl border border-zinc-200 bg-zinc-50 p-4 dark:border-zinc-800 dark:bg-zinc-950/40">
+            <div className="sm:col-span-2 flex items-center justify-between rounded-xl border border-zinc-200 bg-zinc-50/70 p-4 dark:border-zinc-800 dark:bg-zinc-950/40">
               <div>
                 <p className="text-xs font-semibold text-zinc-900 dark:text-zinc-100">
-                  Proportional Split Rulings
+                  Allow Custom Judicial Split Ratios
                 </p>
                 <p className="text-[11px] text-zinc-500">
-                  Allow admins to divide milestone escrow proportionally (e.g. 50/50, 70/30) in
-                  partial completion disputes.
+                  Permit admin arbiters to divide escrow amounts proportionally (e.g. 70% freelancer
+                  / 30% client refund).
                 </p>
               </div>
               <input
                 type="checkbox"
                 checked={splitDisputeRatios}
                 onChange={(e) => setSplitDisputeRatios(e.target.checked)}
-                className="h-4 w-4 rounded-sm border-zinc-300 text-purple-600 focus:ring-purple-500"
+                className="h-4 w-4 rounded-sm border-zinc-300 text-purple-600 focus:ring-purple-500 dark:border-zinc-700 dark:bg-zinc-900"
               />
             </div>
           </div>
@@ -517,114 +900,116 @@ export function AdminSettingsTabs({ initialSettings, auditLogs }: AdminSettingsT
               type="button"
               disabled={isPending}
               onClick={() => handleSaveTab("governance")}
-              className="inline-flex items-center gap-2 rounded-xl bg-purple-600 px-5 py-2.5 text-xs font-semibold text-white shadow-sm hover:bg-purple-500 disabled:opacity-60 transition"
+              className="inline-flex items-center gap-2 rounded-xl bg-purple-600 px-5 py-2.5 text-xs font-bold text-white hover:bg-purple-700 disabled:opacity-50 transition shadow-xs"
             >
-              {isPending ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <Check className="h-4 w-4" />
-              )}
-              <span>Save Governance Settings</span>
+              {isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
+              <span>Save Governance Rules</span>
             </button>
           </div>
         </div>
       )}
 
-      {/* TAB 3: MARKETPLACE & MATCHING */}
+      {/* TAB 4: MARKETPLACE RULES */}
       {activeTab === "marketplace" && (
         <div className="rounded-2xl border border-zinc-200/80 bg-white p-6 shadow-xs dark:border-zinc-800 dark:bg-zinc-900 space-y-6">
           <div className="border-b border-zinc-100 pb-4 dark:border-zinc-800">
             <h2 className="text-base font-bold text-zinc-900 dark:text-zinc-100">
-              Marketplace Integrity & Proposal Guidelines
+              Marketplace Mechanics & Quality Control
             </h2>
             <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
-              Enforce qualification standards, bid rate limits, and automated moderation keyword
+              Tune discovery algorithms, bidding caps, zero-fee protocols, and communication safety
               filters.
             </p>
           </div>
 
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-            <div className="flex items-center justify-between rounded-xl border border-zinc-200 bg-zinc-50 p-4 dark:border-zinc-800 dark:bg-zinc-950/40">
+            <div className="flex items-center justify-between rounded-xl border border-zinc-200 bg-zinc-50/70 p-4 dark:border-zinc-800 dark:bg-zinc-950/40">
               <div>
                 <p className="text-xs font-semibold text-zinc-900 dark:text-zinc-100">
-                  Mandatory KYC for Bidding
+                  Require KYC Identity Verification for Bidding
                 </p>
                 <p className="text-[11px] text-zinc-500">
-                  Require verified identity before freelancers can submit milestone proposals.
+                  Block unverified freelancers from submitting proposals on high-budget briefs.
                 </p>
               </div>
               <input
                 type="checkbox"
                 checked={requireKycForBidding}
                 onChange={(e) => setRequireKycForBidding(e.target.checked)}
-                className="h-4 w-4 rounded-sm border-zinc-300 text-purple-600 focus:ring-purple-500"
+                className="h-4 w-4 rounded-sm border-zinc-300 text-purple-600 focus:ring-purple-500 dark:border-zinc-700 dark:bg-zinc-900"
               />
             </div>
 
-            <div className="flex items-center justify-between rounded-xl border border-zinc-200 bg-zinc-50 p-4 dark:border-zinc-800 dark:bg-zinc-950/40">
+            <div className="flex items-center justify-between rounded-xl border border-zinc-200 bg-zinc-50/70 p-4 dark:border-zinc-800 dark:bg-zinc-950/40">
               <div>
                 <p className="text-xs font-semibold text-zinc-900 dark:text-zinc-100">
-                  0% Freelancer Fee Protocol Banner
+                  Enforce Zero-Commission Protocol (0% Take Rate)
                 </p>
                 <p className="text-[11px] text-zinc-500">
-                  Display the zero-connects and 0% take-rate badge across marketing pages.
+                  Promote 100% contractor take-home pay, charging only direct Stripe processing
+                  surcharges.
                 </p>
               </div>
               <input
                 type="checkbox"
                 checked={zeroCommissionProtocol}
                 onChange={(e) => setZeroCommissionProtocol(e.target.checked)}
-                className="h-4 w-4 rounded-sm border-zinc-300 text-purple-600 focus:ring-purple-500"
+                className="h-4 w-4 rounded-sm border-zinc-300 text-purple-600 focus:ring-purple-500 dark:border-zinc-700 dark:bg-zinc-900"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300">
-                Max Concurrent Open Proposals Per Talent
+              <label className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300">
+                Max Active Proposals Per Freelancer
               </label>
-              <input
-                type="number"
-                min="5"
-                max="100"
-                value={maxOpenProposals}
-                onChange={(e) => setMaxOpenProposals(Number(e.target.value))}
-                className="mt-1.5 w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2 text-xs text-zinc-900 focus:border-purple-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 font-mono"
-              />
+              <div className="relative mt-1.5">
+                <input
+                  type="number"
+                  min="5"
+                  max="100"
+                  value={maxOpenProposals}
+                  onChange={(e) => setMaxOpenProposals(Number(e.target.value))}
+                  className="w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2 text-xs text-zinc-900 focus:border-purple-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 font-mono"
+                />
+              </div>
               <p className="mt-1 text-[11px] text-zinc-400">
-                Prevents proposal spam by bounding pending applications.
+                Restricts proposal spam and encourages deliberate, high-quality bidding.
               </p>
             </div>
 
             <div>
-              <label className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300">
-                Unfilled Job Auto-Expiration (Days)
+              <label className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300">
+                Job Auto-Close Expiry (Days)
               </label>
-              <input
-                type="number"
-                min="7"
-                max="90"
-                value={jobAutoCloseDays}
-                onChange={(e) => setJobAutoCloseDays(Number(e.target.value))}
-                className="mt-1.5 w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2 text-xs text-zinc-900 focus:border-purple-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 font-mono"
-              />
+              <div className="relative mt-1.5">
+                <input
+                  type="number"
+                  min="7"
+                  max="90"
+                  value={jobAutoCloseDays}
+                  onChange={(e) => setJobAutoCloseDays(Number(e.target.value))}
+                  className="w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2 text-xs text-zinc-900 focus:border-purple-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 font-mono"
+                />
+              </div>
               <p className="mt-1 text-[11px] text-zinc-400">
-                Stale listings without active contracts are archived automatically.
+                Unfilled job listings expire automatically to keep the marketplace fresh.
               </p>
             </div>
 
             <div className="sm:col-span-2">
-              <label className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300">
-                Restricted Communication & Anti-Circumvention Filter (Comma-Separated)
+              <label className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300">
+                Restricted Off-Platform Communication Keywords
               </label>
-              <textarea
-                rows={3}
-                value={restrictedKeywords}
-                onChange={(e) => setRestrictedKeywords(e.target.value)}
-                placeholder="telegram, whatsapp, wire transfer, pay outside, off-platform..."
-                className="mt-1.5 w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2 text-xs text-zinc-900 focus:border-purple-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 font-mono whitespace-pre-wrap"
-              />
+              <div className="relative mt-1.5">
+                <textarea
+                  rows={2}
+                  value={restrictedKeywords}
+                  onChange={(e) => setRestrictedKeywords(e.target.value)}
+                  className="w-full rounded-xl border border-zinc-300 bg-white p-3 text-xs text-zinc-900 focus:border-purple-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 font-mono"
+                />
+              </div>
               <p className="mt-1 text-[11px] text-zinc-400">
-                Flags messages or proposal text matching these keywords for priority moderation.
+                Comma-separated triggers flagged in messaging to protect escrow transactions.
               </p>
             </div>
           </div>
@@ -634,115 +1019,397 @@ export function AdminSettingsTabs({ initialSettings, auditLogs }: AdminSettingsT
               type="button"
               disabled={isPending}
               onClick={() => handleSaveTab("marketplace")}
-              className="inline-flex items-center gap-2 rounded-xl bg-purple-600 px-5 py-2.5 text-xs font-semibold text-white shadow-sm hover:bg-purple-500 disabled:opacity-60 transition"
+              className="inline-flex items-center gap-2 rounded-xl bg-purple-600 px-5 py-2.5 text-xs font-bold text-white hover:bg-purple-700 disabled:opacity-50 transition shadow-xs"
             >
-              {isPending ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <Check className="h-4 w-4" />
-              )}
+              {isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
               <span>Save Marketplace Rules</span>
             </button>
           </div>
         </div>
       )}
 
-      {/* TAB 4: SECURITY & ACCESS */}
-      {activeTab === "security" && (
+      {/* TAB 5: EMAIL & TRANSACTIONAL NOTIFICATIONS */}
+      {activeTab === "emails" && (
         <div className="rounded-2xl border border-zinc-200/80 bg-white p-6 shadow-xs dark:border-zinc-800 dark:bg-zinc-900 space-y-6">
           <div className="border-b border-zinc-100 pb-4 dark:border-zinc-800">
             <h2 className="text-base font-bold text-zinc-900 dark:text-zinc-100">
-              Platform Security, Rate Limiting & Access Controls
+              Email Routing & Transactional Delivery
             </h2>
             <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
-              Global maintenance toggle, DDoS rate limiting guards, and organization seat limits.
+              Configure SMTP gateway credentials, sender aliases, support inboxes, and automatic
+              event triggers.
             </p>
           </div>
 
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-            <div className="sm:col-span-2 flex items-center justify-between rounded-xl border border-amber-200 bg-amber-50/50 p-4 dark:border-amber-900/40 dark:bg-amber-950/20">
-              <div className="flex items-center gap-3">
-                <ShieldAlert className="h-5 w-5 text-amber-600 dark:text-amber-400 shrink-0" />
-                <div>
-                  <p className="text-xs font-bold text-amber-900 dark:text-amber-300">
-                    Emergency Maintenance Mode
-                  </p>
-                  <p className="text-[11px] text-amber-700 dark:text-amber-400">
-                    When active, new job briefs and escrow deposits are paused across the platform.
-                  </p>
-                </div>
+            <div>
+              <label className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300">
+                Email Dispatch Provider
+              </label>
+              <div className="relative mt-1.5">
+                <select
+                  value={emailProvider}
+                  onChange={(e) => setEmailProvider(e.target.value)}
+                  className="w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2 text-xs text-zinc-900 focus:border-purple-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 font-mono"
+                >
+                  <option value="RESEND">Resend (Modern developer transactional email API)</option>
+                  <option value="SENDGRID">SendGrid by Twilio</option>
+                  <option value="POSTMARK">Postmark (ActiveCampaign)</option>
+                  <option value="SMTP">Custom Enterprise SMTP Server</option>
+                </select>
               </div>
-              <input
-                type="checkbox"
-                checked={maintenanceMode}
-                onChange={(e) => setMaintenanceMode(e.target.checked)}
-                className="h-4 w-4 rounded-sm border-amber-300 text-amber-600 focus:ring-amber-500"
-              />
             </div>
 
             <div>
-              <label className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300">
-                Rate Limit Threshold (Requests Per Minute)
+              <label className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300">
+                Default Sender Display Name
               </label>
-              <input
-                type="number"
-                min="30"
-                max="600"
-                value={rateLimitPerMinute}
-                onChange={(e) => setRateLimitPerMinute(Number(e.target.value))}
-                className="mt-1.5 w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2 text-xs text-zinc-900 focus:border-purple-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 font-mono"
-              />
+              <div className="relative mt-1.5">
+                <input
+                  type="text"
+                  value={emailFromName}
+                  onChange={(e) => setEmailFromName(e.target.value)}
+                  placeholder="WorkNest Notifications"
+                  className="w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2 text-xs text-zinc-900 focus:border-purple-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300">
+                System Outbound Sender Address
+              </label>
+              <div className="relative mt-1.5">
+                <input
+                  type="email"
+                  value={emailFromAddress}
+                  onChange={(e) => setEmailFromAddress(e.target.value)}
+                  placeholder="notifications@worknest.dev"
+                  className="w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2 text-xs text-zinc-900 focus:border-purple-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 font-mono"
+                />
+              </div>
               <p className="mt-1 text-[11px] text-zinc-400">
-                In-memory token bucket capacity protecting auth routes and API actions.
+                Must be an authenticated domain identity in your DNS records.
               </p>
             </div>
 
             <div>
-              <label className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300">
-                Official Governance & Support Email
+              <label className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300">
+                Customer Support Contact Address
               </label>
-              <input
-                type="email"
-                value={supportEmail}
-                onChange={(e) => setSupportEmail(e.target.value)}
-                className="mt-1.5 w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2 text-xs text-zinc-900 focus:border-purple-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100"
-              />
-              <p className="mt-1 text-[11px] text-zinc-400">
-                Contact address listed in transactional notices and dispute rulings.
-              </p>
+              <div className="relative mt-1.5">
+                <input
+                  type="email"
+                  value={emailSupportAddress}
+                  onChange={(e) => setEmailSupportAddress(e.target.value)}
+                  placeholder="support@worknest.dev"
+                  className="w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2 text-xs text-zinc-900 focus:border-purple-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 font-mono"
+                />
+              </div>
             </div>
 
             <div>
-              <label className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300">
-                Max Team Seats Per Client Organization
+              <label className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300">
+                Invoicing & Billing Inquiries Address
               </label>
-              <input
-                type="number"
-                min="1"
-                max="50"
-                value={maxTeamSeats}
-                onChange={(e) => setMaxTeamSeats(Number(e.target.value))}
-                className="mt-1.5 w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2 text-xs text-zinc-900 focus:border-purple-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 font-mono"
-              />
-              <p className="mt-1 text-[11px] text-zinc-400">
-                Number of seats allowed before prompting for an Enterprise plan upgrade.
-              </p>
+              <div className="relative mt-1.5">
+                <input
+                  type="email"
+                  value={emailBillingAddress}
+                  onChange={(e) => setEmailBillingAddress(e.target.value)}
+                  placeholder="billing@worknest.dev"
+                  className="w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2 text-xs text-zinc-900 focus:border-purple-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 font-mono"
+                />
+              </div>
             </div>
 
-            <div className="flex items-center justify-between rounded-xl border border-zinc-200 bg-zinc-50 p-4 dark:border-zinc-800 dark:bg-zinc-950/40">
+            <div>
+              <label className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300">
+                Notification Digest Cadence
+              </label>
+              <div className="relative mt-1.5">
+                <select
+                  value={emailDigestFrequency}
+                  onChange={(e) => setEmailDigestFrequency(e.target.value)}
+                  className="w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2 text-xs text-zinc-900 focus:border-purple-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 font-mono"
+                >
+                  <option value="INSTANT">Instant Delivery (Triggered immediately on event)</option>
+                  <option value="HOURLY">Hourly Bundled Digest</option>
+                  <option value="DAILY">Daily Executive Briefing</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300">
+                SMTP Server Hostname
+              </label>
+              <div className="relative mt-1.5">
+                <input
+                  type="text"
+                  value={smtpHost}
+                  onChange={(e) => setSmtpHost(e.target.value)}
+                  placeholder="smtp.resend.com"
+                  className="w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2 text-xs text-zinc-900 focus:border-purple-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 font-mono"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300">
+                SMTP Port
+              </label>
+              <div className="relative mt-1.5">
+                <input
+                  type="number"
+                  value={smtpPort}
+                  onChange={(e) => setSmtpPort(Number(e.target.value))}
+                  placeholder="587"
+                  className="w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2 text-xs text-zinc-900 focus:border-purple-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 font-mono"
+                />
+              </div>
+            </div>
+
+            <div className="sm:col-span-2 grid grid-cols-1 gap-3 sm:grid-cols-2 pt-2">
+              <div className="flex items-center justify-between rounded-xl border border-zinc-200 bg-zinc-50/70 p-3.5 dark:border-zinc-800 dark:bg-zinc-950/40">
+                <div>
+                  <p className="text-xs font-semibold text-zinc-900 dark:text-zinc-100">
+                    Notify On New Candidate Proposal
+                  </p>
+                  <p className="text-[11px] text-zinc-500">Email client when a bid is received</p>
+                </div>
+                <input
+                  type="checkbox"
+                  checked={notifyOnNewProposal}
+                  onChange={(e) => setNotifyOnNewProposal(e.target.checked)}
+                  className="h-4 w-4 rounded-sm border-zinc-300 text-purple-600 focus:ring-purple-500 dark:border-zinc-700 dark:bg-zinc-900"
+                />
+              </div>
+
+              <div className="flex items-center justify-between rounded-xl border border-zinc-200 bg-zinc-50/70 p-3.5 dark:border-zinc-800 dark:bg-zinc-950/40">
+                <div>
+                  <p className="text-xs font-semibold text-zinc-900 dark:text-zinc-100">
+                    Notify On Milestone Deliverable
+                  </p>
+                  <p className="text-[11px] text-zinc-500">Alert client when work is submitted</p>
+                </div>
+                <input
+                  type="checkbox"
+                  checked={notifyOnMilestoneSubmitted}
+                  onChange={(e) => setNotifyOnMilestoneSubmitted(e.target.checked)}
+                  className="h-4 w-4 rounded-sm border-zinc-300 text-purple-600 focus:ring-purple-500 dark:border-zinc-700 dark:bg-zinc-900"
+                />
+              </div>
+
+              <div className="flex items-center justify-between rounded-xl border border-zinc-200 bg-zinc-50/70 p-3.5 dark:border-zinc-800 dark:bg-zinc-950/40">
+                <div>
+                  <p className="text-xs font-semibold text-zinc-900 dark:text-zinc-100">
+                    Notify On Escrow Deposit Funded
+                  </p>
+                  <p className="text-[11px] text-zinc-500">Alert freelancer to start development</p>
+                </div>
+                <input
+                  type="checkbox"
+                  checked={notifyOnEscrowFunded}
+                  onChange={(e) => setNotifyOnEscrowFunded(e.target.checked)}
+                  className="h-4 w-4 rounded-sm border-zinc-300 text-purple-600 focus:ring-purple-500 dark:border-zinc-700 dark:bg-zinc-900"
+                />
+              </div>
+
+              <div className="flex items-center justify-between rounded-xl border border-zinc-200 bg-zinc-50/70 p-3.5 dark:border-zinc-800 dark:bg-zinc-950/40">
+                <div>
+                  <p className="text-xs font-semibold text-zinc-900 dark:text-zinc-100">
+                    Notify Admins On Dispute Escalation
+                  </p>
+                  <p className="text-[11px] text-zinc-500">Alert arbiter team for mediation</p>
+                </div>
+                <input
+                  type="checkbox"
+                  checked={notifyOnDisputeOpened}
+                  onChange={(e) => setNotifyOnDisputeOpened(e.target.checked)}
+                  className="h-4 w-4 rounded-sm border-zinc-300 text-purple-600 focus:ring-purple-500 dark:border-zinc-700 dark:bg-zinc-900"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="flex justify-end pt-4 border-t border-zinc-100 dark:border-zinc-800">
+            <button
+              type="button"
+              disabled={isPending}
+              onClick={() => handleSaveTab("emails")}
+              className="inline-flex items-center gap-2 rounded-xl bg-purple-600 px-5 py-2.5 text-xs font-bold text-white hover:bg-purple-700 disabled:opacity-50 transition shadow-xs"
+            >
+              {isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
+              <span>Save Email Configuration</span>
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* TAB 6: INTEGRATIONS, WEBHOOKS & AI */}
+      {activeTab === "integrations" && (
+        <div className="rounded-2xl border border-zinc-200/80 bg-white p-6 shadow-xs dark:border-zinc-800 dark:bg-zinc-900 space-y-6">
+          <div className="border-b border-zinc-100 pb-4 dark:border-zinc-800">
+            <h2 className="text-base font-bold text-zinc-900 dark:text-zinc-100">
+              Third-Party Integrations, Webhooks & AI Services
+            </h2>
+            <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+              Manage GitHub pull request verification, AI Milestone Co-Pilot LLM engine toggles, and
+              real-time Slack/Discord webhooks.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+            <div className="flex items-center justify-between rounded-xl border border-zinc-200 bg-zinc-50/70 p-4 dark:border-zinc-800 dark:bg-zinc-950/40">
               <div>
                 <p className="text-xs font-semibold text-zinc-900 dark:text-zinc-100">
-                  Enforce Email Verification
+                  GitHub App Pull Request Escrow Verification
                 </p>
                 <p className="text-[11px] text-zinc-500">
-                  Require verified email before activating employer contracts.
+                  Verify git commits and inspect code diffs before milestones can be approved.
                 </p>
               </div>
               <input
                 type="checkbox"
-                checked={requireEmailVerification}
-                onChange={(e) => setRequireEmailVerification(e.target.checked)}
-                className="h-4 w-4 rounded-sm border-zinc-300 text-purple-600 focus:ring-purple-500"
+                checked={githubAppEnabled}
+                onChange={(e) => setGithubAppEnabled(e.target.checked)}
+                className="h-4 w-4 rounded-sm border-zinc-300 text-purple-600 focus:ring-purple-500 dark:border-zinc-700 dark:bg-zinc-900"
+              />
+            </div>
+
+            <div className="flex items-center justify-between rounded-xl border border-zinc-200 bg-zinc-50/70 p-4 dark:border-zinc-800 dark:bg-zinc-950/40">
+              <div>
+                <p className="text-xs font-semibold text-zinc-900 dark:text-zinc-100">
+                  WorkNest AI Milestone Co-Pilot Engine
+                </p>
+                <p className="text-[11px] text-zinc-500">
+                  Toggle AI milestone generation & proposal fit analysis for clients & contractors.
+                </p>
+              </div>
+              <input
+                type="checkbox"
+                checked={aiMilestoneCopilotEnabled}
+                onChange={(e) => setAiMilestoneCopilotEnabled(e.target.checked)}
+                className="h-4 w-4 rounded-sm border-zinc-300 text-purple-600 focus:ring-purple-500 dark:border-zinc-700 dark:bg-zinc-900"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300">
+                AI Architect Foundation Model
+              </label>
+              <div className="relative mt-1.5">
+                <select
+                  value={aiCopilotModel}
+                  onChange={(e) => setAiCopilotModel(e.target.value)}
+                  className="w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2 text-xs text-zinc-900 focus:border-purple-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 font-mono"
+                >
+                  <option value="gemini-2.5-pro">Google Gemini 2.5 Pro (Recommended)</option>
+                  <option value="gemini-2.5-flash">
+                    Google Gemini 2.5 Flash (Ultra-low latency)
+                  </option>
+                  <option value="claude-3-7-sonnet">Anthropic Claude 3.7 Sonnet</option>
+                  <option value="gpt-4o">OpenAI GPT-4o</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300">
+                AI Max Completion Tokens
+              </label>
+              <div className="relative mt-1.5">
+                <input
+                  type="number"
+                  min="512"
+                  max="8192"
+                  step="512"
+                  value={aiMaxTokens}
+                  onChange={(e) => setAiMaxTokens(Number(e.target.value))}
+                  className="w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2 text-xs text-zinc-900 focus:border-purple-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 font-mono"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300">
+                Slack Incoming Webhook URL (Admin Alerts)
+              </label>
+              <div className="relative mt-1.5">
+                <input
+                  type="url"
+                  value={slackWebhookUrl}
+                  onChange={(e) => setSlackWebhookUrl(e.target.value)}
+                  placeholder="https://hooks.slack.com/services/..."
+                  className="w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2 text-xs text-zinc-900 focus:border-purple-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 font-mono"
+                />
+              </div>
+              <p className="mt-1 text-[11px] text-zinc-400">
+                Dispatches urgent notifications for high-dollar dispute filings.
+              </p>
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300">
+                Discord Webhook URL (Ops Monitoring)
+              </label>
+              <div className="relative mt-1.5">
+                <input
+                  type="url"
+                  value={discordWebhookUrl}
+                  onChange={(e) => setDiscordWebhookUrl(e.target.value)}
+                  placeholder="https://discord.com/api/webhooks/..."
+                  className="w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2 text-xs text-zinc-900 focus:border-purple-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 font-mono"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300">
+                Allowed GitHub Organizations (Optional)
+              </label>
+              <div className="relative mt-1.5">
+                <input
+                  type="text"
+                  value={githubAllowedOrgs}
+                  onChange={(e) => setGithubAllowedOrgs(e.target.value)}
+                  placeholder="e.g. acme-corp, my-org (leave blank for all)"
+                  className="w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2 text-xs text-zinc-900 focus:border-purple-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 font-mono"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300">
+                Webhook Retry Limit on Failure
+              </label>
+              <div className="relative mt-1.5">
+                <input
+                  type="number"
+                  min="1"
+                  max="10"
+                  value={webhookRetryLimit}
+                  onChange={(e) => setWebhookRetryLimit(Number(e.target.value))}
+                  className="w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2 text-xs text-zinc-900 focus:border-purple-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 font-mono"
+                />
+              </div>
+            </div>
+
+            <div className="sm:col-span-2 flex items-center justify-between rounded-xl border border-zinc-200 bg-zinc-50/70 p-4 dark:border-zinc-800 dark:bg-zinc-950/40">
+              <div>
+                <p className="text-xs font-semibold text-zinc-900 dark:text-zinc-100">
+                  Sentry Distributed Tracing & Exception Monitoring
+                </p>
+                <p className="text-[11px] text-zinc-500">
+                  Capture unhandled exceptions and monitor API response latencies.
+                </p>
+              </div>
+              <input
+                type="checkbox"
+                checked={sentryMonitoringEnabled}
+                onChange={(e) => setSentryMonitoringEnabled(e.target.checked)}
+                className="h-4 w-4 rounded-sm border-zinc-300 text-purple-600 focus:ring-purple-500 dark:border-zinc-700 dark:bg-zinc-900"
               />
             </div>
           </div>
@@ -751,64 +1418,170 @@ export function AdminSettingsTabs({ initialSettings, auditLogs }: AdminSettingsT
             <button
               type="button"
               disabled={isPending}
-              onClick={() => handleSaveTab("security")}
-              className="inline-flex items-center gap-2 rounded-xl bg-purple-600 px-5 py-2.5 text-xs font-semibold text-white shadow-sm hover:bg-purple-500 disabled:opacity-60 transition"
+              onClick={() => handleSaveTab("integrations")}
+              className="inline-flex items-center gap-2 rounded-xl bg-purple-600 px-5 py-2.5 text-xs font-bold text-white hover:bg-purple-700 disabled:opacity-50 transition shadow-xs"
             >
-              {isPending ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <Check className="h-4 w-4" />
-              )}
-              <span>Save Security Settings</span>
+              {isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
+              <span>Save Integrations & AI Settings</span>
             </button>
           </div>
         </div>
       )}
 
-      {/* TAB 5: AUDIT LOG */}
-      {activeTab === "audit" && (
+      {/* TAB 7: SECURITY & ACCESS */}
+      {activeTab === "security" && (
         <div className="rounded-2xl border border-zinc-200/80 bg-white p-6 shadow-xs dark:border-zinc-800 dark:bg-zinc-900 space-y-6">
-          <div className="flex items-center justify-between border-b border-zinc-100 pb-4 dark:border-zinc-800">
+          <div className="border-b border-zinc-100 pb-4 dark:border-zinc-800">
+            <h2 className="text-base font-bold text-zinc-900 dark:text-zinc-100">
+              System Security, Access & Maintenance
+            </h2>
+            <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+              Manage emergency maintenance toggles, API rate limits, and verification requirements.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+            <div className="flex items-center justify-between rounded-xl border border-amber-500/20 bg-amber-500/5 p-4 dark:border-amber-500/30 dark:bg-amber-500/10">
+              <div>
+                <p className="text-xs font-bold text-amber-900 dark:text-amber-200">
+                  Maintenance Mode (Read-Only)
+                </p>
+                <p className="text-[11px] text-amber-700 dark:text-amber-300">
+                  Locks write operations (escrow deposits, proposals) while preserving browsing.
+                </p>
+              </div>
+              <input
+                type="checkbox"
+                checked={maintenanceMode}
+                onChange={(e) => setMaintenanceMode(e.target.checked)}
+                className="h-4 w-4 rounded-sm border-zinc-300 text-amber-600 focus:ring-amber-500 dark:border-zinc-700 dark:bg-zinc-900"
+              />
+            </div>
+
+            <div className="flex items-center justify-between rounded-xl border border-zinc-200 bg-zinc-50/70 p-4 dark:border-zinc-800 dark:bg-zinc-950/40">
+              <div>
+                <p className="text-xs font-semibold text-zinc-900 dark:text-zinc-100">
+                  Require Email Verification
+                </p>
+                <p className="text-[11px] text-zinc-500">
+                  New users must verify email address before posting jobs or submitting bids.
+                </p>
+              </div>
+              <input
+                type="checkbox"
+                checked={requireEmailVerification}
+                onChange={(e) => setRequireEmailVerification(e.target.checked)}
+                className="h-4 w-4 rounded-sm border-zinc-300 text-purple-600 focus:ring-purple-500 dark:border-zinc-700 dark:bg-zinc-900"
+              />
+            </div>
+
             <div>
-              <h2 className="text-base font-bold text-zinc-900 dark:text-zinc-100">
-                Platform Settings Audit Trail
-              </h2>
-              <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
-                Immutable record of administrative configuration updates and policy adjustments.
+              <label className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300">
+                Global API Rate Limit (Requests / Minute)
+              </label>
+              <div className="relative mt-1.5">
+                <input
+                  type="number"
+                  min="30"
+                  max="1000"
+                  value={rateLimitPerMinute}
+                  onChange={(e) => setRateLimitPerMinute(Number(e.target.value))}
+                  className="w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2 text-xs text-zinc-900 focus:border-purple-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 font-mono"
+                />
+              </div>
+              <p className="mt-1 text-[11px] text-zinc-400">
+                In-memory sliding window rate limiter per client IP address.
               </p>
             </div>
-            <div className="flex items-center gap-1.5 text-xs text-zinc-500 font-mono">
-              <History className="h-4 w-4 text-purple-600" />
-              <span>{auditLogs.length} Events Logged</span>
+
+            <div>
+              <label className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300">
+                Maximum Team Seats Per Organization
+              </label>
+              <div className="relative mt-1.5">
+                <input
+                  type="number"
+                  min="1"
+                  max="100"
+                  value={maxTeamSeats}
+                  onChange={(e) => setMaxTeamSeats(Number(e.target.value))}
+                  className="w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2 text-xs text-zinc-900 focus:border-purple-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 font-mono"
+                />
+              </div>
+              <p className="mt-1 text-[11px] text-zinc-400">
+                Number of team members a client company can invite.
+              </p>
+            </div>
+
+            <div className="sm:col-span-2">
+              <label className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300">
+                System Governance Support Email
+              </label>
+              <div className="relative mt-1.5">
+                <input
+                  type="email"
+                  value={supportEmail}
+                  onChange={(e) => setSupportEmail(e.target.value)}
+                  className="w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2 text-xs text-zinc-900 focus:border-purple-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 font-mono"
+                />
+              </div>
             </div>
           </div>
 
+          <div className="flex justify-end pt-4 border-t border-zinc-100 dark:border-zinc-800">
+            <button
+              type="button"
+              disabled={isPending}
+              onClick={() => handleSaveTab("security")}
+              className="inline-flex items-center gap-2 rounded-xl bg-purple-600 px-5 py-2.5 text-xs font-bold text-white hover:bg-purple-700 disabled:opacity-50 transition shadow-xs"
+            >
+              {isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
+              <span>Save Security Policies</span>
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* TAB 8: AUDIT TRAIL */}
+      {activeTab === "audit" && (
+        <div className="rounded-2xl border border-zinc-200/80 bg-white p-6 shadow-xs dark:border-zinc-800 dark:bg-zinc-900 space-y-6">
+          <div className="border-b border-zinc-100 pb-4 dark:border-zinc-800">
+            <h2 className="text-base font-bold text-zinc-900 dark:text-zinc-100">
+              Platform Settings Audit Trail
+            </h2>
+            <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+              Immutable ledger of configuration updates, administrator actions, and timestamped
+              payloads.
+            </p>
+          </div>
+
           {auditLogs.length === 0 ? (
-            <div className="rounded-xl border border-dashed border-zinc-200 p-8 text-center text-xs text-zinc-400 dark:border-zinc-800">
-              No platform setting update events recorded yet.
+            <div className="rounded-xl border border-dashed border-zinc-200 p-8 text-center text-xs text-zinc-500 dark:border-zinc-800">
+              No platform setting modifications recorded in the audit log yet.
             </div>
           ) : (
             <div className="divide-y divide-zinc-100 dark:divide-zinc-800">
               {auditLogs.map((log) => (
-                <div key={log.id} className="py-3.5 flex items-start justify-between gap-4">
-                  <div className="space-y-1">
+                <div key={log.id} className="py-4 first:pt-0 last:pb-0 space-y-2">
+                  <div className="flex items-center justify-between text-xs">
                     <div className="flex items-center gap-2">
-                      <span className="rounded-md bg-purple-100 px-2 py-0.5 font-mono text-[10px] font-bold text-purple-700 dark:bg-purple-950/60 dark:text-purple-300">
+                      <span className="font-mono font-bold text-purple-600 dark:text-purple-400">
                         {log.action}
                       </span>
-                      <span className="text-xs font-medium text-zinc-700 dark:text-zinc-300">
-                        By {log.actor?.name ?? log.actor?.email ?? "System Administrator"}
+                      <span className="text-zinc-400">•</span>
+                      <span className="font-medium text-zinc-700 dark:text-zinc-300">
+                        {log.actor?.name ?? log.actor?.email ?? "System Admin"}
                       </span>
                     </div>
-                    <pre className="max-w-xl overflow-x-auto rounded-lg bg-zinc-50 p-2 text-[11px] font-mono text-zinc-600 dark:bg-zinc-950/80 dark:text-zinc-400">
-                      {typeof log.metadata === "string"
-                        ? log.metadata
-                        : JSON.stringify(log.metadata, null, 2)}
-                    </pre>
+                    <span className="text-[11px] text-zinc-400">
+                      {new Date(log.createdAt).toLocaleString()}
+                    </span>
                   </div>
-                  <span className="shrink-0 text-[11px] text-zinc-400">
-                    {new Date(log.createdAt).toLocaleString()}
-                  </span>
+                  {log.metadata ? (
+                    <pre className="rounded-xl bg-zinc-50 p-3 font-mono text-[11px] text-zinc-700 dark:bg-zinc-950 dark:text-zinc-300 overflow-x-auto">
+                      {JSON.stringify(log.metadata, null, 2)}
+                    </pre>
+                  ) : null}
                 </div>
               ))}
             </div>

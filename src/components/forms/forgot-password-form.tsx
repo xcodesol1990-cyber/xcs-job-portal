@@ -36,7 +36,7 @@ export function ForgotPasswordForm() {
           <div>
             <label
               htmlFor="email"
-              className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300"
+              className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300"
             >
               Registered Email Address
             </label>

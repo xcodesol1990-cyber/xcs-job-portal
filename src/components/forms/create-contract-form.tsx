@@ -69,7 +69,7 @@ export function CreateContractForm({ proposalId, bidDollars }: CreateContractFor
 
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <label className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300">
+          <label className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300">
             Contract Milestones
           </label>
           <button

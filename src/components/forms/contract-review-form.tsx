@@ -94,7 +94,7 @@ export function ContractReviewForm({ contractId, counterpartRole }: ContractRevi
       </div>
 
       <div>
-        <label className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300">
+        <label className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300">
           Public Feedback (Optional)
         </label>
         <textarea

@@ -69,7 +69,7 @@ export function PortfolioList({ items }: PortfolioListProps) {
           className="rounded-xl border border-indigo-100 bg-indigo-50/30 p-4 space-y-3 dark:border-indigo-900/40 dark:bg-indigo-950/20"
         >
           <div>
-            <label className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300">
+            <label className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300">
               Project Title
             </label>
             <input
@@ -82,7 +82,7 @@ export function PortfolioList({ items }: PortfolioListProps) {
             />
           </div>
           <div>
-            <label className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300">
+            <label className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300">
               Project Link / GitHub URL (Optional)
             </label>
             <input
@@ -94,7 +94,7 @@ export function PortfolioList({ items }: PortfolioListProps) {
             />
           </div>
           <div>
-            <label className="block text-xs font-normal capitalize text-zinc-700 dark:text-zinc-300">
+            <label className="block text-xs font-semibold capitalize text-zinc-700 dark:text-zinc-300">
               Description
             </label>
             <textarea
