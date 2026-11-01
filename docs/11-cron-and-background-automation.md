@@ -61,8 +61,31 @@ sequenceDiagram
 
 - **CRON_SECRET Authentication**:
   - The endpoint verifies the incoming `Authorization: Bearer <CRON_SECRET>` header to prevent unauthorized public execution.
+- **PostgreSQL Advisory Locking (`withCronAdvisoryLock`)**:
+  - Uses `pg_try_advisory_lock(9999)` so overlapping cron runs or multi-region trigger retries are blocked immediately (`HTTP 429`), preventing race conditions and duplicate transaction processing.
 - **Fail-Safe Transaction Isolation**:
   - Each task executes in its own isolated `try/catch` block. If token cleanup fails, ledger reconciliation and milestone approval still run and report their individual outcomes.
+
+---
+
+## Security & Performance Checklist (Phase 9 Audit)
+
+1. **Security Headers**:
+   - `Strict-Transport-Security: max-age=63072000; includeSubDomains; preload`
+   - `X-Frame-Options: DENY` (Clickjacking prevention)
+   - `X-Content-Type-Options: nosniff` (MIME sniffing prevention)
+   - `Referrer-Policy: strict-origin-when-cross-origin`
+   - `Permissions-Policy: camera=(), microphone=(), geolocation=()`
+   - `Cache-Control: no-store` on all API endpoints
+2. **Cryptographic Integrity**:
+   - Integer minor units (`BigInt` / cents) for all currencies
+   - Double-entry ledger parity verified automatically every night
+   - Argon2id password hashing with random salt
+   - Sensitive columns encrypted with AES-256-GCM
+3. **Database Performance**:
+   - Compound indexes on query hotpaths (`[status, publishedAt]`, `[userId, createdAt]`)
+   - Cursor-based pagination avoiding expensive `OFFSET` overhead on large tables
+   - All foreign keys indexed with explicit `onDelete` cascades/restrictions
 
 ---
 
