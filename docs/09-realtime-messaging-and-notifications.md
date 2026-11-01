@@ -47,6 +47,11 @@ graph LR
      - Deliverable submitted for approval
      - Milestone approved & funds released
      - Dispute filed / resolved
+5. **Real-Time WebRTC Contract Workroom Huddles**:
+   - Integrated directly into active contract rooms (`/contracts/[id]`) via `<ContractHuddleModal />`.
+   - Low-latency peer-to-peer audio and video communication without third-party meeting links (Zoom/Google Meet).
+   - High-definition screen sharing with 1-click toggling for live code reviews, UI mockups, and architectural design walkthroughs.
+   - Built-in session duration timer and timestamped audit logging for contract verification and milestone deliverables.
 
 ---
 

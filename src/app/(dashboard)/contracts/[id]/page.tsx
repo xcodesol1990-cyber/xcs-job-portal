@@ -5,6 +5,7 @@ import { ContractService } from "@/server/services/contract.service";
 import { ContractMilestoneActions } from "@/components/forms/contract-milestone-actions";
 import { ContractReviewForm } from "@/components/forms/contract-review-form";
 import { OpenDisputeModal } from "@/components/forms/open-dispute-modal";
+import { ContractHuddleModal } from "@/components/chat/contract-huddle-modal";
 import { Badge } from "@/components/ui/badge";
 import {
   ArrowLeft,
@@ -100,6 +101,16 @@ export default async function ContractRoomPage({ params }: ContractPageProps) {
         </Link>
 
         <div className="flex items-center gap-2.5">
+          <ContractHuddleModal
+            contractId={contract.id}
+            counterpartName={
+              isClient
+                ? contract.freelancer.name
+                : (contract.client.clientProfile?.companyName ?? contract.client.name)
+            }
+            counterpartRole={isClient ? "Freelancer" : "Client"}
+          />
+
           <Link
             href="/messages"
             className="inline-flex items-center gap-1.5 rounded-xl border border-zinc-200/90 bg-white px-3.5 py-2 text-xs font-semibold text-zinc-700 shadow-xs transition hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800"

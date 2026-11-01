@@ -40,8 +40,8 @@ Explore the comprehensive improvement blueprints contained in this directory:
    - The "Talent Passport" — portable reputation, verified GitHub commits, and cryptographic proof of work.
 
 3. **[03. Actionable Feature Enhancement Blueprints](./03-actionable-product-enhancements.md)**
-   - **Feature 1:** AI-Powered Scope Decomposition & Milestone Estimator.
-   - **Feature 2:** Automated GitHub/GitLab Deliverable Pull Request Verifier.
-   - **Feature 3:** Milestone Escrow Streaming & Partial Release Sliders.
-   - **Feature 4:** Enterprise Team Workspaces, Multi-Seat RBAC & Consolidated Invoicing.
-   - **Feature 5:** Real-time WebRTC Video Contract Workrooms with Screen Sharing.
+   - **Feature 1:** AI-Powered Scope Decomposition & Milestone Estimator ✅ _Shipped_
+   - **Feature 2:** Automated GitHub/GitLab Deliverable Pull Request Verifier ✅ _Shipped_
+   - **Feature 3:** Milestone Escrow Streaming & Partial Release Sliders ✅ _Shipped_
+   - **Feature 4:** Enterprise Team Workspaces, Multi-Seat RBAC & Consolidated Invoicing ✅ _Shipped_
+   - **Feature 5:** Real-time WebRTC Video Contract Workrooms with Screen Sharing ✅ _Shipped_
