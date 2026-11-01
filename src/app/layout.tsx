@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Toaster } from "sonner";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -35,6 +36,7 @@ export default async function RootLayout({
         data-nonce={nonce}
       >
         {children}
+        <Toaster position="top-right" richColors closeButton />
       </body>
     </html>
   );
