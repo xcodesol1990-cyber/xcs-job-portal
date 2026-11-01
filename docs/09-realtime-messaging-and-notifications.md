@@ -8,8 +8,10 @@ WorkNest provides contextual direct messaging between clients and freelancers ti
 ## Key Files & Modules
 - `src/server/services/messaging.service.ts`: Thread creation, message dispatch, attachment handling, and unread count tracking.
 - `src/server/services/notification.service.ts`: In-app notification creation, badge counters, and read state persistence.
+- `src/server/actions/notification.actions.ts`: Server actions for `markNotificationReadAction` and `markAllNotificationsReadAction`.
+- `src/components/forms/mark-notifications-read-button.tsx`: 1-click batch read acknowledgment with optimistic toast feedback.
 - `src/app/(dashboard)/messages/page.tsx`: Conversation inbox and message thread views.
-- `src/app/(dashboard)/notifications/page.tsx`: System notification feed.
+- `src/app/(dashboard)/notifications/page.tsx`: System notification feed with unread indicators and bulk actions.
 - `src/components/chat/`: Chat input, message bubbles, timestamp formatting, and optimistic message rendering.
 
 ---
