@@ -2,6 +2,9 @@ import { auth } from "@/server/lib/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { prisma } from "@/server/db/prisma";
+import { PageHeader } from "@/components/ui/page-header";
+import { StatCard } from "@/components/ui/stat-card";
+import { EmptyState } from "@/components/ui/empty-state";
 import {
   Briefcase,
   PlusCircle,
@@ -20,90 +23,91 @@ export default async function ClientDashboardPage() {
 
   const roles = session.user.roles ?? [];
   if (!roles.includes("CLIENT") && !roles.includes("ADMIN")) {
-    redirect("/dashboard/freelancer");
+    redirect("/freelancer");
   }
 
   // Fetch client jobs count and contracts
   const [jobCount, contractCount] = await Promise.all([
-    prisma.job.count({ where: { clientId: session.user.id } }),
+    prisma.job.count({ where: { clientId: session.user.id, deletedAt: null } }),
     prisma.contract.count({ where: { clientId: session.user.id } }),
   ]);
 
   return (
     <div className="space-y-8">
       {/* Header with CTA */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-blue-600 dark:text-blue-400">
-            <Briefcase className="h-4 w-4" />
-            <span>Employer Workspace</span>
-          </div>
-          <h1 className="mt-1 text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
-            Welcome, {session.user.name}
-          </h1>
-          <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
-            Post opportunities, review proposals with escrow protection, and hire vetted talent.
-          </p>
-        </div>
-
+      <PageHeader
+        badge="Employer Workspace"
+        badgeIcon={Briefcase}
+        badgeVariant="info"
+        title={`Welcome, ${session.user.name?.split(" ")[0] ?? "Client"}`}
+        description="Post opportunities, review proposals with escrow protection, and hire vetted talent."
+      >
         <Link
-          href="/dashboard/client/jobs/new"
-          className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-md shadow-indigo-500/20 transition hover:bg-indigo-500"
+          href="/client/jobs/new"
+          className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 px-4 py-2.5 text-xs sm:text-sm font-semibold text-white shadow-md shadow-purple-500/20 transition hover:from-purple-500 hover:to-indigo-500"
         >
           <PlusCircle className="h-4 w-4" />
           <span>Post a New Job</span>
         </Link>
-      </div>
+      </PageHeader>
 
       {/* Metrics */}
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
-        <div className="rounded-2xl border border-zinc-200/80 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-zinc-500">Active Job Posts</span>
-            <FileText className="h-5 w-5 text-indigo-500" />
-          </div>
-          <div className="mt-3 text-3xl font-extrabold text-zinc-900 dark:text-zinc-100">
-            {jobCount}
-          </div>
-          <div className="mt-1 text-xs text-zinc-500">Open for proposals</div>
-        </div>
+        <StatCard
+          title="Active Job Posts"
+          value={jobCount}
+          description="Open for proposals"
+          icon={FileText}
+          iconColor="text-indigo-600 dark:text-indigo-400"
+          iconBg="bg-indigo-50 dark:bg-indigo-950/40"
+        />
 
-        <div className="rounded-2xl border border-zinc-200/80 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-zinc-500">Active Contracts</span>
-            <Clock className="h-5 w-5 text-blue-500" />
-          </div>
-          <div className="mt-3 text-3xl font-extrabold text-zinc-900 dark:text-zinc-100">
-            {contractCount}
-          </div>
-          <div className="mt-1 text-xs text-zinc-500">Ongoing milestone deliverables</div>
-        </div>
+        <StatCard
+          title="Active Contracts"
+          value={contractCount}
+          description="Ongoing milestone deliverables"
+          icon={Clock}
+          iconColor="text-blue-600 dark:text-blue-400"
+          iconBg="bg-blue-50 dark:bg-blue-950/40"
+        />
 
-        <div className="rounded-2xl border border-zinc-200/80 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-zinc-500">Escrow Protection</span>
-            <DollarSign className="h-5 w-5 text-emerald-500" />
-          </div>
-          <div className="mt-3 text-3xl font-extrabold text-emerald-600 dark:text-emerald-400">
-            Active
-          </div>
-          <div className="mt-1 text-xs text-zinc-500">Milestone-based release</div>
-        </div>
+        <StatCard
+          title="Escrow Protection"
+          value="100% Active"
+          description="Milestone-based cryptographic release"
+          icon={DollarSign}
+          iconColor="text-emerald-600 dark:text-emerald-400"
+          iconBg="bg-emerald-50 dark:bg-emerald-950/40"
+          badge={{ text: "Double-Entry Trust", color: "bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400" }}
+        />
       </div>
 
-      {/* Empty State Banner */}
-      <div className="rounded-2xl border border-dashed border-zinc-300 bg-white p-10 text-center dark:border-zinc-800 dark:bg-zinc-900/50">
-        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600 dark:bg-indigo-950/40 dark:text-indigo-400">
-          <Sparkles className="h-6 w-6" />
+      {/* Empty State Banner if no jobs, otherwise prompt to manage */}
+      {jobCount === 0 ? (
+        <EmptyState
+          icon={Sparkles}
+          title="Ready to scale your team?"
+          description="Publish your first project brief and receive verified proposals from top engineers and designers."
+          action={{
+            label: "Create First Job Post",
+            href: "/client/jobs/new",
+            icon: PlusCircle,
+          }}
+        />
+      ) : (
+        <div className="rounded-2xl border border-zinc-200/80 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900 flex items-center justify-between">
+          <div>
+            <h3 className="font-bold text-zinc-900 dark:text-zinc-100 text-base">You have {jobCount} active job listings</h3>
+            <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">Review incoming candidate pitches and schedule interviews.</p>
+          </div>
+          <Link
+            href="/client/jobs"
+            className="text-xs font-semibold text-purple-600 dark:text-purple-400 hover:underline"
+          >
+            Manage Job Posts →
+          </Link>
         </div>
-        <h3 className="mt-4 text-base font-semibold text-zinc-900 dark:text-zinc-100">
-          Ready to scale your team?
-        </h3>
-        <p className="mx-auto mt-2 max-w-sm text-sm text-zinc-500 dark:text-zinc-400">
-          Publish your first project brief and receive verified proposals from top engineers and designers.
-        </p>
-      </div>
+      )}
     </div>
   );
 }
-

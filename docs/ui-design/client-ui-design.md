@@ -60,3 +60,4 @@ The **Client Workspace** (`/client`) is designed for enterprise hiring managers,
 ## Responsive Breakpoints & Mobile UX
 - On viewports `< 768px`, the proposal comparison workspace collapses into a full-width drawer where tapping an applicant opens a slide-over sheet.
 - Milestone review buttons remain sticky at the bottom of the viewport on mobile devices for easy approval on the go.
+

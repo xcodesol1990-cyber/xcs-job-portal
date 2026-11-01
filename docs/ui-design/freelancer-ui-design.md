@@ -66,3 +66,4 @@ The **Freelancer Hub** (`/freelancer`) is tailored to independent software engin
 ## Responsive Breakpoints & Mobile UX
 - On mobile devices, the job filter panel converts into a bottom slide-up drawer triggered by a sticky "Filters" button.
 - Proposal submission calculates fees live without requiring keyboard dismissal.
+

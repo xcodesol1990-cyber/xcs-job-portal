@@ -1,0 +1,20 @@
+import { Skeleton, ProposalCardSkeleton } from "@/components/ui/skeleton";
+
+export default function FreelancerProposalsLoading() {
+  return (
+    <div className="space-y-8 animate-pulse">
+      <div className="space-y-2">
+        <Skeleton className="h-4 w-36" />
+        <Skeleton className="h-8 w-56" />
+        <Skeleton className="h-4 w-96" />
+      </div>
+
+      <div className="grid grid-cols-1 gap-4">
+        {Array.from({ length: 3 }).map((_, i) => (
+          <ProposalCardSkeleton key={i} />
+        ))}
+      </div>
+    </div>
+  );
+}
+

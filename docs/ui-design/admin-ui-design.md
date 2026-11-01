@@ -81,3 +81,4 @@ Four primary metric cards line the top of Mission Control:
 ## Responsive & Loading Standards
 - **Streaming Skeletons**: Handled via `src/components/ui/skeleton.tsx` with animated shimmering wave effects on initial load.
 - **Mobile Compatibility**: Fully functional drawer menu toggled by hamburger button on mobile devices.
+

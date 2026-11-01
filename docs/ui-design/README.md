@@ -26,3 +26,4 @@ WorkNest delivers a modern, high-trust enterprise experience tailored to three d
 - **Optimistic Interactions**: Every state mutation (bidding, approving, resolving) provides instant visual feedback using Sonner toasts and loading indicators.
 - **Graceful Degradation**: Next.js streaming loading boundaries (`loading.tsx`) and `@keyframes shimmer` skeleton components prevent jarring layout shifts during data fetching.
 - **Adaptive Ergonomics**: Dedicated sidebar shell for power admins vs top-nav marketplace shell for clients and freelancers.
+

@@ -43,6 +43,21 @@ The system uses Inter / System UI sans-serif fonts optimized for high readabilit
 
 ---
 
+## Reusable UI Component Primitives
+
+WorkNest avoids repetitive HTML markup by encapsulating consistent styling and micro-interactions into a standardized primitive component library (`src/components/ui/`):
+
+| Component | File | Key Features & Props |
+| :--- | :--- | :--- |
+| **`Badge`** | `badge.tsx` | Semantic variants (`default`, `secondary`, `success`, `warning`, `destructive`, `purple`, `info`, `outline`), optional pulsing dot indicator. |
+| **`Button`** | `button.tsx` | Gradient CTA variants (`default`, `secondary`, `outline`, `ghost`, `destructive`, `success`), sizes (`sm`, `md`, `lg`, `icon`), built-in `isLoading` spinner. |
+| **`Card`** | `card.tsx` | Composable `Card`, `CardHeader`, `CardTitle`, `CardDescription`, `CardContent`, `CardFooter` with smooth border radius and light/dark theme adaptation. |
+| **`PageHeader`** | `page-header.tsx` | Unified workspace header with persona badge, Lucide icon, large title, subtitle description, and right-aligned action button slot. |
+| **`StatCard`** | `stat-card.tsx` | High-density metric card with uppercase title, large bold numeral, trend delta pill (`+12.4%`), custom Lucide icon box, and optional footer badge. |
+| **`EmptyState`** | `empty-state.tsx` | Centered dashed container with icon badge, title, explanatory caption, and primary CTA link/button. |
+
+---
+
 ## Shimmer Skeleton Animation System
 
 To eliminate jarring blank-page transitions, all route segments include streaming `loading.tsx` wrappers utilizing `@keyframes shimmer`:
@@ -57,9 +72,13 @@ To eliminate jarring blank-page transitions, all route segments include streamin
 
 Components available in `src/components/ui/skeleton.tsx`:
 - `StatCardSkeleton`: Mimics metric cards with sparkline placeholders.
+- `JobCardSkeleton`: Mimics marketplace job listings with tags, budget pills, and buttons.
+- `ProposalCardSkeleton`: Mimics candidate pitch cards with avatar and bid summaries.
+- `ContractCardSkeleton`: Mimics milestone progress timelines and contract cards.
 - `TableRowSkeleton`: Replicates table rows during data streaming.
 - `TableSkeleton`: Renders complete data tables with headers.
 - `DashboardOverviewSkeleton`: Renders top welcome header, 4 metric cards, liquidity bar, and dual columns.
+- `PageSkeleton`: Universal composable page skeleton for workspace dashboards.
 
 ---
 
@@ -78,3 +97,4 @@ Icons are sourced exclusively from **`lucide-react`**:
 - `LayoutDashboard`, `Briefcase`, `Users`, `Scale`, `Receipt`, `ShieldCheck` for navigation.
 - `Lock`, `CheckCircle2`, `AlertCircle`, `Flag`, `TrendingUp` for financial status and alerts.
 - Consistent standard size: `h-4 w-4` for button/nav icons, `h-5 w-5` for cards.
+
