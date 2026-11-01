@@ -8,9 +8,10 @@ WorkNest operates on a **Milestone Escrow Architecture**. When a contract is est
 ## Key Files & Modules
 - `src/server/services/contract.service.ts`: Contract creation, milestone management, submission workflows, milestone approval, and escrow release.
 - `src/server/services/payment.service.ts`: Stripe Checkout sessions for escrow funding, webhook listeners, and transfer intent management.
-- `src/app/contracts/[id]/page.tsx`: Contract command center for both client and freelancer.
-- `src/app/(dashboard)/client/contracts/page.tsx`: Client contract portfolio.
-- `src/app/(dashboard)/freelancer/contracts/page.tsx`: Freelancer active assignments.
+- `src/app/(dashboard)/contracts/[id]/page.tsx`: Contract command center for both client and freelancer with progress tracker and feedback ratings.
+- `src/app/(dashboard)/contracts/[id]/loading.tsx`: Streaming shimmering skeleton for smooth contract loading.
+- `src/app/(dashboard)/client/contracts/page.tsx`: Client contract portfolio with milestone progress bars.
+- `src/app/(dashboard)/freelancer/contracts/page.tsx`: Freelancer active assignments with deliverable submissions.
 
 ---
 

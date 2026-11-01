@@ -39,3 +39,4 @@ export async function markAllNotificationsReadAction() {
     return { success: false, error: "Failed to mark notifications read." };
   }
 }
+
