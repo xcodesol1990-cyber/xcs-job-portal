@@ -3,7 +3,7 @@
 import { auth } from "@/server/lib/auth";
 import { adminService } from "@/server/services/admin.service";
 import { prisma } from "@/server/db/prisma";
-import { UserStatus } from "@prisma/client";
+import { UserStatus, Prisma } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 
 export async function updateUserStatusAction(userId: string, newStatus: UserStatus, reason?: string) {
@@ -89,4 +89,23 @@ export async function createReportAction(input: {
     };
   }
 }
+
+export async function updatePlatformSettingAction(key: string, value: Prisma.InputJsonValue) {
+  const session = await auth();
+  if (!session?.user?.id || !session.user.roles?.includes("ADMIN")) {
+    return { success: false, error: "Forbidden: Admin access required." };
+  }
+
+  try {
+    await adminService.updatePlatformSetting(session.user.id, key, value);
+    revalidatePath("/admin");
+    return { success: true };
+  } catch (err: unknown) {
+    return {
+      success: false,
+      error: err instanceof Error ? err.message : "Failed to update platform setting.",
+    };
+  }
+}
+
 

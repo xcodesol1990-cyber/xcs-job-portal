@@ -308,6 +308,33 @@ export class AdminService {
 
     return { entries, total, page, totalPages: Math.ceil(total / limit) };
   }
+
+  async updatePlatformSetting(adminId: string, key: string, value: Prisma.InputJsonValue) {
+    return await prisma.$transaction(async (tx) => {
+      const setting = await tx.platformSetting.upsert({
+        where: { key },
+        update: { value },
+        create: { key, value },
+      });
+
+      await tx.auditLog.create({
+        data: {
+          actorId: adminId,
+          action: "PLATFORM_SETTING_UPDATE",
+          entityType: "SETTING",
+          metadata: { key, value },
+        },
+      });
+
+      return setting;
+    });
+  }
+
+  async getPlatformSettings() {
+    return prisma.platformSetting.findMany({
+      orderBy: { key: "asc" },
+    });
+  }
 }
 
 export const adminService = new AdminService();
