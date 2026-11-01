@@ -35,9 +35,7 @@ export default async function AdminUsersPage({ searchParams }: UsersPageProps) {
           <h2 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
             User Accounts & KYC Verification
           </h2>
-          <p className="text-xs text-zinc-500">
-            Total {total} accounts registered on WorkNest.
-          </p>
+          <p className="text-xs text-zinc-500">Total {total} accounts registered on WorkNest.</p>
         </div>
 
         <form method="GET" className="flex items-center gap-2">
@@ -88,7 +86,10 @@ export default async function AdminUsersPage({ searchParams }: UsersPageProps) {
                   : "U";
 
                 return (
-                  <tr key={user.id} className="hover:bg-zinc-50/60 dark:hover:bg-zinc-800/30 transition-colors">
+                  <tr
+                    key={user.id}
+                    className="hover:bg-zinc-50/60 dark:hover:bg-zinc-800/30 transition-colors"
+                  >
                     <td className="px-5 py-3.5">
                       <div className="flex items-center gap-3">
                         <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 font-bold text-white text-[11px] shrink-0">
@@ -111,8 +112,8 @@ export default async function AdminUsersPage({ searchParams }: UsersPageProps) {
                               r === "ADMIN"
                                 ? "bg-purple-100 text-purple-700 dark:bg-purple-950/60 dark:text-purple-300"
                                 : r === "CLIENT"
-                                ? "bg-blue-100 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300"
-                                : "bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300"
+                                  ? "bg-blue-100 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300"
+                                  : "bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300"
                             }`}
                           >
                             {r}
@@ -126,8 +127,8 @@ export default async function AdminUsersPage({ searchParams }: UsersPageProps) {
                           user.status === "ACTIVE"
                             ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400"
                             : user.status === "SUSPENDED"
-                            ? "bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400"
-                            : "bg-red-50 text-red-700 dark:bg-red-950/40 dark:text-red-400"
+                              ? "bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400"
+                              : "bg-red-50 text-red-700 dark:bg-red-950/40 dark:text-red-400"
                         }`}
                       >
                         <span
@@ -135,8 +136,8 @@ export default async function AdminUsersPage({ searchParams }: UsersPageProps) {
                             user.status === "ACTIVE"
                               ? "bg-emerald-500"
                               : user.status === "SUSPENDED"
-                              ? "bg-amber-500"
-                              : "bg-red-500"
+                                ? "bg-amber-500"
+                                : "bg-red-500"
                           }`}
                         />
                         {user.status}
@@ -163,8 +164,18 @@ export default async function AdminUsersPage({ searchParams }: UsersPageProps) {
                       )}
                     </td>
                     <td className="px-4 py-3.5 text-zinc-500">
-                      <div>Jobs: <span className="font-semibold text-zinc-700 dark:text-zinc-300">{user._count.jobs}</span></div>
-                      <div>Contracts: <span className="font-semibold text-zinc-700 dark:text-zinc-300">{user._count.clientContracts + user._count.freelancerContracts}</span></div>
+                      <div>
+                        Jobs:{" "}
+                        <span className="font-semibold text-zinc-700 dark:text-zinc-300">
+                          {user._count.jobs}
+                        </span>
+                      </div>
+                      <div>
+                        Contracts:{" "}
+                        <span className="font-semibold text-zinc-700 dark:text-zinc-300">
+                          {user._count.clientContracts + user._count.freelancerContracts}
+                        </span>
+                      </div>
                     </td>
                     <td className="px-5 py-3.5 text-right">
                       {!user.roles.includes("ADMIN") && (

@@ -11,7 +11,8 @@ export default defineConfig({
       AUTH_SECRET: "abcdefghijklmnopqrstuvwxyz012345",
       ENCRYPTION_KEY: "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
       CRON_SECRET: "test-cron-secret-value",
-      DATABASE_URL: "postgresql://user:pass@localhost:5432/worknest?pgbouncer=true&connection_limit=1",
+      DATABASE_URL:
+        "postgresql://user:pass@localhost:5432/worknest?pgbouncer=true&connection_limit=1",
       DIRECT_URL: "postgresql://user:pass@localhost:5432/worknest",
     },
   },

@@ -7,13 +7,7 @@ import { ClientProposalActions } from "@/components/forms/client-proposal-action
 import { PageHeader } from "@/components/ui/page-header";
 import { Badge } from "@/components/ui/badge";
 import { EmptyState } from "@/components/ui/empty-state";
-import {
-  Briefcase,
-  ArrowLeft,
-  Calendar,
-  DollarSign,
-  UserCheck,
-} from "lucide-react";
+import { Briefcase, ArrowLeft, Calendar, DollarSign, UserCheck } from "lucide-react";
 
 interface ProposalsPageProps {
   params: Promise<{ id: string }>;
@@ -91,17 +85,18 @@ export default async function ClientJobProposalsPage({ params }: ProposalsPagePr
                             proposal.status === "ACCEPTED"
                               ? "success"
                               : proposal.status === "SHORTLISTED"
-                              ? "purple"
-                              : proposal.status === "REJECTED"
-                              ? "destructive"
-                              : "secondary"
+                                ? "purple"
+                                : proposal.status === "REJECTED"
+                                  ? "destructive"
+                                  : "secondary"
                           }
                         >
                           {proposal.status}
                         </Badge>
                       </div>
                       <p className="text-xs text-zinc-500 mt-0.5">
-                        {proposal.freelancer.freelancerProfile?.headline ?? "Software Engineer & Consultant"}
+                        {proposal.freelancer.freelancerProfile?.headline ??
+                          "Software Engineer & Consultant"}
                       </p>
                     </div>
                   </div>
@@ -114,7 +109,10 @@ export default async function ClientJobProposalsPage({ params }: ProposalsPagePr
                     <span>•</span>
                     <span className="flex items-center gap-1">
                       <Calendar className="h-3.5 w-3.5 text-zinc-400" />
-                      <span>Est: {proposal.estimatedDays ? `${proposal.estimatedDays} days` : "Flexible"}</span>
+                      <span>
+                        Est:{" "}
+                        {proposal.estimatedDays ? `${proposal.estimatedDays} days` : "Flexible"}
+                      </span>
                     </span>
                     <span>•</span>
                     <span>Submitted {new Date(proposal.createdAt).toLocaleDateString()}</span>

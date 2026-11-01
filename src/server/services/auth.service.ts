@@ -179,7 +179,11 @@ export class AuthService {
     }
 
     if (!user || !user.passwordHash) {
-      throw new AppError("INVALID_CREDENTIALS", "Invalid email or password.", HTTP_STATUS.UNAUTHORIZED);
+      throw new AppError(
+        "INVALID_CREDENTIALS",
+        "Invalid email or password.",
+        HTTP_STATUS.UNAUTHORIZED,
+      );
     }
 
     // Check account lockout
@@ -245,7 +249,11 @@ export class AuthService {
       const isTotpValid = verifyTotpCode(secret, totpCode);
 
       if (!isTotpValid) {
-        throw new AppError("INVALID_TOTP", "Invalid two-factor authentication code.", HTTP_STATUS.UNAUTHORIZED);
+        throw new AppError(
+          "INVALID_TOTP",
+          "Invalid two-factor authentication code.",
+          HTTP_STATUS.UNAUTHORIZED,
+        );
       }
     }
 
@@ -271,7 +279,9 @@ export class AuthService {
   /**
    * Request password reset token.
    */
-  static async requestPasswordReset(emailInput: string): Promise<{ success: boolean; rawToken?: string }> {
+  static async requestPasswordReset(
+    emailInput: string,
+  ): Promise<{ success: boolean; rawToken?: string }> {
     const email = emailInput.trim().toLowerCase();
     await assertRateLimit(`forgot-password:${email}`, 5, 300_000);
 
@@ -417,12 +427,20 @@ export class AuthService {
     });
 
     if (!user?.totpSecretEnc) {
-      throw new AppError("TOTP_NOT_CONFIGURED", "2FA setup has not been initiated.", HTTP_STATUS.BAD_REQUEST);
+      throw new AppError(
+        "TOTP_NOT_CONFIGURED",
+        "2FA setup has not been initiated.",
+        HTTP_STATUS.BAD_REQUEST,
+      );
     }
 
     const secret = decryptData(user.totpSecretEnc);
     if (!verifyTotpCode(secret, code)) {
-      throw new AppError("INVALID_TOTP", "Invalid code. Please try again.", HTTP_STATUS.BAD_REQUEST);
+      throw new AppError(
+        "INVALID_TOTP",
+        "Invalid code. Please try again.",
+        HTTP_STATUS.BAD_REQUEST,
+      );
     }
 
     await prisma.user.update({

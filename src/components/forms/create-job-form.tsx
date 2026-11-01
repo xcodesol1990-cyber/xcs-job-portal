@@ -160,9 +160,7 @@ export function CreateJobForm({ categories, skills }: CreateJobFormProps) {
               <Clock className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
               <span>Hourly Rate</span>
             </div>
-            <p className="mt-1 text-xs text-zinc-500">
-              Track hours and pay weekly.
-            </p>
+            <p className="mt-1 text-xs text-zinc-500">Track hours and pay weekly.</p>
           </button>
         </div>
       </div>
@@ -269,4 +267,3 @@ export function CreateJobForm({ categories, skills }: CreateJobFormProps) {
     </form>
   );
 }
-

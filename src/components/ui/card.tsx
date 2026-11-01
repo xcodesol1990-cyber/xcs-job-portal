@@ -1,10 +1,6 @@
 import * as React from "react";
 
-export function Card({
-  className = "",
-  children,
-  ...props
-}: React.HTMLAttributes<HTMLDivElement>) {
+export function Card({ className = "", children, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
       className={`rounded-2xl border border-zinc-200/80 bg-white shadow-sm transition-all dark:border-zinc-800 dark:bg-zinc-900 ${className}`}
@@ -51,10 +47,7 @@ export function CardDescription({
   ...props
 }: React.HTMLAttributes<HTMLParagraphElement>) {
   return (
-    <p
-      className={`text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 ${className}`}
-      {...props}
-    >
+    <p className={`text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 ${className}`} {...props}>
       {children}
     </p>
   );
@@ -86,4 +79,3 @@ export function CardFooter({
     </div>
   );
 }
-

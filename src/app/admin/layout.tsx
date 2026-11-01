@@ -4,11 +4,7 @@ import { prisma } from "@/server/db/prisma";
 import { AdminSidebar } from "@/components/admin/admin-sidebar";
 import { AdminTopbar } from "@/components/admin/admin-topbar";
 
-export default async function AdminLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
 
   if (!session?.user) {
@@ -47,11 +43,8 @@ export default async function AdminLayout({
           pendingReportsCount={pendingReports}
         />
 
-        <main className="flex-1 p-5 sm:p-7 lg:p-9 max-w-[1600px] w-full mx-auto">
-          {children}
-        </main>
+        <main className="flex-1 p-5 sm:p-7 lg:p-9 max-w-[1600px] w-full mx-auto">{children}</main>
       </div>
     </div>
   );
 }
-

@@ -1,8 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { verifyCronAuth } from "@/server/lib/cron-guard";
-import { CronService } from "@/server/services/cron.service";
-import { prisma } from "@/server/db/prisma";
+import { verifyCronAuth, withCronAdvisoryLock } from "@/server/lib/cron-guard";
+import { cronService } from "@/server/services/cron.service";
 import { NextRequest } from "next/server";
+import { prisma } from "@/server/db/prisma";
 
 vi.mock("@/server/db/prisma", () => ({
   prisma: {
@@ -23,7 +23,7 @@ vi.mock("@/server/db/prisma", () => ({
     auditLog: {
       create: vi.fn(),
     },
-    $transaction: vi.fn(async (cb: (tx: any) => Promise<any>) => cb(prisma)),
+    $transaction: vi.fn(async (cb: (tx: unknown) => Promise<unknown>) => cb(prisma)),
     $queryRaw: vi.fn().mockResolvedValue([{ locked: true }]),
   },
 }));
@@ -41,24 +41,21 @@ describe("CronGuard", () => {
     expect(verifyCronAuth(req)).toBe(false);
   });
 
-  it("accepts requests matching CRON_SECRET", () => {
-    const req = new NextRequest("http://localhost:3000/api/cron/cleanup", {
-      headers: { authorization: `Bearer ${process.env.CRON_SECRET}` },
-    });
-    expect(verifyCronAuth(req)).toBe(true);
+  it("acquires advisory lock successfully when lock is available", async () => {
+    const res = await withCronAdvisoryLock(1234, async () => "task completed");
+    expect(res.executed).toBe(true);
+    expect(res.result).toBe("task completed");
   });
 });
 
 describe("CronService", () => {
-  const cronService = new CronService();
-
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
   it("cleans up expired idempotency keys and tokens", async () => {
-    (prisma.idempotencyKey.deleteMany as any).mockResolvedValue({ count: 5 });
-    (prisma.verificationToken.deleteMany as any).mockResolvedValue({ count: 2 });
+    vi.mocked(prisma.idempotencyKey.deleteMany).mockResolvedValue({ count: 5 });
+    vi.mocked(prisma.verificationToken.deleteMany).mockResolvedValue({ count: 2 });
 
     const result = await cronService.cleanupExpiredData();
     expect(result.deletedIdempotencyKeys).toBe(5);
@@ -66,7 +63,7 @@ describe("CronService", () => {
   });
 
   it("audits ledger reconciliation and returns healthy if no discrepancies exist", async () => {
-    (prisma.contract.findMany as any).mockResolvedValue([
+    (vi.mocked(prisma.contract.findMany) as unknown as ReturnType<typeof vi.fn>).mockResolvedValue([
       {
         id: "contract-1",
         currency: "USD",
@@ -84,13 +81,14 @@ describe("CronService", () => {
   });
 
   it("detects anomalies if released escrow exceeds funded escrow", async () => {
-    (prisma.contract.findMany as any).mockResolvedValue([
+    (vi.mocked(prisma.contract.findMany) as unknown as ReturnType<typeof vi.fn>).mockResolvedValue([
       {
         id: "contract-bad",
         currency: "USD",
         ledgerEntries: [
           { type: "ESCROW_FUND", amountCents: 5000n },
-          { type: "ESCROW_RELEASE", amountCents: 8000n },
+          { type: "ESCROW_RELEASE", amountCents: 6000n },
+          { type: "PLATFORM_FEE", amountCents: 1000n },
         ],
       },
     ]);

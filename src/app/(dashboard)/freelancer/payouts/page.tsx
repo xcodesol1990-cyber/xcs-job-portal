@@ -6,16 +6,7 @@ import { PageHeader } from "@/components/ui/page-header";
 import { StatCard } from "@/components/ui/stat-card";
 import { Badge } from "@/components/ui/badge";
 import { EmptyState } from "@/components/ui/empty-state";
-import {
-  CreditCard,
-  DollarSign,
-  Building2,
-  CheckCircle2,
-  AlertTriangle,
-  Receipt,
-  ArrowUpRight,
-  ShieldCheck,
-} from "lucide-react";
+import { CreditCard, DollarSign, Building2, Receipt } from "lucide-react";
 
 export default async function FreelancerPayoutsPage() {
   const session = await auth();
@@ -70,13 +61,9 @@ export default async function FreelancerPayoutsPage() {
                     Payouts Active
                   </Badge>
                 ) : isConnected ? (
-                  <Badge variant="warning">
-                    Verification Needed
-                  </Badge>
+                  <Badge variant="warning">Verification Needed</Badge>
                 ) : (
-                  <Badge variant="secondary">
-                    Not Connected
-                  </Badge>
+                  <Badge variant="secondary">Not Connected</Badge>
                 )}
               </div>
               <p className="text-xs text-zinc-500 max-w-md leading-relaxed">
@@ -102,7 +89,10 @@ export default async function FreelancerPayoutsPage() {
           icon={DollarSign}
           iconColor="text-emerald-600 dark:text-emerald-400"
           iconBg="bg-emerald-50 dark:bg-emerald-950/40"
-          badge={{ text: "Direct Payouts Ready", color: "bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300" }}
+          badge={{
+            text: "Direct Payouts Ready",
+            color: "bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300",
+          }}
         />
 
         <StatCard
@@ -112,7 +102,10 @@ export default async function FreelancerPayoutsPage() {
           icon={Receipt}
           iconColor="text-purple-600 dark:text-purple-400"
           iconBg="bg-purple-50 dark:bg-purple-950/40"
-          badge={{ text: "100% Escrow Settled", color: "bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300" }}
+          badge={{
+            text: "100% Escrow Settled",
+            color: "bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300",
+          }}
         />
       </div>
 
@@ -134,7 +127,10 @@ export default async function FreelancerPayoutsPage() {
 
         <div className="divide-y divide-zinc-100 dark:divide-zinc-800 text-xs">
           {user.ledgerEntries.map((e) => (
-            <div key={e.id} className="flex items-center justify-between p-4 px-6 transition-colors hover:bg-zinc-50/50 dark:hover:bg-zinc-800/30">
+            <div
+              key={e.id}
+              className="flex items-center justify-between p-4 px-6 transition-colors hover:bg-zinc-50/50 dark:hover:bg-zinc-800/30"
+            >
               <div className="space-y-0.5">
                 <div className="flex items-center gap-2">
                   <span className="font-bold text-zinc-900 dark:text-zinc-100">

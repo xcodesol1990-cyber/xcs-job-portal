@@ -123,11 +123,11 @@ export function AdminSidebar({
 
   const initials = user.name
     ? user.name
-      .split(" ")
-      .map((n) => n[0])
-      .join("")
-      .slice(0, 2)
-      .toUpperCase()
+        .split(" ")
+        .map((n) => n[0])
+        .join("")
+        .slice(0, 2)
+        .toUpperCase()
     : "AD";
 
   return (
@@ -180,15 +180,17 @@ export function AdminSidebar({
                   <Link
                     key={item.href}
                     href={item.href}
-                    className={`group flex items-center justify-between rounded-xl px-3 py-2 text-xs font-semibold transition-all duration-150 ${isActive
+                    className={`group flex items-center justify-between rounded-xl px-3 py-2 text-xs font-semibold transition-all duration-150 ${
+                      isActive
                         ? "bg-purple-600 text-white shadow-md shadow-purple-600/30 font-bold"
                         : "text-zinc-400 hover:bg-zinc-900 hover:text-zinc-100"
-                      }`}
+                    }`}
                   >
                     <div className="flex items-center gap-2.5">
                       <Icon
-                        className={`h-4 w-4 transition-colors ${isActive ? "text-white" : "text-zinc-500 group-hover:text-zinc-300"
-                          }`}
+                        className={`h-4 w-4 transition-colors ${
+                          isActive ? "text-white" : "text-zinc-500 group-hover:text-zinc-300"
+                        }`}
                       />
                       <span>{item.label}</span>
                     </div>
@@ -196,8 +198,9 @@ export function AdminSidebar({
                     <div className="flex items-center gap-1.5">
                       {item.badge && (
                         <span
-                          className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${item.badgeColor ?? "bg-zinc-800 text-zinc-300"
-                            }`}
+                          className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${
+                            item.badgeColor ?? "bg-zinc-800 text-zinc-300"
+                          }`}
                         >
                           {item.badge}
                         </span>
@@ -225,7 +228,9 @@ export function AdminSidebar({
               {initials}
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-xs font-semibold text-zinc-100 truncate">{user.name ?? "Administrator"}</p>
+              <p className="text-xs font-semibold text-zinc-100 truncate">
+                {user.name ?? "Administrator"}
+              </p>
               <p className="text-[10px] text-zinc-500 truncate font-mono">{user.email}</p>
             </div>
           </div>

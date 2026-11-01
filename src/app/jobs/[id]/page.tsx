@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import Link from "next/link";
 import { JobService } from "@/server/services/job.service";
 import { auth } from "@/server/lib/auth";
@@ -20,6 +21,32 @@ interface JobDetailsPageProps {
   params: Promise<{ id: string }>;
 }
 
+export async function generateMetadata({ params }: JobDetailsPageProps): Promise<Metadata> {
+  const { id } = await params;
+  try {
+    const job = await JobService.getJobById(id);
+    const company = job.client?.clientProfile?.companyName ?? job.client?.name ?? "WorkNest Client";
+    const budget = job.budgetMaxCents
+      ? `$${(job.budgetMaxCents / 100).toLocaleString()}`
+      : "Custom Budget";
+    return {
+      title: `${job.title} | ${company}`,
+      description: `${job.description.slice(0, 160)}... Budget: ${budget}`,
+      openGraph: {
+        title: `${job.title} - ${budget}`,
+        description: job.description.slice(0, 200),
+        type: "article",
+        url: `/jobs/${job.id}`,
+      },
+    };
+  } catch {
+    return {
+      title: "Job Opportunity · WorkNest",
+      description: "View details of this freelance job opportunity on WorkNest.",
+    };
+  }
+}
+
 export default async function JobDetailsPage({ params }: JobDetailsPageProps) {
   const { id } = await params;
   const session = await auth();
@@ -32,12 +59,58 @@ export default async function JobDetailsPage({ params }: JobDetailsPageProps) {
   }
 
   const isClientOwner = session?.user?.id === job.clientId;
-  const isSaved = session?.user?.id
-    ? await JobService.isJobSaved(session.user.id, id)
-    : false;
+  const isSaved = session?.user?.id ? await JobService.isJobSaved(session.user.id, id) : false;
+
+  const companyName =
+    job.client?.clientProfile?.companyName ?? job.client?.name ?? "Confidential Client";
+  const budgetFormatted = job.budgetMaxCents
+    ? (job.budgetMaxCents / 100).toLocaleString("en-US", {
+        style: "currency",
+        currency: job.currency ?? "USD",
+        maximumFractionDigits: 0,
+      })
+    : "Negotiable";
+
+  // Schema.org JobPosting structured data
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "JobPosting",
+    title: job.title,
+    description: job.description,
+    datePosted: job.createdAt.toISOString(),
+    validThrough: new Date(job.createdAt.getTime() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+    employmentType: "CONTRACTOR",
+    hiringOrganization: {
+      "@type": "Organization",
+      name: companyName,
+      sameAs: job.client?.clientProfile?.website ?? undefined,
+    },
+    jobLocationType: "TELECOMMUTE",
+    applicantLocationRequirements: {
+      "@type": "Country",
+      name: "Worldwide",
+    },
+    baseSalary: job.budgetMaxCents
+      ? {
+          "@type": "MonetaryAmount",
+          currency: job.currency ?? "USD",
+          value: {
+            "@type": "QuantitativeValue",
+            value: job.budgetMaxCents / 100,
+            unitText: job.budgetType === "FIXED" ? "TOTAL" : "HOUR",
+          },
+        }
+      : undefined,
+  };
 
   return (
     <div className="min-h-screen bg-zinc-50 px-4 py-12 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-50 sm:px-6 lg:px-8">
+      {/* JSON-LD Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
       <div className="mx-auto max-w-4xl space-y-8">
         <div className="flex items-center justify-between">
           <Link
@@ -58,85 +131,92 @@ export default async function JobDetailsPage({ params }: JobDetailsPageProps) {
               <div className="flex items-center gap-2">
                 <Badge variant="purple">{job.category?.name ?? "General"}</Badge>
                 <span className="text-xs text-zinc-500">
-                  Posted {new Date(job.publishedAt ?? job.createdAt).toLocaleDateString()}
+                  Posted {new Date(job.createdAt).toLocaleDateString()}
                 </span>
               </div>
-
-              <h1 className="text-2xl font-black tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-3xl">
+              <h1 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50 sm:text-3xl">
                 {job.title}
               </h1>
-
-              <div className="flex flex-wrap items-center gap-3 text-xs text-zinc-500">
-                <div className="flex items-center gap-1.5 font-semibold text-zinc-700 dark:text-zinc-300">
+              <div className="flex flex-wrap items-center gap-4 text-xs text-zinc-600 dark:text-zinc-400">
+                <span className="inline-flex items-center gap-1.5 font-medium">
                   <Building2 className="h-4 w-4 text-zinc-400" />
-                  <span>{job.client.clientProfile?.companyName ?? job.client.name}</span>
-                </div>
-                {job.client.clientProfile?.paymentVerified && (
-                  <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-semibold">
-                    <ShieldCheck className="h-3.5 w-3.5" />
-                    Verified Payment Client
+                  {companyName}
+                </span>
+                {job.client?.clientProfile?.paymentVerified && (
+                  <span className="inline-flex items-center gap-1 font-medium text-emerald-600 dark:text-emerald-400">
+                    <ShieldCheck className="h-4 w-4" />
+                    Payment Verified
                   </span>
                 )}
+                <span className="inline-flex items-center gap-1 text-zinc-500">
+                  <Clock className="h-3.5 w-3.5" />
+                  {job.experienceLevel ?? "Intermediate"}
+                </span>
               </div>
             </div>
 
-            {/* Action CTA & Bookmark */}
-            <div className="flex flex-col sm:items-end gap-3 sm:pl-6">
-              <div className="text-left sm:text-right">
-                <div className="text-2xl font-black text-zinc-900 dark:text-zinc-100">
-                  {job.budgetMinCents && job.budgetMaxCents
-                    ? `$${job.budgetMinCents / 100} - $${job.budgetMaxCents / 100}`
-                    : job.budgetMaxCents
-                    ? `$${job.budgetMaxCents / 100}`
-                    : "Negotiable"}
+            {/* Action Bar */}
+            <div className="flex items-center gap-2 sm:flex-col sm:items-end">
+              <div className="text-right">
+                <div className="text-2xl font-black text-emerald-600 dark:text-emerald-400">
+                  {budgetFormatted}
                 </div>
-                <div className="text-xs text-zinc-500">
-                  {job.budgetType === "HOURLY" ? "per hour (est.)" : "milestone escrow budget"}
+                <div className="text-[11px] font-medium text-zinc-400 uppercase tracking-wider">
+                  {job.budgetType} Project
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 pt-1">
-                <SaveJobButton jobId={job.id} initialSaved={isSaved} />
+              <div className="mt-2 flex gap-2">
+                {session?.user?.id && !isClientOwner && (
+                  <SaveJobButton jobId={job.id} initialSaved={isSaved} />
+                )}
 
-                {!isClientOwner ? (
+                {isClientOwner ? (
+                  <Link
+                    href={`/client/jobs/${job.id}/proposals`}
+                    className="inline-flex items-center gap-2 rounded-xl bg-zinc-900 px-4 py-2.5 text-xs font-semibold text-white shadow-sm hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-white transition"
+                  >
+                    <Users className="h-4 w-4" />
+                    <span>View Proposals ({job.proposalsCount})</span>
+                  </Link>
+                ) : session?.user ? (
                   <Link
                     href={`/jobs/${job.id}/apply`}
-                    className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 px-5 py-2.5 text-xs sm:text-sm font-semibold text-white shadow-md shadow-purple-500/20 transition hover:from-purple-500 hover:to-indigo-500"
+                    className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 px-5 py-2.5 text-xs font-semibold text-white shadow-md shadow-emerald-500/20 hover:from-emerald-500 hover:to-teal-500 transition"
                   >
                     <Send className="h-4 w-4" />
-                    <span>Apply Now</span>
+                    <span>Submit Proposal</span>
                   </Link>
                 ) : (
                   <Link
-                    href={`/client/jobs/${job.id}/proposals`}
-                    className="inline-flex items-center gap-1.5 rounded-xl bg-purple-50 px-4 py-2 text-xs font-semibold text-purple-700 hover:bg-purple-100 dark:bg-purple-950/60 dark:text-purple-300"
+                    href={`/login?redirect=/jobs/${job.id}`}
+                    className="inline-flex items-center gap-2 rounded-xl bg-zinc-900 px-5 py-2.5 text-xs font-semibold text-white shadow-sm hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-white transition"
                   >
-                    <Users className="h-3.5 w-3.5" />
-                    <span>Review Proposals ({job.proposalsCount})</span>
+                    <Lock className="h-4 w-4" />
+                    <span>Sign In to Apply</span>
                   </Link>
                 )}
               </div>
             </div>
           </div>
 
-          {/* Quick Specifications */}
-          <div className="mt-8 grid grid-cols-2 gap-4 border-y border-zinc-100 py-6 dark:border-zinc-800 sm:grid-cols-4">
+          <div className="mt-8 grid grid-cols-2 gap-4 border-y border-zinc-100 py-4 dark:border-zinc-800 sm:grid-cols-4">
+            <div>
+              <span className="text-xs text-zinc-500">Project Type</span>
+              <p className="mt-1 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+                {job.budgetType} Price
+              </p>
+            </div>
             <div>
               <span className="text-xs text-zinc-500">Experience Tier</span>
-              <p className="mt-1 text-sm font-semibold text-zinc-900 capitalize dark:text-zinc-100">
+              <p className="mt-1 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
                 {job.experienceLevel ?? "Intermediate"}
               </p>
             </div>
             <div>
-              <span className="text-xs text-zinc-500">Expected Duration</span>
-              <p className="mt-1 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-                {job.duration ?? "1 to 3 months"}
-              </p>
-            </div>
-            <div>
-              <span className="text-xs text-zinc-500">Payment Security</span>
+              <span className="text-xs text-zinc-500">Escrow Security</span>
               <p className="mt-1 flex items-center gap-1 text-sm font-semibold text-emerald-600 dark:text-emerald-400">
-                <Lock className="h-3.5 w-3.5" />
+                <Sparkles className="h-3.5 w-3.5" />
                 <span>Escrow Funded</span>
               </p>
             </div>

@@ -2,13 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  LayoutDashboard,
-  Users,
-  AlertCircle,
-  Flag,
-  ReceiptText,
-} from "lucide-react";
+import { LayoutDashboard, Users, AlertCircle, Flag, ReceiptText } from "lucide-react";
 import { SeedDatabaseButton } from "./seed-database-button";
 
 export function AdminNav() {

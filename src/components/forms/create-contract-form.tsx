@@ -15,10 +15,7 @@ interface CreateContractFormProps {
   bidDollars: number;
 }
 
-export function CreateContractForm({
-  proposalId,
-  bidDollars,
-}: CreateContractFormProps) {
+export function CreateContractForm({ proposalId, bidDollars }: CreateContractFormProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
@@ -38,9 +35,7 @@ export function CreateContractForm({
   };
 
   const updateMilestone = (index: number, field: "title" | "amount", val: string) => {
-    setMilestones((prev) =>
-      prev.map((m, i) => (i === index ? { ...m, [field]: val } : m)),
-    );
+    setMilestones((prev) => prev.map((m, i) => (i === index ? { ...m, [field]: val } : m)));
   };
 
   const totalAmount = milestones.reduce((sum, m) => sum + (Number(m.amount) || 0), 0);
@@ -134,7 +129,8 @@ export function CreateContractForm({
           <span className="font-mono text-indigo-600 dark:text-indigo-400">${totalAmount}</span>
         </div>
         <p className="text-[11px] text-zinc-500">
-          You will only be billed when you explicitly fund each milestone into escrow. Funds are released upon your approval of deliverables.
+          You will only be billed when you explicitly fund each milestone into escrow. Funds are
+          released upon your approval of deliverables.
         </p>
       </div>
 
@@ -157,4 +153,3 @@ export function CreateContractForm({
     </form>
   );
 }
-

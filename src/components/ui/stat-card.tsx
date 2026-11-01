@@ -69,9 +69,7 @@ export function StatCard({
       </div>
 
       {description && (
-        <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
-          {description}
-        </p>
+        <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">{description}</p>
       )}
 
       {badge && (
@@ -90,4 +88,3 @@ export function StatCard({
     </div>
   );
 }
-

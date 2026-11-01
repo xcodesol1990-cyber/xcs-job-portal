@@ -1,7 +1,16 @@
 import { prisma } from "@/server/db/prisma";
-import { ContractStatus, LedgerType, MilestoneStatus, ProposalStatus, Prisma } from "@prisma/client";
+import {
+  ContractStatus,
+  LedgerType,
+  MilestoneStatus,
+  ProposalStatus,
+  Prisma,
+} from "@prisma/client";
 import { AppError, HTTP_STATUS } from "@/server/lib/errors";
-import { assertContractTransition, assertMilestoneTransition } from "@/server/policies/state-machines";
+import {
+  assertContractTransition,
+  assertMilestoneTransition,
+} from "@/server/policies/state-machines";
 import { sanitizeHtml } from "@/server/lib/sanitize";
 
 export interface CreateMilestoneInput {
@@ -21,7 +30,11 @@ export class ContractService {
    */
   static async createContract(clientId: string, input: CreateContractInput) {
     if (!input.milestones || input.milestones.length === 0) {
-      throw new AppError("INVALID_MILESTONES", "A contract must have at least one milestone.", HTTP_STATUS.UNPROCESSABLE);
+      throw new AppError(
+        "INVALID_MILESTONES",
+        "A contract must have at least one milestone.",
+        HTTP_STATUS.UNPROCESSABLE,
+      );
     }
 
     const proposal = await prisma.proposal.findUnique({
@@ -33,7 +46,11 @@ export class ContractService {
     });
 
     if (!proposal || proposal.job.clientId !== clientId) {
-      throw new AppError("UNAUTHORIZED", "Proposal not found or unauthorized.", HTTP_STATUS.FORBIDDEN);
+      throw new AppError(
+        "UNAUTHORIZED",
+        "Proposal not found or unauthorized.",
+        HTTP_STATUS.FORBIDDEN,
+      );
     }
 
     const existingContract = await prisma.contract.findUnique({
@@ -41,7 +58,11 @@ export class ContractService {
     });
 
     if (existingContract) {
-      throw new AppError("CONTRACT_EXISTS", "A contract for this proposal has already been created.", HTTP_STATUS.CONFLICT);
+      throw new AppError(
+        "CONTRACT_EXISTS",
+        "A contract for this proposal has already been created.",
+        HTTP_STATUS.CONFLICT,
+      );
     }
 
     const totalCents = input.milestones.reduce((sum, m) => sum + BigInt(m.amountCents), BigInt(0));
@@ -111,7 +132,11 @@ export class ContractService {
     });
 
     if (!contract || contract.milestones.length === 0) {
-      throw new AppError("MILESTONE_NOT_FOUND", "Milestone not found or unauthorized.", HTTP_STATUS.NOT_FOUND);
+      throw new AppError(
+        "MILESTONE_NOT_FOUND",
+        "Milestone not found or unauthorized.",
+        HTTP_STATUS.NOT_FOUND,
+      );
     }
 
     const milestone = contract.milestones[0];
@@ -221,7 +246,12 @@ export class ContractService {
   /**
    * Client requests revisions on deliverable.
    */
-  static async requestRevision(clientId: string, contractId: string, milestoneId: string, reason: string) {
+  static async requestRevision(
+    clientId: string,
+    contractId: string,
+    milestoneId: string,
+    reason: string,
+  ) {
     const contract = await prisma.contract.findFirst({
       where: { id: contractId, clientId },
       include: { milestones: { where: { id: milestoneId } } },

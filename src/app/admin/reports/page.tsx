@@ -91,15 +91,18 @@ export default async function AdminReportsPage({ searchParams }: ReportsPageProp
               </thead>
               <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/70">
                 {reports.map((report) => (
-                  <tr key={report.id} className="hover:bg-zinc-50/60 dark:hover:bg-zinc-800/30 transition-colors">
+                  <tr
+                    key={report.id}
+                    className="hover:bg-zinc-50/60 dark:hover:bg-zinc-800/30 transition-colors"
+                  >
                     <td className="px-5 py-3.5">
                       <span
                         className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[10px] font-semibold ${
                           report.status === "OPEN"
                             ? "bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400 border border-amber-200/60 dark:border-amber-900/40"
                             : report.status === "RESOLVED"
-                            ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-900/40"
-                            : "bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400 border border-zinc-200/60 dark:border-zinc-700/60"
+                              ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-900/40"
+                              : "bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400 border border-zinc-200/60 dark:border-zinc-700/60"
                         }`}
                       >
                         <Flag className="h-3 w-3" />
@@ -116,18 +119,21 @@ export default async function AdminReportsPage({ searchParams }: ReportsPageProp
                     </td>
                     <td className="px-4 py-3.5 font-medium text-zinc-900 dark:text-zinc-100">
                       <div>{report.reporter.name}</div>
-                      <div className="text-[10px] text-zinc-400 font-mono">{report.reporter.email}</div>
+                      <div className="text-[10px] text-zinc-400 font-mono">
+                        {report.reporter.email}
+                      </div>
                     </td>
                     <td className="px-4 py-3.5 max-w-sm text-zinc-700 dark:text-zinc-300">
                       {report.reason}
                     </td>
                     <td className="px-4 py-3.5 text-zinc-400 text-[11px]">
-                      {new Date(report.createdAt).toLocaleString([], { dateStyle: "short", timeStyle: "short" })}
+                      {new Date(report.createdAt).toLocaleString([], {
+                        dateStyle: "short",
+                        timeStyle: "short",
+                      })}
                     </td>
                     <td className="px-5 py-3.5 text-right">
-                      {report.status === "OPEN" && (
-                        <ReportStatusButton reportId={report.id} />
-                      )}
+                      {report.status === "OPEN" && <ReportStatusButton reportId={report.id} />}
                     </td>
                   </tr>
                 ))}

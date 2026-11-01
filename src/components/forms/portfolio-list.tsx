@@ -1,7 +1,10 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { addPortfolioItemAction, deletePortfolioItemAction } from "@/server/actions/profile.actions";
+import {
+  addPortfolioItemAction,
+  deletePortfolioItemAction,
+} from "@/server/actions/profile.actions";
 import { Plus, Trash2, ExternalLink, Loader2 } from "lucide-react";
 
 interface PortfolioItem {
@@ -61,7 +64,10 @@ export function PortfolioList({ items }: PortfolioListProps) {
       </div>
 
       {showAddForm && (
-        <form onSubmit={handleAdd} className="rounded-xl border border-indigo-100 bg-indigo-50/30 p-4 space-y-3 dark:border-indigo-900/40 dark:bg-indigo-950/20">
+        <form
+          onSubmit={handleAdd}
+          className="rounded-xl border border-indigo-100 bg-indigo-50/30 p-4 space-y-3 dark:border-indigo-900/40 dark:bg-indigo-950/20"
+        >
           <div>
             <label className="block text-xs font-medium text-zinc-700 dark:text-zinc-300">
               Project Title
@@ -156,4 +162,3 @@ export function PortfolioList({ items }: PortfolioListProps) {
     </div>
   );
 }
-

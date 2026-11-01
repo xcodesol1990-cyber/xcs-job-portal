@@ -1,11 +1,13 @@
 # 03. User Profiles & KYC Verification
 
 ## Overview
+
 WorkNest maintains distinct profile entities for clients and freelancers linked to the central `User` model. Additionally, an identity verification (KYC) state machine enables the platform to comply with financial regulations and build trust between parties prior to high-value escrow transactions.
 
 ---
 
 ## Key Files & Modules
+
 - `src/server/services/profile.service.ts`: Profile creation, skill tagging, rate settings, and reputation calculation.
 - `src/app/(dashboard)/client/profile/page.tsx`: Client company profile management.
 - `src/app/(dashboard)/freelancer/profile/page.tsx`: Freelancer public portfolio, hourly rate, and bio.
@@ -41,6 +43,7 @@ stateDiagram-v2
 ## End-to-End Use Cases
 
 ### Use Case 3.1: Freelancer Profile Setup & Skill Tagging
+
 - **Actor**: Freelancer
 - **Workflow**:
   1. Freelancer navigates to `/freelancer/profile`.
@@ -50,6 +53,7 @@ stateDiagram-v2
   5. Profile is instantly updated and rendered on the public `/freelancers/[id]` showcase.
 
 ### Use Case 3.2: Administrative KYC Verification
+
 - **Actor**: Super Admin
 - **Workflow**:
   1. Super Admin navigates to `/admin/users`.
@@ -61,6 +65,7 @@ stateDiagram-v2
   7. The user now displays a blue verified shield icon next to their name platform-wide.
 
 ### Use Case 3.3: Risk Mitigation & User Suspension
+
 - **Actor**: Super Admin
 - **Workflow**:
   1. A user is reported for violating marketplace policies.
@@ -68,4 +73,3 @@ stateDiagram-v2
   3. Clicks **Suspend User**.
   4. User status is immediately set to `SUSPENDED`.
   5. NextAuth session middleware terminates their active sessions, preventing further job creation or bid submissions.
-

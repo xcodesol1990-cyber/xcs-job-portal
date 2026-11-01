@@ -5,14 +5,7 @@ import { prisma } from "@/server/db/prisma";
 import { PageHeader } from "@/components/ui/page-header";
 import { StatCard } from "@/components/ui/stat-card";
 import { EmptyState } from "@/components/ui/empty-state";
-import {
-  Briefcase,
-  PlusCircle,
-  FileText,
-  DollarSign,
-  Clock,
-  Sparkles,
-} from "lucide-react";
+import { Briefcase, PlusCircle, FileText, DollarSign, Clock, Sparkles } from "lucide-react";
 
 export default async function ClientDashboardPage() {
   const session = await auth();
@@ -78,7 +71,10 @@ export default async function ClientDashboardPage() {
           icon={DollarSign}
           iconColor="text-emerald-600 dark:text-emerald-400"
           iconBg="bg-emerald-50 dark:bg-emerald-950/40"
-          badge={{ text: "Double-Entry Trust", color: "bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400" }}
+          badge={{
+            text: "Double-Entry Trust",
+            color: "bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400",
+          }}
         />
       </div>
 
@@ -97,8 +93,12 @@ export default async function ClientDashboardPage() {
       ) : (
         <div className="rounded-2xl border border-zinc-200/80 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900 flex items-center justify-between">
           <div>
-            <h3 className="font-bold text-zinc-900 dark:text-zinc-100 text-base">You have {jobCount} active job listings</h3>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">Review incoming candidate pitches and schedule interviews.</p>
+            <h3 className="font-bold text-zinc-900 dark:text-zinc-100 text-base">
+              You have {jobCount} active job listings
+            </h3>
+            <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
+              Review incoming candidate pitches and schedule interviews.
+            </p>
           </div>
           <Link
             href="/client/jobs"

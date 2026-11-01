@@ -44,9 +44,7 @@ export default async function PublicClientPage({ params }: PublicClientPageProps
                   </span>
                 )}
               </div>
-              <p className="mt-1 text-sm text-zinc-500">
-                Primary Contact: {profile.user.name}
-              </p>
+              <p className="mt-1 text-sm text-zinc-500">Primary Contact: {profile.user.name}</p>
               {profile.website && (
                 <a
                   href={profile.website}

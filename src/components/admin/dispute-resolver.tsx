@@ -57,8 +57,8 @@ export function DisputeResolver({
         resolution === "RESOLVED_CLIENT"
           ? `Full refund issued to ${clientName}`
           : resolution === "RESOLVED_FREELANCER"
-          ? `Full release awarded to ${freelancerName}`
-          : `Split: ${splitPercent}% Freelancer / ${100 - splitPercent}% Client`;
+            ? `Full release awarded to ${freelancerName}`
+            : `Split: ${splitPercent}% Freelancer / ${100 - splitPercent}% Client`;
 
       toast.success("Dispute successfully arbitrated!", {
         id: toastId,
@@ -113,12 +113,16 @@ export function DisputeResolver({
             <div className="mt-4 rounded-xl border border-zinc-100 bg-zinc-50/70 p-3 text-xs dark:border-zinc-800/80 dark:bg-zinc-800/50">
               <div className="flex justify-between">
                 <span className="text-zinc-500">Contract:</span>
-                <span className="font-semibold text-zinc-800 dark:text-zinc-200">{contractTitle}</span>
+                <span className="font-semibold text-zinc-800 dark:text-zinc-200">
+                  {contractTitle}
+                </span>
               </div>
               {milestoneTitle && (
                 <div className="flex justify-between mt-1">
                   <span className="text-zinc-500">Contested Milestone:</span>
-                  <span className="font-medium text-zinc-700 dark:text-zinc-300">{milestoneTitle}</span>
+                  <span className="font-medium text-zinc-700 dark:text-zinc-300">
+                    {milestoneTitle}
+                  </span>
                 </div>
               )}
               {parsedAmount > 0 && (
@@ -187,8 +191,13 @@ export function DisputeResolver({
               {resolution === "RESOLVED_SPLIT" && (
                 <div className="rounded-xl border border-zinc-200 bg-zinc-50 p-4 dark:border-zinc-800 dark:bg-zinc-800/50">
                   <div className="flex justify-between text-xs font-semibold text-zinc-700 dark:text-zinc-300">
-                    <span>Talent: {splitPercent}% (${((parsedAmount * splitPercent) / 100).toFixed(2)})</span>
-                    <span>Client: {100 - splitPercent}% (${((parsedAmount * (100 - splitPercent)) / 100).toFixed(2)})</span>
+                    <span>
+                      Talent: {splitPercent}% (${((parsedAmount * splitPercent) / 100).toFixed(2)})
+                    </span>
+                    <span>
+                      Client: {100 - splitPercent}% ($
+                      {((parsedAmount * (100 - splitPercent)) / 100).toFixed(2)})
+                    </span>
                   </div>
                   <input
                     type="range"

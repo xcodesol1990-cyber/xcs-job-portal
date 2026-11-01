@@ -23,8 +23,12 @@ export async function GET(req: NextRequest) {
 
     return {
       outbox: outbox.status === "fulfilled" ? outbox.value : { error: outbox.reason },
-      autoApprove: autoApprove.status === "fulfilled" ? autoApprove.value : { error: autoApprove.reason },
-      expiredContracts: expiredContracts.status === "fulfilled" ? expiredContracts.value : { error: expiredContracts.reason },
+      autoApprove:
+        autoApprove.status === "fulfilled" ? autoApprove.value : { error: autoApprove.reason },
+      expiredContracts:
+        expiredContracts.status === "fulfilled"
+          ? expiredContracts.value
+          : { error: expiredContracts.reason },
       ledger: ledger.status === "fulfilled" ? ledger.value : { error: ledger.reason },
       cleanup: cleanup.status === "fulfilled" ? cleanup.value : { error: cleanup.reason },
       jss: jss.status === "fulfilled" ? jss.value : { error: jss.reason },
@@ -37,4 +41,3 @@ export async function GET(req: NextRequest) {
 
   return NextResponse.json({ success: true, result });
 }
-

@@ -1,11 +1,13 @@
 # 05. Proposals & Bidding System
 
 ## Overview
+
 The Proposals module allows qualified freelancers to submit competitive pitches, breakdown deliverable milestones, and negotiate pricing with clients. Clients receive submissions through a dedicated proposal review desk where they can compare candidates, review past performance, and award contracts with 1 click.
 
 ---
 
 ## Key Files & Modules
+
 - `src/server/services/proposal.service.ts`: Proposal submission, duplicate check validation, milestone formatting, and status transitions.
 - `src/app/jobs/[id]/apply/page.tsx`: Freelancer proposal submission form.
 - `src/app/(dashboard)/client/jobs/[id]/proposals/page.tsx`: Client proposal review desk.
@@ -45,6 +47,7 @@ stateDiagram-v2
 ## End-to-End Use Cases
 
 ### Use Case 5.1: Freelancer Submits a Detailed Proposal
+
 - **Actor**: Freelancer
 - **Workflow**:
   1. Freelancer navigates to `/jobs/[id]/apply`.
@@ -59,6 +62,7 @@ stateDiagram-v2
   7. Client receives an in-app notification of the new bid.
 
 ### Use Case 5.2: Client Evaluates Proposals & Awards Contract
+
 - **Actor**: Client
 - **Workflow**:
   1. Client navigates to `/client/jobs/[id]/proposals`.
@@ -67,4 +71,3 @@ stateDiagram-v2
   4. Clicks **Accept Proposal & Create Contract**.
   5. The server creates a formal `Contract` entity with draft milestones matching the proposal breakdown.
   6. Status of the selected proposal transitions to `ACCEPTED`, while remaining proposals can be respectfully set to `REJECTED`.
-

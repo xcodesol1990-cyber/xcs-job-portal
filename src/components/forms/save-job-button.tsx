@@ -10,10 +10,7 @@ interface SaveJobButtonProps {
   initialSaved?: boolean;
 }
 
-export function SaveJobButton({
-  jobId,
-  initialSaved = false,
-}: SaveJobButtonProps) {
+export function SaveJobButton({ jobId, initialSaved = false }: SaveJobButtonProps) {
   const [saved, setSaved] = useState(initialSaved);
   const [loading, setLoading] = useState(false);
 
@@ -56,11 +53,12 @@ export function SaveJobButton({
     >
       <Bookmark
         className={`h-4 w-4 transition-colors ${
-          saved ? "fill-purple-600 text-purple-600 dark:fill-purple-400 dark:text-purple-400" : "text-zinc-400"
+          saved
+            ? "fill-purple-600 text-purple-600 dark:fill-purple-400 dark:text-purple-400"
+            : "text-zinc-400"
         }`}
       />
       <span>{saved ? "Saved" : "Save Job"}</span>
     </button>
   );
 }
-

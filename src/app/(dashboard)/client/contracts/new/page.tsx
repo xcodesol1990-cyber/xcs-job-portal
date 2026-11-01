@@ -57,10 +57,7 @@ export default async function NewContractPage({ searchParams }: NewContractPageP
       </div>
 
       <div className="rounded-2xl border border-zinc-200/80 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 sm:p-8">
-        <CreateContractForm
-          proposalId={proposal.id}
-          bidDollars={proposal.bidCents / 100}
-        />
+        <CreateContractForm proposalId={proposal.id} bidDollars={proposal.bidCents / 100} />
       </div>
     </div>
   );

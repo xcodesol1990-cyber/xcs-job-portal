@@ -50,10 +50,10 @@ export function FreelancerProposalItem({ proposal }: FreelancerProposalItemProps
                 proposal.status === "SHORTLISTED"
                   ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300"
                   : proposal.status === "ACCEPTED"
-                  ? "bg-purple-50 text-purple-700 dark:bg-purple-950/40 dark:text-purple-300"
-                  : proposal.status === "REJECTED"
-                  ? "bg-red-50 text-red-700 dark:bg-red-950/40 dark:text-red-300"
-                  : "bg-indigo-50 text-indigo-700 dark:bg-indigo-950/40 dark:text-indigo-300"
+                    ? "bg-purple-50 text-purple-700 dark:bg-purple-950/40 dark:text-purple-300"
+                    : proposal.status === "REJECTED"
+                      ? "bg-red-50 text-red-700 dark:bg-red-950/40 dark:text-red-300"
+                      : "bg-indigo-50 text-indigo-700 dark:bg-indigo-950/40 dark:text-indigo-300"
               }`}
             >
               {proposal.status}
@@ -94,4 +94,3 @@ export function FreelancerProposalItem({ proposal }: FreelancerProposalItemProps
     </div>
   );
 }
-

@@ -49,7 +49,10 @@ export function ContractReviewForm({ contractId, counterpartRole }: ContractRevi
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 rounded-xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-4 rounded-xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900"
+    >
       <div>
         <h4 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
           Leave a Review for {counterpartRole}
@@ -114,4 +117,3 @@ export function ContractReviewForm({ contractId, counterpartRole }: ContractRevi
     </form>
   );
 }
-

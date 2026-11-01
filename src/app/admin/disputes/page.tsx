@@ -84,7 +84,10 @@ export default async function AdminDisputesPage({ searchParams }: DisputesPagePr
               const isOpen = dispute.status === "OPEN" || dispute.status === "UNDER_REVIEW";
 
               return (
-                <div key={dispute.id} className="p-6 transition hover:bg-zinc-50/50 dark:hover:bg-zinc-800/30">
+                <div
+                  key={dispute.id}
+                  className="p-6 transition hover:bg-zinc-50/50 dark:hover:bg-zinc-800/30"
+                >
                   <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-start">
                     <div className="space-y-1.5">
                       <div className="flex items-center gap-2">
@@ -104,26 +107,47 @@ export default async function AdminDisputesPage({ searchParams }: DisputesPagePr
                         </span>
                         <span className="text-[11px] text-zinc-400">
                           Filed {new Date(dispute.createdAt).toLocaleDateString()} by{" "}
-                          <span className="font-semibold text-zinc-700 dark:text-zinc-300">{dispute.openedBy.name}</span>
+                          <span className="font-semibold text-zinc-700 dark:text-zinc-300">
+                            {dispute.openedBy.name}
+                          </span>
                         </span>
                       </div>
 
                       <h3 className="text-base font-bold text-zinc-900 dark:text-zinc-100">
-                        <Link href={`/contracts/${dispute.contractId}`} className="hover:underline flex items-center gap-1.5">
+                        <Link
+                          href={`/contracts/${dispute.contractId}`}
+                          className="hover:underline flex items-center gap-1.5"
+                        >
                           <span>{dispute.contract.job.title}</span>
                           <ExternalLink className="h-3.5 w-3.5 text-zinc-400" />
                         </Link>
                       </h3>
 
                       <p className="text-xs text-zinc-500">
-                        Client: <span className="font-semibold text-zinc-700 dark:text-zinc-300">{dispute.contract.client.name}</span> &bull; Freelancer: <span className="font-semibold text-zinc-700 dark:text-zinc-300">{dispute.contract.freelancer.name}</span>
+                        Client:{" "}
+                        <span className="font-semibold text-zinc-700 dark:text-zinc-300">
+                          {dispute.contract.client.name}
+                        </span>{" "}
+                        &bull; Freelancer:{" "}
+                        <span className="font-semibold text-zinc-700 dark:text-zinc-300">
+                          {dispute.contract.freelancer.name}
+                        </span>
                         {dispute.milestone && (
-                          <> &bull; Contested Milestone: <span className="font-semibold text-purple-600 dark:text-purple-400">{dispute.milestone.title}</span> (${(Number(dispute.milestone.amountCents) / 100).toFixed(2)})</>
+                          <>
+                            {" "}
+                            &bull; Contested Milestone:{" "}
+                            <span className="font-semibold text-purple-600 dark:text-purple-400">
+                              {dispute.milestone.title}
+                            </span>{" "}
+                            (${(Number(dispute.milestone.amountCents) / 100).toFixed(2)})
+                          </>
                         )}
                       </p>
 
                       <div className="mt-3 rounded-xl border border-zinc-200/60 bg-zinc-50/70 p-3.5 text-xs text-zinc-800 dark:border-zinc-800 dark:bg-zinc-800/50 dark:text-zinc-200">
-                        <span className="font-bold text-zinc-900 dark:text-zinc-100">Dispute Claim: </span>
+                        <span className="font-bold text-zinc-900 dark:text-zinc-100">
+                          Dispute Claim:{" "}
+                        </span>
                         {dispute.reason}
                       </div>
 

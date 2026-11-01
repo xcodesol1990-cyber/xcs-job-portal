@@ -1,13 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ProfileService } from "@/server/services/profile.service";
-import {
-  Star,
-  ExternalLink,
-  ShieldCheck,
-  Briefcase,
-  ArrowLeft,
-} from "lucide-react";
+import { Star, ExternalLink, ShieldCheck, Briefcase, ArrowLeft } from "lucide-react";
 
 interface PublicFreelancerPageProps {
   params: Promise<{ id: string }>;

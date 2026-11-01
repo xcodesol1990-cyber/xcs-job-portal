@@ -1,0 +1,72 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  verify:
+    name: Verify & Build
+    runs-on: ubuntu-latest
+    env:
+      NODE_ENV: test
+      AUTH_SECRET: 6bdd41e45d21ddfc053160c323172d12887387698c52a7fb527f431a3d2c6b23
+      ENCRYPTION_KEY: 97022bb2602c4fb83aa8cb274726070580ce0dd6b66d0a01a37964c0f2e4cad8
+      CRON_SECRET: 6e3ef7eb518fe2411f5085e4eb713cada632c7a3b64ed0195c126e93997c9f03
+      DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/worknest_ci?schema=public"
+      DIRECT_URL: "postgresql://postgres:postgres@localhost:5432/worknest_ci?schema=public"
+      APP_URL: "http://localhost:3000"
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+          run_install: false
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Validate Prisma Schema
+        run: pnpm prisma:validate
+
+      - name: TypeScript Compilation Check
+        run: pnpm typecheck
+
+      - name: ESLint Check
+        run: pnpm lint
+
+      - name: Prettier Format Check
+        run: pnpm format:check
+
+      - name: Run Vitest Unit Tests
+        run: pnpm test
+
+      - name: Generate Prisma Client for Build
+        run: pnpm prisma generate
+
+      - name: Build Next.js Application
+        run: pnpm next build

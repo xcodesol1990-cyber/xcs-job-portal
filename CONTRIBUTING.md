@@ -29,8 +29,8 @@ Thank you for contributing to WorkNest! Please review these guidelines before su
 ## Commit Message Convention
 
 Follow [Conventional Commits](https://www.conventionalcommits.org/):
+
 - `feat(module): description`
 - `fix(module): description`
 - `test(module): description`
 - `docs: description`
-

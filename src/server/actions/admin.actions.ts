@@ -6,7 +6,11 @@ import { prisma } from "@/server/db/prisma";
 import { UserStatus, Prisma } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 
-export async function updateUserStatusAction(userId: string, newStatus: UserStatus, reason?: string) {
+export async function updateUserStatusAction(
+  userId: string,
+  newStatus: UserStatus,
+  reason?: string,
+) {
   const session = await auth();
   if (!session?.user?.id || !session.user.roles?.includes("ADMIN")) {
     return { success: false, error: "Forbidden: Admin access required." };
@@ -107,5 +111,3 @@ export async function updatePlatformSettingAction(key: string, value: Prisma.Inp
     };
   }
 }
-
-

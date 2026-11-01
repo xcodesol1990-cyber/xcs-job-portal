@@ -63,7 +63,8 @@ export function OpenDisputeModal({ contractId, milestones }: OpenDisputeModalPro
               </h3>
             </div>
             <p className="mt-1 text-xs text-zinc-500">
-              Filing a dispute pauses milestone escrow payouts and alerts platform moderators to arbitrate.
+              Filing a dispute pauses milestone escrow payouts and alerts platform moderators to
+              arbitrate.
             </p>
 
             <form onSubmit={handleSubmit} className="mt-4 space-y-4">
@@ -131,4 +132,3 @@ export function OpenDisputeModal({ contractId, milestones }: OpenDisputeModalPro
     </>
   );
 }
-

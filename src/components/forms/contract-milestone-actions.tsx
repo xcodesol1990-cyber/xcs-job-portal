@@ -40,7 +40,8 @@ export function ContractMilestoneActions({
   };
 
   const handleApprove = () => {
-    if (!confirm("Are you sure you want to approve this deliverable and release escrow payment?")) return;
+    if (!confirm("Are you sure you want to approve this deliverable and release escrow payment?"))
+      return;
     startTransition(async () => {
       await approveAndReleaseAction(contractId, milestoneId);
       router.refresh();
@@ -203,7 +204,11 @@ export function ContractMilestoneActions({
                 disabled={isPending}
                 className="inline-flex items-center gap-1.5 rounded-lg bg-amber-600 px-4 py-1.5 text-xs font-semibold text-white shadow-sm hover:bg-amber-500 disabled:opacity-60"
               >
-                {isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : "Send Revision Request"}
+                {isPending ? (
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                ) : (
+                  "Send Revision Request"
+                )}
               </button>
             </div>
           </form>
@@ -212,4 +217,3 @@ export function ContractMilestoneActions({
     </div>
   );
 }
-

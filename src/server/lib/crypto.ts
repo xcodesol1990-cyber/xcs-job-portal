@@ -20,10 +20,7 @@ export function encryptData(plaintext: string): string {
     authTagLength: AUTH_TAG_LENGTH,
   });
 
-  const encrypted = Buffer.concat([
-    cipher.update(plaintext, "utf8"),
-    cipher.final(),
-  ]);
+  const encrypted = Buffer.concat([cipher.update(plaintext, "utf8"), cipher.final()]);
 
   const authTag = cipher.getAuthTag();
 
@@ -49,10 +46,7 @@ export function decryptData(payload: string): string {
   });
   decipher.setAuthTag(authTag);
 
-  const decrypted = Buffer.concat([
-    decipher.update(encrypted),
-    decipher.final(),
-  ]);
+  const decrypted = Buffer.concat([decipher.update(encrypted), decipher.final()]);
 
   return decrypted.toString("utf8");
 }
@@ -112,7 +106,10 @@ function base32ToBuffer(base32: string): Buffer {
 /**
  * Generates an RFC 6238 TOTP code (6 digits, 30s window).
  */
-export function generateTotpCode(secretBase32: string, timeStep = Math.floor(Date.now() / 1000 / 30)): string {
+export function generateTotpCode(
+  secretBase32: string,
+  timeStep = Math.floor(Date.now() / 1000 / 30),
+): string {
   const key = base32ToBuffer(secretBase32);
   const timeBuffer = Buffer.alloc(8);
   timeBuffer.writeBigUInt64BE(BigInt(timeStep), 0);
@@ -142,7 +139,9 @@ export function verifyTotpCode(secretBase32: string, token: string, window = 1):
 
   const currentStep = Math.floor(Date.now() / 1000 / 30);
   for (let step = currentStep - window; step <= currentStep + window; step++) {
-    if (crypto.timingSafeEqual(Buffer.from(generateTotpCode(secretBase32, step)), Buffer.from(token))) {
+    if (
+      crypto.timingSafeEqual(Buffer.from(generateTotpCode(secretBase32, step)), Buffer.from(token))
+    ) {
       return true;
     }
   }
@@ -153,9 +152,12 @@ export function verifyTotpCode(secretBase32: string, token: string, window = 1):
 /**
  * Generates a standard otpauth:// URL for authenticator apps (Google Authenticator, etc.)
  */
-export function buildTotpUri(accountEmail: string, secretBase32: string, issuer = "WorkNest"): string {
+export function buildTotpUri(
+  accountEmail: string,
+  secretBase32: string,
+  issuer = "WorkNest",
+): string {
   const label = encodeURIComponent(`${issuer}:${accountEmail}`);
   const encIssuer = encodeURIComponent(issuer);
   return `otpauth://totp/${label}?secret=${secretBase32}&issuer=${encIssuer}&algorithm=SHA1&digits=6&period=30`;
 }
-

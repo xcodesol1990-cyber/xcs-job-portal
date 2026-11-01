@@ -176,13 +176,7 @@ export async function seedDatabase() {
       action: "SEED_COMPLETED",
       entityType: "platform",
       metadata: {
-        users: [
-          admin.email,
-          client1.email,
-          client2.email,
-          freelancer1.email,
-          freelancer2.email,
-        ],
+        users: [admin.email, client1.email, client2.email, freelancer1.email, freelancer2.email],
       },
     },
   });
@@ -190,13 +184,6 @@ export async function seedDatabase() {
   return {
     categoriesSeeded: CATEGORIES.length,
     skillsSeeded: SKILLS.length,
-    seededUsers: [
-      admin.email,
-      client1.email,
-      client2.email,
-      freelancer1.email,
-      freelancer2.email,
-    ],
+    seededUsers: [admin.email, client1.email, client2.email, freelancer1.email, freelancer2.email],
   };
 }
-

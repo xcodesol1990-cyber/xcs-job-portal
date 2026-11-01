@@ -14,7 +14,11 @@ export class ReviewService {
     const { contractId, rating, comment } = input;
 
     if (!rating || rating < 1 || rating > 5 || !Number.isInteger(rating)) {
-      throw new AppError("INVALID_RATING", "Rating must be an integer between 1 and 5.", HTTP_STATUS.BAD_REQUEST);
+      throw new AppError(
+        "INVALID_RATING",
+        "Rating must be an integer between 1 and 5.",
+        HTTP_STATUS.BAD_REQUEST,
+      );
     }
 
     const contract = await prisma.contract.findUnique({
@@ -30,14 +34,22 @@ export class ReviewService {
     }
 
     if (contract.status !== "COMPLETED") {
-      throw new AppError("CONTRACT_NOT_COMPLETED", "Reviews can only be submitted for completed contracts.", HTTP_STATUS.BAD_REQUEST);
+      throw new AppError(
+        "CONTRACT_NOT_COMPLETED",
+        "Reviews can only be submitted for completed contracts.",
+        HTTP_STATUS.BAD_REQUEST,
+      );
     }
 
     const isClient = contract.clientId === reviewerId;
     const isFreelancer = contract.freelancerId === reviewerId;
 
     if (!isClient && !isFreelancer) {
-      throw new AppError("FORBIDDEN", "Only parties to this contract can leave a review.", HTTP_STATUS.FORBIDDEN);
+      throw new AppError(
+        "FORBIDDEN",
+        "Only parties to this contract can leave a review.",
+        HTTP_STATUS.FORBIDDEN,
+      );
     }
 
     const revieweeId = isClient ? contract.freelancerId : contract.clientId;
@@ -53,7 +65,11 @@ export class ReviewService {
     });
 
     if (existing) {
-      throw new AppError("REVIEW_ALREADY_EXISTS", "You have already reviewed this contract.", HTTP_STATUS.CONFLICT);
+      throw new AppError(
+        "REVIEW_ALREADY_EXISTS",
+        "You have already reviewed this contract.",
+        HTTP_STATUS.CONFLICT,
+      );
     }
 
     return await prisma.$transaction(async (tx) => {
@@ -79,9 +95,10 @@ export class ReviewService {
         });
 
         const totalReviews = allFreelancerReviews.length;
-        const avgRating = totalReviews > 0
-          ? allFreelancerReviews.reduce((sum, r) => sum + r.rating, 0) / totalReviews
-          : 5;
+        const avgRating =
+          totalReviews > 0
+            ? allFreelancerReviews.reduce((sum, r) => sum + r.rating, 0) / totalReviews
+            : 5;
 
         // JSS percentage (e.g., 4.5/5 -> 90.00%)
         const jss = new Prisma.Decimal(((avgRating / 5) * 100).toFixed(2));

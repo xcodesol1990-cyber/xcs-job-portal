@@ -99,7 +99,9 @@ export function ApplyJobForm({ jobId, budgetType }: ApplyJobFormProps) {
           </div>
           <div className="flex justify-between font-bold text-sm text-zinc-900 dark:text-zinc-100 pt-1">
             <span>You&apos;ll receive (after milestone approval):</span>
-            <span className="font-mono text-emerald-600 dark:text-emerald-400">${freelancerReceives}</span>
+            <span className="font-mono text-emerald-600 dark:text-emerald-400">
+              ${freelancerReceives}
+            </span>
           </div>
         </div>
       </div>
@@ -118,7 +120,9 @@ export function ApplyJobForm({ jobId, budgetType }: ApplyJobFormProps) {
           placeholder="Explain why you are the best fit for this project, how you will approach the deliverables, and mention relevant past experience..."
           className="mt-1.5 w-full rounded-lg border border-zinc-300 bg-white px-3.5 py-2.5 text-sm text-zinc-900 focus:border-indigo-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100"
         />
-        <p className="mt-1 text-xs text-zinc-500">Provide actionable technical context to stand out.</p>
+        <p className="mt-1 text-xs text-zinc-500">
+          Provide actionable technical context to stand out.
+        </p>
       </div>
 
       <div className="flex justify-end pt-2">

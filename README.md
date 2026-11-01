@@ -12,35 +12,41 @@ For demo and testing purposes, standard seeded credentials with pre-configured p
 
 **Password for all personas:** `WorkNestDemo!2026`
 
-| Persona | Role | Email | Capabilities |
-| :--- | :--- | :--- | :--- |
-| **Platform Administrator** | `ADMIN` | `admin@worknest.dev` | Mission Control, arbitration rulings, KYC review, user suspension, ledger audit |
-| **Acme Technologies** | `CLIENT` | `client.acme@worknest.dev` | Post jobs, evaluate proposals, fund milestone escrow, approve deliverables |
-| **Alex Rivera** | `FREELANCER` | `freelancer.alex@worknest.dev` | Senior Fullstack Dev profile, submit proposals, submit deliverables, Stripe payouts |
+| Persona                    | Role         | Email                          | Capabilities                                                                        |
+| :------------------------- | :----------- | :----------------------------- | :---------------------------------------------------------------------------------- |
+| **Platform Administrator** | `ADMIN`      | `admin@worknest.dev`           | Mission Control, arbitration rulings, KYC review, user suspension, ledger audit     |
+| **Enterprise Client**      | `CLIENT`     | `client@worknest.dev`          | Post jobs, evaluate proposals, fund milestone escrow, approve deliverables          |
+| **Acme Technologies**      | `CLIENT`     | `client.acme@worknest.dev`     | Secondary client profile with verified payment status                               |
+| **Senior Freelancer**      | `FREELANCER` | `freelancer@worknest.dev`      | Senior Fullstack Dev profile, submit proposals, submit deliverables, Stripe payouts |
+| **Alex Rivera**            | `FREELANCER` | `freelancer.alex@worknest.dev` | Senior Freelancer profile with active milestone contracts                           |
 
-*(Quick 1-click persona fill buttons are also available on the `/login` screen).*
+_(Quick 1-click persona fill buttons are also available directly on the `/login` screen)._
 
 ---
 
 ## 🚀 Key Features & Architecture
 
 ### 1. Robust Authentication & RBAC
+
 - **NextAuth v5 (Auth.js)** with custom Credentials & Argon2id password hashing.
 - Brute-force account lockout with exponential backoff & RFC 6238 TOTP two-factor authentication.
 - Strict isolation: `ADMIN` roles cannot be self-registered and require database seeding or platform administrative delegation.
 - Automated email verification flow and secure password reset tokens.
 
 ### 2. Milestone-Based Escrow State Machine
+
 - Strict deterministic state transitions: `PENDING_FUNDING` &rarr; `ACTIVE` &rarr; `COMPLETED` / `CANCELLED` / `DISPUTED`.
 - Milestone stages: `PENDING` &rarr; `FUNDED` &rarr; `SUBMITTED` &rarr; `REVISION_REQUESTED` &rarr; `APPROVED` &rarr; `RELEASED` / `REFUNDED` / `DISPUTED`.
 - **Double-Entry Financial Ledger:** Every escrow movement records an immutable `LedgerEntry` with a unique cryptographic idempotency key, preventing duplicate charges or payout leaks.
 
 ### 3. Payment Processing & Stripe Connect
+
 - Seamless onboarding with **Stripe Connect Express** for freelancer bank payouts.
 - Raw-body Stripe webhook handler (`/api/webhooks/stripe`) with idempotency deduplication in `WebhookEvent`.
 - 100% server-side money math in integer cents (`BigInt`), completely eliminating floating-point rounding drift.
 
 ### 4. Dispute Resolution & Community Moderation
+
 - Both parties can file disputes on contested milestones, automatically pausing escrow releases.
 - Admin judicial arbitration engine supporting:
   - `RESOLVED_CLIENT`: 100% refund to client.
@@ -49,35 +55,41 @@ For demo and testing purposes, standard seeded credentials with pre-configured p
 - Community reporting queue to flag suspicious jobs, abusive messages, or bad actors.
 
 ### 5. Automated Background Crons (`vercel.json`)
+
 - Protected by a strict `CRON_SECRET` bearer check and PostgreSQL advisory locks (`pg_try_advisory_lock`):
-  - `/api/cron/outbox`: Processes asynchronous transactional queue every minute.
-  - `/api/cron/auto-approve`: Automatically approves deliverables waiting > 14 days without client response.
-  - `/api/cron/expire-contracts`: Auto-cancels unfunded contract offers older than 7 days.
-  - `/api/cron/reconcile-ledger`: Audits double-entry ledger invariants daily and alerts on balance drift.
-  - `/api/cron/cleanup`: Purges expired idempotency keys and verification tokens.
+  - `/api/cron/daily`: Runs daily at `0 0 * * *` (Vercel Hobby plan compliant), sequentially executing:
+    - Transactional outbox retry & dead-letter queue processing
+    - Deliverable auto-approval for milestones waiting > 14 days without client action
+    - Auto-cancellation of unfunded contract offers > 7 days
+    - Double-entry ledger integrity reconciliation & audit logging
+    - Data hygiene cleanup of expired idempotency keys and tokens
+    - Job Success Score (JSS) recalculation for active talent
 
 ---
 
 ## 🛠️ Technology Stack
 
 - **Framework:** Next.js 15.5+ (App Router, Server Actions, Dynamic Streaming)
-- **UI & Styling:** React 19, Tailwind CSS, Lucide Icons
+- **UI & Styling:** React 19, Tailwind CSS, Lucide Icons, Reusable UI Component Primitives
 - **Database & ORM:** PostgreSQL, Prisma ORM with PgBouncer connection pooling
 - **Security & Crypto:** `@node-rs/argon2`, Node `crypto` AES-256-GCM, Citext, DOMPurify sanitization
 - **File Storage:** `@vercel/blob` with fallback local storage
 - **Payments:** Stripe API (Stripe Connect Express)
 - **Testing:** Vitest with comprehensive unit and state-machine test suites
+- **CI / CD:** GitHub Actions (`.github/workflows/ci.yml` and `codeql.yml`)
 
 ---
 
 ## 💻 Local Development Setup
 
 ### Prerequisites
+
 - Node.js 20+
 - pnpm 9+
 - PostgreSQL database
 
 ### 1. Clone & Install Dependencies
+
 ```bash
 git clone https://github.com/<your-repo>/xcs-job-portal.git
 cd xcs-job-portal
@@ -85,11 +97,15 @@ pnpm install
 ```
 
 ### 2. Configure Environment Variables
+
 Copy `.env.example` to `.env`:
+
 ```bash
 cp .env.example .env
 ```
+
 Ensure the following core variables are configured:
+
 ```env
 NODE_ENV=development
 APP_URL=http://localhost:3000
@@ -113,6 +129,7 @@ STRIPE_WEBHOOK_SECRET="whsec_..."
 ```
 
 ### 3. Database Migration & Seeding
+
 ```bash
 # Push schema & generate client
 pnpm prisma generate
@@ -123,22 +140,31 @@ pnpm db:seed
 ```
 
 ### 4. Run Development Server
+
 ```bash
 pnpm dev
 ```
+
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ---
 
 ## 🧪 Testing & Verification
 
-Run the test suite and typechecks:
+Run the test suite, linting, and typechecks:
+
 ```bash
 # Run unit tests
 pnpm test
 
 # Run TypeScript type check
 pnpm typecheck
+
+# Run ESLint
+pnpm lint
+
+# Run Prettier code formatting check
+pnpm format:check
 
 # Run production build test
 pnpm next build
@@ -148,15 +174,18 @@ pnpm next build
 
 ## 🌐 Production Deployment (Vercel)
 
+Detailed deployment and post-deploy verification steps are documented in [docs/13-deployment-and-production-checklist.md](docs/13-deployment-and-production-checklist.md).
+
 1. Connect your repository to **Vercel**.
-2. Add the environment variables (`DATABASE_URL`, `DIRECT_URL`, `APP_URL`, `AUTH_SECRET`, `ENCRYPTION_KEY`, `CRON_SECRET`).
+2. Configure Environment Variables (`DATABASE_URL`, `DIRECT_URL`, `APP_URL`, `AUTH_SECRET`, `ENCRYPTION_KEY`, `CRON_SECRET`).
 3. Set the build command to automatically apply migrations and seeds on every release:
    ```bash
-   prisma generate && prisma migrate deploy && prisma db seed && next build
+   prisma generate && prisma migrate deploy && tsx prisma/seed.ts && next build
    ```
-4. The deployment will initialize database structures, seed demo personas, and register all Vercel Crons configured in `vercel.json`.
+4. Verify `/api/health` returns `200 OK` and execute the 8-step smoke test in [docs/13-deployment-and-production-checklist.md](docs/13-deployment-and-production-checklist.md).
 
 ---
 
 ## 📄 License
+
 MIT License. Built with ❤️ for open, verifiable freelance collaboration.

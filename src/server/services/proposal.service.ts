@@ -39,7 +39,11 @@ export class ProposalService {
     });
 
     if (!job) {
-      throw new AppError("JOB_NOT_FOUND", "Job posting is not open for proposals.", HTTP_STATUS.NOT_FOUND);
+      throw new AppError(
+        "JOB_NOT_FOUND",
+        "Job posting is not open for proposals.",
+        HTTP_STATUS.NOT_FOUND,
+      );
     }
 
     // Clients cannot propose on their own jobs
@@ -157,7 +161,11 @@ export class ProposalService {
     });
 
     if (!proposal || proposal.job.clientId !== clientId) {
-      throw new AppError("UNAUTHORIZED", "Proposal not found or unauthorized.", HTTP_STATUS.FORBIDDEN);
+      throw new AppError(
+        "UNAUTHORIZED",
+        "Proposal not found or unauthorized.",
+        HTTP_STATUS.FORBIDDEN,
+      );
     }
 
     const updated = await prisma.proposal.update({
@@ -228,4 +236,3 @@ export class ProposalService {
     });
   }
 }
-

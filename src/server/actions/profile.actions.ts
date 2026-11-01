@@ -24,7 +24,10 @@ export async function updateFreelancerProfileAction(
   const hourlyRateDollars = Number(formData.get("hourlyRate"));
   const experienceLevel = formData.get("experienceLevel")?.toString();
   const availability = formData.get("availability")?.toString();
-  const skillIds = formData.getAll("skillIds").map(Number).filter((id) => !isNaN(id));
+  const skillIds = formData
+    .getAll("skillIds")
+    .map(Number)
+    .filter((id) => !isNaN(id));
 
   try {
     await ProfileService.updateFreelancerProfile(session.user.id, {
@@ -127,4 +130,3 @@ export async function deletePortfolioItemAction(itemId: string): Promise<Profile
     return { success: false, error: "Failed to delete item." };
   }
 }
-

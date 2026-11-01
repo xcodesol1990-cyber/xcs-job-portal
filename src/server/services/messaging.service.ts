@@ -14,7 +14,11 @@ export class MessagingService {
     contractId?: string,
   ) {
     if (clientId === freelancerId) {
-      throw new AppError("INVALID_CONVERSATION", "Cannot chat with yourself.", HTTP_STATUS.BAD_REQUEST);
+      throw new AppError(
+        "INVALID_CONVERSATION",
+        "Cannot chat with yourself.",
+        HTTP_STATUS.BAD_REQUEST,
+      );
     }
 
     let conversation = await prisma.conversation.findFirst({
@@ -50,7 +54,11 @@ export class MessagingService {
   ) {
     const body = sanitizeHtml(bodyInput);
     if (!body || body.length === 0) {
-      throw new AppError("EMPTY_MESSAGE", "Message body cannot be empty.", HTTP_STATUS.UNPROCESSABLE);
+      throw new AppError(
+        "EMPTY_MESSAGE",
+        "Message body cannot be empty.",
+        HTTP_STATUS.UNPROCESSABLE,
+      );
     }
 
     const conv = await prisma.conversation.findUnique({
@@ -62,7 +70,11 @@ export class MessagingService {
     });
 
     if (!conv || (conv.clientId !== senderId && conv.freelancerId !== senderId)) {
-      throw new AppError("UNAUTHORIZED", "Conversation not found or unauthorized.", HTTP_STATUS.FORBIDDEN);
+      throw new AppError(
+        "UNAUTHORIZED",
+        "Conversation not found or unauthorized.",
+        HTTP_STATUS.FORBIDDEN,
+      );
     }
 
     const recipientId = conv.clientId === senderId ? conv.freelancerId : conv.clientId;
@@ -159,4 +171,3 @@ export class MessagingService {
     });
   }
 }
-

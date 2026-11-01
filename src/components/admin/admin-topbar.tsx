@@ -79,9 +79,7 @@ export function AdminTopbar({
           <div className="flex items-center gap-2 text-xs">
             <span className="font-semibold text-zinc-400">Console</span>
             <span className="text-zinc-300 dark:text-zinc-700">/</span>
-            <span className="font-bold text-zinc-900 dark:text-zinc-100">
-              {getPageTitle()}
-            </span>
+            <span className="font-bold text-zinc-900 dark:text-zinc-100">{getPageTitle()}</span>
           </div>
         </div>
 
@@ -151,10 +149,11 @@ export function AdminTopbar({
                       key={link.href}
                       href={link.href}
                       onClick={() => setMobileOpen(false)}
-                      className={`flex items-center justify-between rounded-xl px-3 py-2.5 text-xs font-semibold ${isActive
+                      className={`flex items-center justify-between rounded-xl px-3 py-2.5 text-xs font-semibold ${
+                        isActive
                           ? "bg-purple-600 text-white"
                           : "text-zinc-400 hover:bg-zinc-900 hover:text-zinc-100"
-                        }`}
+                      }`}
                     >
                       <div className="flex items-center gap-2.5">
                         <Icon className="h-4 w-4" />

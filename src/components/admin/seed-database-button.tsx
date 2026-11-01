@@ -10,12 +10,18 @@ export function SeedDatabaseButton() {
   const router = useRouter();
 
   async function handleSeed() {
-    if (!confirm("This will ensure all demo personas, categories, and skills are populated. Continue?")) {
+    if (
+      !confirm(
+        "This will ensure all demo personas, categories, and skills are populated. Continue?",
+      )
+    ) {
       return;
     }
 
     setLoading(true);
-    const toastId = toast.loading("Seeding database with demo personas & marketplace categories...");
+    const toastId = toast.loading(
+      "Seeding database with demo personas & marketplace categories...",
+    );
 
     try {
       const res = await fetch("/api/seed", { method: "POST" });

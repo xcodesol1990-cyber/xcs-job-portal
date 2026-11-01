@@ -226,4 +226,3 @@ export class CronService {
 }
 
 export const cronService = new CronService();
-

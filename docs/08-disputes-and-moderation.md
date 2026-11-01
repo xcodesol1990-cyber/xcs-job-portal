@@ -1,11 +1,13 @@
 # 08. Disputes & Platform Moderation
 
 ## Overview
+
 Disputes and platform moderation safeguard trust and safety across the ecosystem. When deliverables fail to meet agreed specifications or parties reach an impasse, either party can open a formal dispute on a funded milestone. Super Admins arbitrate disputes using an interactive judicial tool with custom split ratios. Additionally, users can flag inappropriate jobs, messages, or profiles for community moderation.
 
 ---
 
 ## Key Files & Modules
+
 - `src/server/services/dispute.service.ts`: Dispute initiation, evidence submission, resolution calculation, and ledger settlement.
 - `src/app/admin/disputes/page.tsx`: Judicial arbitration dashboard with open claims.
 - `src/components/admin/dispute-resolver.tsx`: Interactive judicial modal with split ratio slider, refund calculations, and toast notifications.
@@ -58,6 +60,7 @@ sequenceDiagram
 ## End-to-End Use Cases
 
 ### Use Case 8.1: Client Files a Formal Dispute
+
 - **Actor**: Client
 - **Workflow**:
   1. Freelancer submits work for Milestone 2.
@@ -68,20 +71,22 @@ sequenceDiagram
   6. Milestone status transitions to `DISPUTED`, escrow is frozen, and an alert is routed to the Admin Arbitration Desk.
 
 ### Use Case 8.2: Admin Arbitrates with Split Ratio Modal
+
 - **Actor**: Super Admin
 - **Workflow**:
   1. Admin opens `/admin/disputes`.
   2. Reviews claim details: contract value ($1,000.00), client statement, and freelancer deliverable links.
   3. Clicks **Arbitrate Case**.
   4. In the modal, adjusts the split ratio slider to **70% Freelancer / 30% Client**:
-     - *Freelancer Payout*: $630.00 (after 10% fee)
-     - *Client Refund*: $300.00
-     - *Platform Commission*: $70.00
-  5. Adds resolution ruling: *"Freelancer completed 70% of scope; client compensated for incomplete QA."*
+     - _Freelancer Payout_: $630.00 (after 10% fee)
+     - _Client Refund_: $300.00
+     - _Platform Commission_: $70.00
+  5. Adds resolution ruling: _"Freelancer completed 70% of scope; client compensated for incomplete QA."_
   6. Clicks **Confirm Resolution**.
   7. Sonner toast confirms resolution; ledger entries balance escrow to zero; contract resumes.
 
 ### Use Case 8.3: Moderating a Flagged Job Listing
+
 - **Actor**: Super Admin
 - **Workflow**:
   1. Admin opens `/admin/reports`.
@@ -89,4 +94,3 @@ sequenceDiagram
   3. Reviews reported job link.
   4. Clicks **Resolve Report**.
   5. The report is marked resolved, and admin can click the associated user link to suspend the fraudulent account.
-

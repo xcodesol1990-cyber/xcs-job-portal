@@ -1,11 +1,13 @@
 # 09. Real-Time Messaging & Notifications
 
 ## Overview
+
 WorkNest provides contextual direct messaging between clients and freelancers tied directly to active proposals and contracts, alongside an asynchronous notifications system. Real-time updates utilize lightweight **Server-Sent Events (SSE)** without requiring costly third-party WebSocket server infrastructure.
 
 ---
 
 ## Key Files & Modules
+
 - `src/server/services/messaging.service.ts`: Thread creation, message dispatch, attachment handling, and unread count tracking.
 - `src/server/services/notification.service.ts`: In-app notification creation, badge counters, and read state persistence.
 - `src/server/actions/notification.actions.ts`: Server actions for `markNotificationReadAction` and `markAllNotificationsReadAction`.
@@ -51,22 +53,23 @@ graph LR
 ## End-to-End Use Cases
 
 ### Use Case 9.1: Direct Messaging During Active Contract
+
 - **Actor**: Client & Freelancer
 - **Workflow**:
   1. Client navigates to `/contracts/[id]` and clicks **Open Conversation**.
-  2. Types an implementation clarification: *"Please make sure the API response adheres to OpenAPI 3.1 schema"*.
+  2. Types an implementation clarification: _"Please make sure the API response adheres to OpenAPI 3.1 schema"_.
   3. Clicks Send.
   4. Freelancer, who has `/messages` open, sees the new message bubble appear in real time via SSE without manual refresh.
   5. Freelancer replies with code sample and documentation link.
 
 ### Use Case 9.2: System Lifecycle Notification
+
 - **Actor**: Freelancer
 - **Workflow**:
   1. Client funds Milestone 1 via Stripe Checkout.
   2. Stripe webhook handler calls `notificationService.createNotification()`:
-     - *Title*: "Milestone Funded"
-     - *Message*: "Client has funded Milestone 1 ($1,000.00). You may now begin work."
-     - *Link*: `/contracts/[id]`
+     - _Title_: "Milestone Funded"
+     - _Message_: "Client has funded Milestone 1 ($1,000.00). You may now begin work."
+     - _Link_: `/contracts/[id]`
   3. Freelancer sees the notification bell badge increment from 0 to 1.
   4. Clicking the bell displays the notification dropdown; clicking the notification routes directly to the contract.
-

@@ -47,10 +47,18 @@ export class JobService {
     const description = sanitizeHtml(input.description);
 
     if (title.length < 5) {
-      throw new AppError("INVALID_TITLE", "Job title must be at least 5 characters.", HTTP_STATUS.UNPROCESSABLE);
+      throw new AppError(
+        "INVALID_TITLE",
+        "Job title must be at least 5 characters.",
+        HTTP_STATUS.UNPROCESSABLE,
+      );
     }
     if (description.length < 20) {
-      throw new AppError("INVALID_DESCRIPTION", "Job description must be at least 20 characters.", HTTP_STATUS.UNPROCESSABLE);
+      throw new AppError(
+        "INVALID_DESCRIPTION",
+        "Job description must be at least 20 characters.",
+        HTTP_STATUS.UNPROCESSABLE,
+      );
     }
 
     if (
@@ -473,4 +481,3 @@ export class JobService {
     });
   }
 }
-

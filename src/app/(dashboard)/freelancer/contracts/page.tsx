@@ -43,7 +43,10 @@ export default async function FreelancerContractsPage() {
         <div className="divide-y divide-zinc-100 dark:divide-zinc-800">
           {freelancerContracts.map((c) => {
             const completedMilestones = c.milestones.filter((m) => m.status === "RELEASED").length;
-            const progressPct = c.milestones.length > 0 ? Math.round((completedMilestones / c.milestones.length) * 100) : 0;
+            const progressPct =
+              c.milestones.length > 0
+                ? Math.round((completedMilestones / c.milestones.length) * 100)
+                : 0;
 
             return (
               <div

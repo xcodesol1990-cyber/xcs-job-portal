@@ -5,7 +5,7 @@ import { ContractService } from "@/server/services/contract.service";
 import { PageHeader } from "@/components/ui/page-header";
 import { Badge } from "@/components/ui/badge";
 import { EmptyState } from "@/components/ui/empty-state";
-import { Briefcase, Eye, Clock, CheckCircle2, DollarSign } from "lucide-react";
+import { Briefcase, Eye } from "lucide-react";
 
 export default async function ClientContractsPage() {
   const session = await auth();
@@ -43,7 +43,10 @@ export default async function ClientContractsPage() {
         <div className="divide-y divide-zinc-100 dark:divide-zinc-800">
           {clientContracts.map((c) => {
             const completedMilestones = c.milestones.filter((m) => m.status === "RELEASED").length;
-            const progressPct = c.milestones.length > 0 ? Math.round((completedMilestones / c.milestones.length) * 100) : 0;
+            const progressPct =
+              c.milestones.length > 0
+                ? Math.round((completedMilestones / c.milestones.length) * 100)
+                : 0;
 
             return (
               <div

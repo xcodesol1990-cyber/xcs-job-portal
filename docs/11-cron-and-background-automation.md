@@ -1,11 +1,13 @@
 # 11. Background Automation & Daily Cron
 
 ## Overview
+
 Marketplace platforms require recurring maintenance jobs: auto-approving milestones when clients do not respond within review windows, expiring stale job drafts, cleaning up orphaned sessions, and performing cryptographic ledger reconciliations. To comply with Vercel's Hobby Tier limitation (exactly **one daily cron** per deployment), all automation tasks are unified into a single daily master runner at `/api/cron/daily`.
 
 ---
 
 ## Key Files & Modules
+
 - `vercel.json`: Single cron configuration scheduled daily at `0 0 * * *`.
 - `src/app/api/cron/daily/route.ts`: Master orchestrator running sequential maintenance tasks.
 - `src/server/services/cron.service.ts`: Core background domain tasks:
@@ -31,7 +33,7 @@ Marketplace platforms require recurring maintenance jobs: auto-approving milesto
 
 > [!IMPORTANT]
 > Vercel Hobby accounts reject deployments containing multi-minute cron schedules (such as `* * * * *` or `*/5 * * * *`) with error:
-> *"Hobby accounts are limited to daily cron jobs."*
+> _"Hobby accounts are limited to daily cron jobs."_
 > WorkNest consolidates all background jobs into `/api/cron/daily`, with internal tasks executing sequentially within a single protected request.
 
 ---
@@ -92,6 +94,7 @@ sequenceDiagram
 ## End-to-End Use Cases
 
 ### Use Case 11.1: Automatic Milestone Approval
+
 - **Actor**: Freelancer
 - **Scenario**: Freelancer submitted completed work on a $2,000 milestone 14 days ago. The client went on leave and did not review or reject the deliverable.
 - **Workflow**:
@@ -102,6 +105,7 @@ sequenceDiagram
   5. Both client and freelancer receive email notification of automatic completion.
 
 ### Use Case 11.2: Cryptographic Ledger Parity Check
+
 - **Actor**: Automated System
 - **Scenario**: Validate zero drift across all historical financial records.
 - **Workflow**:
@@ -110,4 +114,3 @@ sequenceDiagram
   3. Total credits: `$452,100.00`
   4. Discrepancy: `$0.00`
   5. Status logged as `HEALTHY`.
-

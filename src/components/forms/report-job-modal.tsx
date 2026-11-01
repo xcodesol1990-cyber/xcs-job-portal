@@ -76,7 +76,8 @@ export function ReportJobModal({ jobId }: ReportJobModalProps) {
                   Reason for Flagging
                 </label>
                 <p className="mt-0.5 text-[11px] text-zinc-500">
-                  Help us understand why this job violates community standards (e.g. asking for off-platform payment, spam, misleading scope).
+                  Help us understand why this job violates community standards (e.g. asking for
+                  off-platform payment, spam, misleading scope).
                 </p>
                 <textarea
                   rows={4}
@@ -111,4 +112,3 @@ export function ReportJobModal({ jobId }: ReportJobModalProps) {
     </>
   );
 }
-

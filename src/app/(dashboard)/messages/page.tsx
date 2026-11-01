@@ -30,8 +30,7 @@ export default async function MessagesHubPage() {
       <div className="rounded-2xl border border-zinc-200/80 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900 overflow-hidden">
         <div className="divide-y divide-zinc-100 dark:divide-zinc-800">
           {conversations.map((conv) => {
-            const partner =
-              conv.clientId === session.user.id ? conv.freelancer : conv.client;
+            const partner = conv.clientId === session.user.id ? conv.freelancer : conv.client;
             const lastMsg = conv.messages[0];
 
             return (
@@ -78,7 +77,8 @@ export default async function MessagesHubPage() {
 
           {conversations.length === 0 && (
             <div className="p-12 text-center text-xs text-zinc-500">
-              No conversations yet. When clients or freelancers reach out regarding a job or proposal, they will appear here.
+              No conversations yet. When clients or freelancers reach out regarding a job or
+              proposal, they will appear here.
             </div>
           )}
         </div>

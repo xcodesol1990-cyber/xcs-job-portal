@@ -120,4 +120,3 @@ export function ClientProfileForm({ profile }: ClientProfileFormProps) {
     </form>
   );
 }
-

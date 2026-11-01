@@ -5,14 +5,7 @@ import { prisma } from "@/server/db/prisma";
 import { PageHeader } from "@/components/ui/page-header";
 import { StatCard } from "@/components/ui/stat-card";
 import { Badge } from "@/components/ui/badge";
-import {
-  UserCheck,
-  Search,
-  Send,
-  CheckCircle,
-  Sparkles,
-  ArrowRight,
-} from "lucide-react";
+import { UserCheck, Search, Send, CheckCircle, Sparkles, ArrowRight } from "lucide-react";
 
 export default async function FreelancerDashboardPage() {
   const session = await auth();
@@ -70,7 +63,10 @@ export default async function FreelancerDashboardPage() {
           title="Hourly Rate"
           value={hourlyRate}
           description="Current baseline rate"
-          badge={{ text: profile?.currency ?? "USD", color: "bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300" }}
+          badge={{
+            text: profile?.currency ?? "USD",
+            color: "bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300",
+          }}
         />
 
         <StatCard
@@ -80,7 +76,10 @@ export default async function FreelancerDashboardPage() {
           icon={CheckCircle}
           iconColor="text-emerald-600 dark:text-emerald-400"
           iconBg="bg-emerald-50 dark:bg-emerald-950/40"
-          badge={{ text: "Top Rated Plus", color: "bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300" }}
+          badge={{
+            text: "Top Rated Plus",
+            color: "bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300",
+          }}
         />
       </div>
 

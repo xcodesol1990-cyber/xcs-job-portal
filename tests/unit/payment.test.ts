@@ -31,4 +31,3 @@ describe("payment provider (stripe connect)", () => {
     expect(intent.clientSecret).toBe("mock_secret");
   });
 });
-

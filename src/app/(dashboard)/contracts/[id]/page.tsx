@@ -41,12 +41,20 @@ export default async function ContractRoomPage({ params }: ContractPageProps) {
 
   const isClient = contract.clientId === session.user.id;
   const isFreelancer = contract.freelancerId === session.user.id;
-  const activeDispute = contract.disputes.find((d) => d.status === "OPEN" || d.status === "UNDER_REVIEW");
+  const activeDispute = contract.disputes.find(
+    (d) => d.status === "OPEN" || d.status === "UNDER_REVIEW",
+  );
   const userReview = contract.reviews.find((r) => r.reviewerId === session.user.id);
-  const canDispute = (isClient || isFreelancer) && contract.status !== "COMPLETED" && contract.status !== "CANCELLED";
+  const canDispute =
+    (isClient || isFreelancer) &&
+    contract.status !== "COMPLETED" &&
+    contract.status !== "CANCELLED";
 
   const completedMilestones = contract.milestones.filter((m) => m.status === "RELEASED").length;
-  const progressPct = contract.milestones.length > 0 ? Math.round((completedMilestones / contract.milestones.length) * 100) : 0;
+  const progressPct =
+    contract.milestones.length > 0
+      ? Math.round((completedMilestones / contract.milestones.length) * 100)
+      : 0;
 
   const getContractStatusVariant = (status: string) => {
     switch (status) {
@@ -82,7 +90,9 @@ export default async function ContractRoomPage({ params }: ContractPageProps) {
     <div className="mx-auto max-w-4xl space-y-8">
       <div className="flex items-center justify-between">
         <Link
-          href={isAdmin ? "/admin/disputes" : isClient ? "/client/contracts" : "/freelancer/contracts"}
+          href={
+            isAdmin ? "/admin/disputes" : isClient ? "/client/contracts" : "/freelancer/contracts"
+          }
           className="inline-flex items-center gap-2 text-xs font-semibold text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition"
         >
           <ArrowLeft className="h-4 w-4" />
@@ -118,8 +128,10 @@ export default async function ContractRoomPage({ params }: ContractPageProps) {
           <div>
             <h3 className="font-bold">Contract Disputed & Payouts Paused</h3>
             <p className="mt-1 text-xs text-red-800 dark:text-red-300">
-              A dispute was filed by <span className="font-semibold">{activeDispute.openedBy.name}</span>: &quot;{activeDispute.reason}&quot;.
-              Our platform compliance team is reviewing deliverable logs and milestone submissions.
+              A dispute was filed by{" "}
+              <span className="font-semibold">{activeDispute.openedBy.name}</span>: &quot;
+              {activeDispute.reason}&quot;. Our platform compliance team is reviewing deliverable
+              logs and milestone submissions.
             </p>
           </div>
         </div>
@@ -130,7 +142,10 @@ export default async function ContractRoomPage({ params }: ContractPageProps) {
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div className="space-y-3">
             <div className="flex items-center gap-2.5">
-              <Badge variant={getContractStatusVariant(contract.status)} dot={contract.status === "ACTIVE"}>
+              <Badge
+                variant={getContractStatusVariant(contract.status)}
+                dot={contract.status === "ACTIVE"}
+              >
                 {contract.status}
               </Badge>
               <span className="text-xs text-zinc-500">
@@ -145,7 +160,9 @@ export default async function ContractRoomPage({ params }: ContractPageProps) {
             <div className="flex flex-wrap items-center gap-4 text-xs text-zinc-500">
               <div className="flex items-center gap-1.5 font-semibold text-zinc-700 dark:text-zinc-300">
                 <Building2 className="h-4 w-4 text-zinc-400" />
-                <span>Client: {contract.client.clientProfile?.companyName ?? contract.client.name}</span>
+                <span>
+                  Client: {contract.client.clientProfile?.companyName ?? contract.client.name}
+                </span>
               </div>
               <span>•</span>
               <div className="flex items-center gap-1.5 font-semibold text-zinc-700 dark:text-zinc-300">
@@ -171,7 +188,8 @@ export default async function ContractRoomPage({ params }: ContractPageProps) {
               <span>Escrow Progress</span>
             </span>
             <span className="font-bold text-zinc-900 dark:text-zinc-100">
-              {completedMilestones} of {contract.milestones.length} milestones released ({progressPct}%)
+              {completedMilestones} of {contract.milestones.length} milestones released (
+              {progressPct}%)
             </span>
           </div>
           <div className="h-2 w-full bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden">
@@ -201,18 +219,16 @@ export default async function ContractRoomPage({ params }: ContractPageProps) {
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div className="space-y-1.5">
                   <div className="flex items-center gap-2.5">
-                    <span className="font-mono text-xs font-bold text-zinc-400">
-                      #{m.position}
-                    </span>
+                    <span className="font-mono text-xs font-bold text-zinc-400">#{m.position}</span>
                     <h3 className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
                       {m.title}
                     </h3>
-                    <Badge variant={getMilestoneStatusVariant(m.status)}>
-                      {m.status}
-                    </Badge>
+                    <Badge variant={getMilestoneStatusVariant(m.status)}>{m.status}</Badge>
                   </div>
                   {m.description && (
-                    <p className="text-xs text-zinc-500 leading-relaxed max-w-xl">{m.description}</p>
+                    <p className="text-xs text-zinc-500 leading-relaxed max-w-xl">
+                      {m.description}
+                    </p>
                   )}
                   {m.submittedAt && (
                     <div className="text-[11px] text-zinc-400 pt-1">
@@ -278,9 +294,7 @@ export default async function ContractRoomPage({ params }: ContractPageProps) {
           {contract.ledgerEntries.map((l) => (
             <div key={l.id} className="flex items-center justify-between py-3">
               <div>
-                <span className="font-semibold text-zinc-800 dark:text-zinc-200">
-                  {l.type}
-                </span>
+                <span className="font-semibold text-zinc-800 dark:text-zinc-200">{l.type}</span>
                 <span className="ml-2 text-zinc-400">
                   {new Date(l.createdAt).toLocaleTimeString()}
                 </span>

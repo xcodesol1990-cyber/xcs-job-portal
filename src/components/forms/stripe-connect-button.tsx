@@ -9,10 +9,7 @@ interface StripeConnectButtonProps {
   isPayoutsEnabled: boolean;
 }
 
-export function StripeConnectButton({
-  isConnected,
-  isPayoutsEnabled,
-}: StripeConnectButtonProps) {
+export function StripeConnectButton({ isConnected, isPayoutsEnabled }: StripeConnectButtonProps) {
   const [isPending, startTransition] = useTransition();
 
   const handleConnect = () => {
@@ -51,4 +48,3 @@ export function StripeConnectButton({
     </button>
   );
 }
-

@@ -49,7 +49,11 @@ export class PaymentService {
     });
 
     if (!milestone || milestone.contract.clientId !== clientId) {
-      throw new AppError("UNAUTHORIZED", "Milestone not found or unauthorized.", HTTP_STATUS.FORBIDDEN);
+      throw new AppError(
+        "UNAUTHORIZED",
+        "Milestone not found or unauthorized.",
+        HTTP_STATUS.FORBIDDEN,
+      );
     }
 
     const user = await prisma.user.findUnique({
@@ -154,4 +158,3 @@ export class PaymentService {
     });
   }
 }
-

@@ -1,11 +1,13 @@
 # 04. Job Marketplace & Search
 
 ## Overview
+
 The Job Marketplace module enables clients to draft, publish, and manage job listings, while providing freelancers with high-performance discovery tools (full-text search, budget ranges, payment types, and required skill tags).
 
 ---
 
 ## Key Files & Modules
+
 - `src/server/services/job.service.ts`: Job creation, updating, search queries, status transitions, and proposal count aggregations.
 - `src/app/jobs/page.tsx`: Public marketplace directory with interactive filters.
 - `src/app/jobs/[id]/page.tsx`: Detailed job view showing client history, budget, scope, and proposal submission trigger.
@@ -55,6 +57,7 @@ stateDiagram-v2
 ## End-to-End Use Cases
 
 ### Use Case 4.1: Client Creates and Publishes a Job
+
 - **Actor**: Enterprise Client
 - **Workflow**:
   1. Client visits `/client/jobs/new`.
@@ -67,6 +70,7 @@ stateDiagram-v2
   8. Job status becomes `OPEN`, and the posting immediately appears in the public `/jobs` marketplace.
 
 ### Use Case 4.2: Freelancer Discovers, Evaluates, and Bookmarks an Opportunity
+
 - **Actor**: Freelancer
 - **Workflow**:
   1. Freelancer navigates to `/jobs`.
@@ -77,11 +81,11 @@ stateDiagram-v2
   6. Decides to pitch and clicks **Apply Now**.
 
 ### Use Case 4.3: Community Report of Misleading Listing
+
 - **Actor**: Freelancer
 - **Workflow**:
   1. Freelancer reads a job description asking to communicate and pay off-platform via Telegram.
   2. Clicks **Report this job** on `/jobs/[id]`.
-  3. In the modal, enters reason: *"Client attempting to bypass platform escrow and take payments off-platform."*
+  3. In the modal, enters reason: _"Client attempting to bypass platform escrow and take payments off-platform."_
   4. Submits the report; Sonner confirms submission.
   5. An urgent ticket is immediately routed to the Admin Moderation Queue (`/admin/reports`).
-

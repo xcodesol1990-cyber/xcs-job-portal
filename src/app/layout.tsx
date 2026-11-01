@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { headers } from "next/headers";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "sonner";
+import { CookieBanner } from "@/components/layout/cookie-banner";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -16,10 +17,34 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "WorkNest",
+    default: "WorkNest · Milestone Escrow Freelance Marketplace",
     template: "%s · WorkNest",
   },
-  description: "Hire specialists and get paid for great work with milestone escrow.",
+  description:
+    "Hire world-class freelance specialists and get paid with milestone-based escrow protection and audited double-entry accounting.",
+  metadataBase: new URL(process.env.APP_URL || "https://worknest.dev"),
+  keywords: [
+    "freelance marketplace",
+    "hire developers",
+    "milestone escrow",
+    "contract work",
+    "freelance platform",
+    "secure payments",
+  ],
+  authors: [{ name: "WorkNest Team" }],
+  openGraph: {
+    title: "WorkNest · Production-Grade Freelance Marketplace",
+    description:
+      "Milestone-based escrow, double-entry financial ledger auditing, and verifiable freelance contracts.",
+    siteName: "WorkNest",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "WorkNest Freelance Marketplace",
+    description:
+      "Milestone-based escrow, double-entry financial ledger auditing, and verifiable freelance contracts.",
+  },
 };
 
 export default async function RootLayout({
@@ -36,6 +61,7 @@ export default async function RootLayout({
         data-nonce={nonce}
       >
         {children}
+        <CookieBanner />
         <Toaster position="top-right" richColors closeButton />
       </body>
     </html>

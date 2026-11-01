@@ -68,37 +68,54 @@ export default async function AdminLedgerPage({ searchParams }: LedgerPageProps)
             </thead>
             <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/70">
               {entries.map((entry) => {
-                const isDebit = entry.type === "ESCROW_RELEASE" || entry.type === "REFUND" || entry.type === "PAYOUT";
+                const isDebit =
+                  entry.type === "ESCROW_RELEASE" ||
+                  entry.type === "REFUND" ||
+                  entry.type === "PAYOUT";
                 const amountFormatted = (Number(entry.amountCents) / 100).toFixed(2);
 
                 return (
-                  <tr key={entry.id} className="hover:bg-zinc-50/60 dark:hover:bg-zinc-800/30 transition-colors">
+                  <tr
+                    key={entry.id}
+                    className="hover:bg-zinc-50/60 dark:hover:bg-zinc-800/30 transition-colors"
+                  >
                     <td className="px-5 py-3.5">
                       <span
                         className={`inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-[11px] font-semibold ${
                           entry.type === "ESCROW_FUND"
                             ? "bg-blue-50 text-blue-700 dark:bg-blue-950/40 dark:text-blue-300 border border-blue-200/60 dark:border-blue-900/40"
                             : entry.type === "ESCROW_RELEASE"
-                            ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 border border-emerald-200/60 dark:border-emerald-900/40"
-                            : entry.type === "REFUND"
-                            ? "bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300 border border-amber-200/60 dark:border-amber-900/40"
-                            : entry.type === "PLATFORM_FEE"
-                            ? "bg-purple-50 text-purple-700 dark:bg-purple-950/40 dark:text-purple-300 border border-purple-200/60 dark:border-purple-900/40"
-                            : "bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300"
+                              ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 border border-emerald-200/60 dark:border-emerald-900/40"
+                              : entry.type === "REFUND"
+                                ? "bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300 border border-amber-200/60 dark:border-amber-900/40"
+                                : entry.type === "PLATFORM_FEE"
+                                  ? "bg-purple-50 text-purple-700 dark:bg-purple-950/40 dark:text-purple-300 border border-purple-200/60 dark:border-purple-900/40"
+                                  : "bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300"
                         }`}
                       >
-                        {isDebit ? <ArrowUpRight className="h-3.5 w-3.5" /> : <ArrowDownLeft className="h-3.5 w-3.5" />}
+                        {isDebit ? (
+                          <ArrowUpRight className="h-3.5 w-3.5" />
+                        ) : (
+                          <ArrowDownLeft className="h-3.5 w-3.5" />
+                        )}
                         {entry.type}
                       </span>
                     </td>
                     <td className="px-4 py-3.5 font-mono font-bold text-zinc-900 dark:text-zinc-100 text-[13px]">
-                      ${amountFormatted} <span className="text-[11px] font-normal text-zinc-400">{entry.currency}</span>
+                      ${amountFormatted}{" "}
+                      <span className="text-[11px] font-normal text-zinc-400">
+                        {entry.currency}
+                      </span>
                     </td>
                     <td className="px-4 py-3.5">
                       {entry.user ? (
                         <div>
-                          <div className="font-semibold text-zinc-900 dark:text-zinc-100">{entry.user.name}</div>
-                          <div className="text-[10px] text-zinc-400 font-mono">{entry.user.email}</div>
+                          <div className="font-semibold text-zinc-900 dark:text-zinc-100">
+                            {entry.user.name}
+                          </div>
+                          <div className="text-[10px] text-zinc-400 font-mono">
+                            {entry.user.email}
+                          </div>
                         </div>
                       ) : (
                         <span className="text-zinc-400 italic">Marketplace Vault</span>
@@ -128,7 +145,10 @@ export default async function AdminLedgerPage({ searchParams }: LedgerPageProps)
                       {entry.idempotencyKey}
                     </td>
                     <td className="px-5 py-3.5 text-zinc-400 text-[11px] text-right font-mono">
-                      {new Date(entry.createdAt).toLocaleString([], { dateStyle: "short", timeStyle: "medium" })}
+                      {new Date(entry.createdAt).toLocaleString([], {
+                        dateStyle: "short",
+                        timeStyle: "medium",
+                      })}
                     </td>
                   </tr>
                 );

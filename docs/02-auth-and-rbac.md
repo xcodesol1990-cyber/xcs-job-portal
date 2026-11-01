@@ -1,11 +1,13 @@
 # 02. Authentication & Multi-Role RBAC
 
 ## Overview
+
 WorkNest implements a robust, multi-role authentication and authorization architecture using **NextAuth.js v5 (Auth.js)**, **Argon2id** password hashing, and role-based access control (RBAC). A single user account can hold multiple roles (e.g., both `CLIENT` and `FREELANCER`, or `ADMIN`), allowing seamless workspace switching without requiring multiple sign-in accounts.
 
 ---
 
 ## Key Files & Modules
+
 - `src/server/lib/auth.ts`: Auth.js configuration, credentials provider, JWT & session callbacks.
 - `src/server/services/auth.service.ts`: User registration, Argon2id password verification, email token creation, password reset workflows, and auto-seed self-healing trigger.
 - `src/server/policies/`: Fine-grained permission rules for contracts, proposals, and governance actions.
@@ -61,6 +63,7 @@ graph TD
 ## End-to-End Use Cases
 
 ### Use Case 2.1: Multi-Role User Registration & Immediate Workspace Routing
+
 - **Actor**: New User
 - **Workflow**:
   1. User navigates to `/register`.
@@ -71,6 +74,7 @@ graph TD
   6. When the user logs in, the `/dashboard` dispatcher evaluates the user's roles array and dynamically redirects to `/client` or `/freelancer`.
 
 ### Use Case 2.2: Dual-Role Workspace Switching
+
 - **Actor**: Established Client who also provides freelance consulting
 - **Workflow**:
   1. User holds both `CLIENT` and `FREELANCER` roles in `user.roles`.
@@ -78,10 +82,10 @@ graph TD
   3. Switching retains the same session without needing to log out or re-authenticate.
 
 ### Use Case 2.3: Admin Access Guarding & Automatic Redirection
+
 - **Actor**: Regular Client trying to access `/admin`
 - **Workflow**:
   1. Client attempts to manually navigate to `https://worknest.dev/admin`.
   2. `src/app/admin/layout.tsx` validates the active server session and inspects `session.user.roles`.
   3. Since `"ADMIN"` is not present in the roles array, the server triggers an immediate `redirect("/dashboard")`.
   4. If an unauthenticated visitor visits `/admin`, they are redirected to `/login`.
-

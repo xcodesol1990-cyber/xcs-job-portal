@@ -16,7 +16,9 @@ export function ReportStatusButton({ reportId }: ReportStatusButtonProps) {
 
   async function handleModerate(status: "RESOLVED" | "DISMISSED") {
     setLoading(true);
-    const toastId = toast.loading(status === "RESOLVED" ? "Resolving report..." : "Dismissing report...");
+    const toastId = toast.loading(
+      status === "RESOLVED" ? "Resolving report..." : "Dismissing report...",
+    );
 
     try {
       const res = await moderateReportAction(reportId, status);
@@ -29,7 +31,9 @@ export function ReportStatusButton({ reportId }: ReportStatusButtonProps) {
       });
       router.refresh();
     } catch (err: unknown) {
-      toast.error(err instanceof Error ? err.message : "Failed to moderate report", { id: toastId });
+      toast.error(err instanceof Error ? err.message : "Failed to moderate report", {
+        id: toastId,
+      });
     } finally {
       setLoading(false);
     }
@@ -42,7 +46,11 @@ export function ReportStatusButton({ reportId }: ReportStatusButtonProps) {
         disabled={loading}
         className="flex items-center gap-1 rounded-lg border border-emerald-200/80 bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700 shadow-sm transition hover:bg-emerald-100 disabled:opacity-50 dark:border-emerald-900/40 dark:bg-emerald-950/20 dark:text-emerald-400 dark:hover:bg-emerald-900/40"
       >
-        {loading ? <Loader2 className="h-3 w-3 animate-spin" /> : <CheckCircle2 className="h-3 w-3" />}
+        {loading ? (
+          <Loader2 className="h-3 w-3 animate-spin" />
+        ) : (
+          <CheckCircle2 className="h-3 w-3" />
+        )}
         <span>Resolve</span>
       </button>
 

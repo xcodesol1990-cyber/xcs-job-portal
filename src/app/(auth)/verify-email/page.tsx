@@ -17,16 +17,12 @@ export default async function VerifyEmailPage({ searchParams }: VerifyEmailPageP
       await AuthService.verifyEmail(token);
       success = true;
     } catch (err: unknown) {
-      errorMessage =
-        err instanceof Error ? err.message : "Invalid or expired verification token.";
+      errorMessage = err instanceof Error ? err.message : "Invalid or expired verification token.";
     }
   }
 
   return (
-    <AuthCard
-      title="Email Verification"
-      subtitle="Verifying your WorkNest account email"
-    >
+    <AuthCard title="Email Verification" subtitle="Verifying your WorkNest account email">
       <div className="space-y-6 text-center">
         {success ? (
           <div className="space-y-4">
@@ -70,4 +66,3 @@ export default async function VerifyEmailPage({ searchParams }: VerifyEmailPageP
     </AuthCard>
   );
 }
-

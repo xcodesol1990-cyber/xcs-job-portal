@@ -71,7 +71,11 @@ export class ProfileService {
     });
 
     if (!profile) {
-      throw new AppError("PROFILE_NOT_FOUND", "Freelancer profile not found.", HTTP_STATUS.NOT_FOUND);
+      throw new AppError(
+        "PROFILE_NOT_FOUND",
+        "Freelancer profile not found.",
+        HTTP_STATUS.NOT_FOUND,
+      );
     }
 
     return profile;
@@ -217,4 +221,3 @@ export class ProfileService {
     return true;
   }
 }
-

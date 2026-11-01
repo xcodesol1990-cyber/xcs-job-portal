@@ -64,7 +64,9 @@ export class AdminService {
       totalJobs,
       jobsByStatus: Object.fromEntries(jobsByStatus.map((j) => [j.status, j._count._all])),
       totalContracts,
-      contractsByStatus: Object.fromEntries(contractsByStatus.map((c) => [c.status, c._count._all])),
+      contractsByStatus: Object.fromEntries(
+        contractsByStatus.map((c) => [c.status, c._count._all]),
+      ),
       openDisputes,
       pendingReports,
       financials: {
@@ -131,7 +133,11 @@ export class AdminService {
 
   async updateUserStatus(adminId: string, userId: string, newStatus: UserStatus, reason?: string) {
     if (adminId === userId) {
-      throw new AppError("CANNOT_MODIFY_SELF", "Admins cannot modify their own status.", HTTP_STATUS.FORBIDDEN);
+      throw new AppError(
+        "CANNOT_MODIFY_SELF",
+        "Admins cannot modify their own status.",
+        HTTP_STATUS.FORBIDDEN,
+      );
     }
 
     const targetUser = await prisma.user.findUnique({
@@ -143,7 +149,11 @@ export class AdminService {
     }
 
     if (targetUser.roles.includes("ADMIN")) {
-      throw new AppError("CANNOT_SUSPEND_ADMIN", "Cannot modify another admin's account.", HTTP_STATUS.FORBIDDEN);
+      throw new AppError(
+        "CANNOT_SUSPEND_ADMIN",
+        "Cannot modify another admin's account.",
+        HTTP_STATUS.FORBIDDEN,
+      );
     }
 
     return await prisma.$transaction(async (tx) => {

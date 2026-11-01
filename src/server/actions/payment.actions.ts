@@ -36,7 +36,9 @@ export async function startStripeOnboardingAction(): Promise<PaymentActionResult
   }
 }
 
-export async function createMilestonePaymentAction(milestoneId: string): Promise<PaymentActionResult> {
+export async function createMilestonePaymentAction(
+  milestoneId: string,
+): Promise<PaymentActionResult> {
   const session = await auth();
   if (!session?.user?.id) {
     return { success: false, error: "Unauthorized." };
@@ -56,4 +58,3 @@ export async function createMilestonePaymentAction(milestoneId: string): Promise
     return { success: false, error: "Failed to create payment intent." };
   }
 }
-

@@ -5,7 +5,8 @@ import { sanitizeHtml, stripHtml } from "@/server/lib/sanitize";
 describe("job service & sanitization", () => {
   describe("sanitizeHtml", () => {
     it("strips script tags and inline javascript event handlers", () => {
-      const malicious = '<p>Good text</p><script>alert("xss")</script><img src="x" onerror="stealCookies()">';
+      const malicious =
+        '<p>Good text</p><script>alert("xss")</script><img src="x" onerror="stealCookies()">';
       const clean = sanitizeHtml(malicious);
       expect(clean).not.toContain("<script>");
       expect(clean).not.toContain("alert");
@@ -46,4 +47,3 @@ describe("job service & sanitization", () => {
     });
   });
 });
-

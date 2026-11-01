@@ -218,4 +218,3 @@ export function FreelancerProfileForm({ profile, skills }: ProfileFormProps) {
     </form>
   );
 }
-

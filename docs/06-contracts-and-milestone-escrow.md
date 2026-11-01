@@ -1,11 +1,13 @@
 # 06. Contracts & Milestone Escrow
 
 ## Overview
+
 WorkNest operates on a **Milestone Escrow Architecture**. When a contract is established, clients fund individual milestones before work begins. Funds are held securely in escrow and only released to the freelancer upon client approval or automated review expiration. All calculations use integer minor units (cents) to avoid any IEEE-754 floating-point errors.
 
 ---
 
 ## Key Files & Modules
+
 - `src/server/services/contract.service.ts`: Contract creation, milestone management, submission workflows, milestone approval, and escrow release.
 - `src/server/services/payment.service.ts`: Stripe Checkout sessions for escrow funding, webhook listeners, and transfer intent management.
 - `src/app/(dashboard)/contracts/[id]/page.tsx`: Contract command center for both client and freelancer with progress tracker and feedback ratings.
@@ -38,7 +40,7 @@ stateDiagram-v2
    - Every monetary property is stored as integer cents:
      ```typescript
      // $1,250.00 is stored as 125000 cents
-     amountCents: 125000
+     amountCents: 125000;
      ```
 2. **Escrow Holding Guarantee**:
    - When a milestone is marked `FUNDED`, funds move from the client into the platform's escrow trust account. The freelancer is notified that funding is verified, making it safe to begin work.
@@ -50,6 +52,7 @@ stateDiagram-v2
 ## End-to-End Use Cases
 
 ### Use Case 6.1: Client Funds Milestone 1 via Stripe Escrow
+
 - **Actor**: Client
 - **Workflow**:
   1. Client navigates to `/contracts/[id]`.
@@ -59,9 +62,10 @@ stateDiagram-v2
   5. Client enters payment card details on Stripe Checkout and completes payment.
   6. Stripe triggers webhook `/api/webhooks/stripe` (`checkout.session.completed`).
   7. Server verifies webhook signature, transitions milestone to `FUNDED`, and writes ledger entries crediting escrow.
-  8. Freelancer receives notification: *"Milestone 1 funded - Safe to proceed with development"*.
+  8. Freelancer receives notification: _"Milestone 1 funded - Safe to proceed with development"_.
 
 ### Use Case 6.2: Freelancer Submits Deliverable
+
 - **Actor**: Freelancer
 - **Workflow**:
   1. Freelancer completes work on Milestone 1.
@@ -71,6 +75,7 @@ stateDiagram-v2
   5. The 14-day auto-approval timer initiates (monitored by the daily background cron).
 
 ### Use Case 6.3: Client Approves Work & Releases Escrow
+
 - **Actor**: Client
 - **Workflow**:
   1. Client reviews submitted deliverables on `/contracts/[id]`.
@@ -78,4 +83,3 @@ stateDiagram-v2
   3. Server transitions milestone status to `APPROVED` then `RELEASED`.
   4. Platform deducts 10% platform fee and credits the remaining 90% to the Freelancer's payable ledger balance.
   5. Contract overall progress bar updates. If all milestones are released, contract marks as `COMPLETED`.
-

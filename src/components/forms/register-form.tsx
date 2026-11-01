@@ -65,17 +65,13 @@ export function RegisterForm() {
           >
             <UserCheck
               className={`h-6 w-6 ${
-                role === "FREELANCER"
-                  ? "text-indigo-600 dark:text-indigo-400"
-                  : "text-zinc-500"
+                role === "FREELANCER" ? "text-indigo-600 dark:text-indigo-400" : "text-zinc-500"
               }`}
             />
             <span className="mt-2 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
               Work as Freelancer
             </span>
-            <span className="text-xs text-zinc-500 dark:text-zinc-400">
-              Find jobs & earn
-            </span>
+            <span className="text-xs text-zinc-500 dark:text-zinc-400">Find jobs & earn</span>
           </button>
 
           <button
@@ -89,17 +85,13 @@ export function RegisterForm() {
           >
             <Briefcase
               className={`h-6 w-6 ${
-                role === "CLIENT"
-                  ? "text-indigo-600 dark:text-indigo-400"
-                  : "text-zinc-500"
+                role === "CLIENT" ? "text-indigo-600 dark:text-indigo-400" : "text-zinc-500"
               }`}
             />
             <span className="mt-2 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
               Hire Talent
             </span>
-            <span className="text-xs text-zinc-500 dark:text-zinc-400">
-              Post jobs & hire
-            </span>
+            <span className="text-xs text-zinc-500 dark:text-zinc-400">Post jobs & hire</span>
           </button>
         </div>
       </div>
@@ -201,7 +193,8 @@ export function RegisterForm() {
         <div className="flex items-start gap-2">
           <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
           <span>
-            By signing up, you agree to our Terms of Service, Privacy Policy, and Escrow Protection rules.
+            By signing up, you agree to our Terms of Service, Privacy Policy, and Escrow Protection
+            rules.
           </span>
         </div>
       </div>
@@ -218,4 +211,3 @@ export function RegisterForm() {
     </div>
   );
 }
-

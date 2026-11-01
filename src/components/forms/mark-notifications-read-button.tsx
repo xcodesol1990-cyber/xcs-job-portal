@@ -40,4 +40,3 @@ export function MarkNotificationsReadButton({ hasUnread }: { hasUnread: boolean 
     </button>
   );
 }
-

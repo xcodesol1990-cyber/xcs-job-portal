@@ -32,4 +32,3 @@ If you discover a security vulnerability within WorkNest, please do NOT file a p
 
 - **Email:** `security@worknest.dev`
 - **Response Time:** We aim to acknowledge receipt of vulnerabilities within 24 hours and provide patches within 72 hours for high-severity issues.
-

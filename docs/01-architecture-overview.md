@@ -1,6 +1,7 @@
 # 01. Platform Architecture & Tech Stack
 
 ## Overview
+
 WorkNest is built as an enterprise-grade freelance marketplace designed for high financial trust, cryptographic auditability, and sub-second user experience. The application runs entirely on Next.js 15 App Router with full React Server Component (RSC) streaming, server actions for transactional mutability, and a unified PostgreSQL database with Prisma ORM.
 
 ---
@@ -74,4 +75,3 @@ xcs-job-portal/
 
 - **Health Endpoint**: `/api/health` returns JSON uptime, database ping latency, and environment status.
 - **Auto-Healing Database Seeder**: If the database is freshly initialized or tables are empty upon login, `AuthService.verifyCredentials` automatically invokes the seeder on-the-fly to guarantee test credentials work seamlessly.
-

@@ -1,13 +1,7 @@
 import Link from "next/link";
 import { JobService } from "@/server/services/job.service";
 import { ProfileService } from "@/server/services/profile.service";
-import {
-  Search,
-  Briefcase,
-  ShieldCheck,
-  ArrowRight,
-  Filter,
-} from "lucide-react";
+import { Search, Briefcase, ShieldCheck, ArrowRight, Filter } from "lucide-react";
 
 interface JobsPageProps {
   searchParams: Promise<{
@@ -169,8 +163,8 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
                     {job.budgetMinCents && job.budgetMaxCents
                       ? `$${job.budgetMinCents / 100} - $${job.budgetMaxCents / 100}`
                       : job.budgetMaxCents
-                      ? `$${job.budgetMaxCents / 100}`
-                      : "Competitive"}
+                        ? `$${job.budgetMaxCents / 100}`
+                        : "Competitive"}
                   </div>
                   <div className="mt-1 text-xs text-zinc-500">
                     {job.budgetType === "HOURLY" ? "per hour" : "milestone budget"}

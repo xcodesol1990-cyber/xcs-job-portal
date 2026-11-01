@@ -22,4 +22,3 @@ export function stripHtml(raw: string): string {
   if (!raw) return "";
   return raw.replace(/<[^>]*>?/gm, "").trim();
 }
-

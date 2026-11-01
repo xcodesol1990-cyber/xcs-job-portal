@@ -37,9 +37,7 @@ export default async function NotificationsPage() {
               <div
                 key={n.id}
                 className={`flex items-start gap-4 p-5 sm:p-6 transition ${
-                  isUnread
-                    ? "bg-purple-50/20 dark:bg-purple-950/20"
-                    : "bg-white dark:bg-zinc-900"
+                  isUnread ? "bg-purple-50/20 dark:bg-purple-950/20" : "bg-white dark:bg-zinc-900"
                 }`}
               >
                 <div
@@ -66,13 +64,11 @@ export default async function NotificationsPage() {
                       {n.type === "PROPOSAL_RECEIVED"
                         ? "New Proposal Received"
                         : n.type === "NEW_MESSAGE"
-                        ? `New Message from ${payload.senderName ?? "User"}`
-                        : n.type.replace(/_/g, " ")}
+                          ? `New Message from ${payload.senderName ?? "User"}`
+                          : n.type.replace(/_/g, " ")}
                     </h3>
                     <div className="flex items-center gap-2 shrink-0">
-                      {isUnread && (
-                        <span className="h-2 w-2 rounded-full bg-purple-600" />
-                      )}
+                      {isUnread && <span className="h-2 w-2 rounded-full bg-purple-600" />}
                       <span className="text-[11px] text-zinc-400">
                         {new Date(n.createdAt).toLocaleDateString()}
                       </span>
@@ -83,8 +79,8 @@ export default async function NotificationsPage() {
                     {n.type === "PROPOSAL_RECEIVED"
                       ? `${payload.freelancerName} submitted a bid on "${payload.jobTitle}".`
                       : n.type === "NEW_MESSAGE"
-                      ? String(payload.preview ?? "Sent you a direct message.")
-                      : JSON.stringify(payload)}
+                        ? String(payload.preview ?? "Sent you a direct message.")
+                        : JSON.stringify(payload)}
                   </p>
                 </div>
               </div>

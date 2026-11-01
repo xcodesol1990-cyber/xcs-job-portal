@@ -52,9 +52,7 @@ export default async function ConversationPage({ params }: ConversationPageProps
               {partner.name.slice(0, 2).toUpperCase()}
             </div>
             <div>
-              <h2 className="font-bold text-sm text-zinc-900 dark:text-zinc-100">
-                {partner.name}
-              </h2>
+              <h2 className="font-bold text-sm text-zinc-900 dark:text-zinc-100">{partner.name}</h2>
               {conv.job && (
                 <Link
                   href={`/jobs/${conv.job.id}`}
@@ -72,11 +70,7 @@ export default async function ConversationPage({ params }: ConversationPageProps
         </div>
 
         {/* Chat Feed & Composer */}
-        <ChatBox
-          conversationId={id}
-          currentUserId={session.user.id}
-          initialMessages={messages}
-        />
+        <ChatBox conversationId={id} currentUserId={session.user.id} initialMessages={messages} />
       </div>
     </div>
   );

@@ -37,7 +37,11 @@ export async function loginAction(
     };
   } catch (error: unknown) {
     if (error instanceof Error && error.message === "REQUIRES_TOTP") {
-      return { success: false, requiresTotp: true, error: "Two-factor authentication code required." };
+      return {
+        success: false,
+        requiresTotp: true,
+        error: "Two-factor authentication code required.",
+      };
     }
 
     if (error instanceof AuthError) {

@@ -43,4 +43,3 @@ describe("state machine policies", () => {
     });
   });
 });
-

@@ -65,7 +65,11 @@ export class StripePaymentProvider implements PaymentProvider {
     return account.id;
   }
 
-  async createAccountLink(accountId: string, returnUrl: string, refreshUrl: string): Promise<string> {
+  async createAccountLink(
+    accountId: string,
+    returnUrl: string,
+    refreshUrl: string,
+  ): Promise<string> {
     if (!env().STRIPE_SECRET_KEY) {
       return returnUrl;
     }
@@ -103,7 +107,11 @@ export class StripePaymentProvider implements PaymentProvider {
     });
 
     if (!paymentIntent.client_secret) {
-      throw new AppError("PAYMENT_INTENT_ERROR", "Could not generate client secret.", HTTP_STATUS.INTERNAL);
+      throw new AppError(
+        "PAYMENT_INTENT_ERROR",
+        "Could not generate client secret.",
+        HTTP_STATUS.INTERNAL,
+      );
     }
 
     return {
@@ -149,4 +157,3 @@ export class StripePaymentProvider implements PaymentProvider {
 }
 
 export const paymentProvider: PaymentProvider = new StripePaymentProvider();
-

@@ -27,7 +27,10 @@ export async function createJobAction(
   const budgetMax = Number(formData.get("budgetMax"));
   const experienceLevel = formData.get("experienceLevel")?.toString();
   const duration = formData.get("duration")?.toString();
-  const skillIds = formData.getAll("skillIds").map(Number).filter((id) => !isNaN(id));
+  const skillIds = formData
+    .getAll("skillIds")
+    .map(Number)
+    .filter((id) => !isNaN(id));
 
   if (!title || !description || !budgetType) {
     return { success: false, error: "Please fill in all required job fields." };
@@ -79,7 +82,9 @@ export async function deleteJobAction(jobId: string): Promise<JobActionResult> {
   }
 }
 
-export async function toggleSaveJobAction(jobId: string): Promise<{ success: boolean; saved?: boolean; error?: string }> {
+export async function toggleSaveJobAction(
+  jobId: string,
+): Promise<{ success: boolean; saved?: boolean; error?: string }> {
   const session = await auth();
   if (!session?.user?.id) {
     return { success: false, error: "Please sign in to save this job." };
@@ -98,7 +103,10 @@ export async function toggleSaveJobAction(jobId: string): Promise<{ success: boo
   }
 }
 
-export async function reportJobAction(jobId: string, reason: string): Promise<{ success: boolean; error?: string }> {
+export async function reportJobAction(
+  jobId: string,
+  reason: string,
+): Promise<{ success: boolean; error?: string }> {
   const session = await auth();
   if (!session?.user?.id) {
     return { success: false, error: "Please sign in to report this listing." };
@@ -114,5 +122,3 @@ export async function reportJobAction(jobId: string, reason: string): Promise<{ 
     return { success: false, error: "Failed to report job." };
   }
 }
-
-

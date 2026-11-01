@@ -1,7 +1,10 @@
 import { prisma } from "@/server/db/prisma";
 import { AppError, HTTP_STATUS } from "@/server/lib/errors";
 import { notificationService } from "./notification.service";
-import { assertContractTransition, assertMilestoneTransition } from "@/server/policies/state-machines";
+import {
+  assertContractTransition,
+  assertMilestoneTransition,
+} from "@/server/policies/state-machines";
 import { DisputeStatus, LedgerType } from "@prisma/client";
 
 export interface OpenDisputeInput {
@@ -21,7 +24,11 @@ export class DisputeService {
     const { contractId, milestoneId, reason } = input;
 
     if (!reason || reason.trim().length < 10) {
-      throw new AppError("INVALID_REASON", "Please provide a detailed reason for the dispute (at least 10 characters).", HTTP_STATUS.BAD_REQUEST);
+      throw new AppError(
+        "INVALID_REASON",
+        "Please provide a detailed reason for the dispute (at least 10 characters).",
+        HTTP_STATUS.BAD_REQUEST,
+      );
     }
 
     const contract = await prisma.contract.findUnique({
@@ -42,18 +49,30 @@ export class DisputeService {
     const isFreelancer = contract.freelancerId === actorId;
 
     if (!isClient && !isFreelancer) {
-      throw new AppError("FORBIDDEN", "Only contract parties can file a dispute.", HTTP_STATUS.FORBIDDEN);
+      throw new AppError(
+        "FORBIDDEN",
+        "Only contract parties can file a dispute.",
+        HTTP_STATUS.FORBIDDEN,
+      );
     }
 
     if (contract.status === "COMPLETED" || contract.status === "CANCELLED") {
-      throw new AppError("INVALID_STATE", "Cannot dispute a completed or cancelled contract.", HTTP_STATUS.BAD_REQUEST);
+      throw new AppError(
+        "INVALID_STATE",
+        "Cannot dispute a completed or cancelled contract.",
+        HTTP_STATUS.BAD_REQUEST,
+      );
     }
 
     let milestone: (typeof contract.milestones)[0] | undefined;
     if (milestoneId) {
       milestone = contract.milestones.find((m) => m.id === milestoneId);
       if (!milestone) {
-        throw new AppError("MILESTONE_NOT_FOUND", "Milestone not found in this contract.", HTTP_STATUS.NOT_FOUND);
+        throw new AppError(
+          "MILESTONE_NOT_FOUND",
+          "Milestone not found in this contract.",
+          HTTP_STATUS.NOT_FOUND,
+        );
       }
       assertMilestoneTransition(milestone.status, "DISPUTED");
     }
@@ -103,11 +122,19 @@ export class DisputeService {
     const { resolution, resolutionNote, splitFreelancerPercent } = input;
 
     if (!["RESOLVED_CLIENT", "RESOLVED_FREELANCER", "RESOLVED_SPLIT"].includes(resolution)) {
-      throw new AppError("INVALID_RESOLUTION", "Invalid dispute resolution.", HTTP_STATUS.BAD_REQUEST);
+      throw new AppError(
+        "INVALID_RESOLUTION",
+        "Invalid dispute resolution.",
+        HTTP_STATUS.BAD_REQUEST,
+      );
     }
 
     if (!resolutionNote || resolutionNote.trim().length < 10) {
-      throw new AppError("INVALID_NOTE", "Admin resolution note is required.", HTTP_STATUS.BAD_REQUEST);
+      throw new AppError(
+        "INVALID_NOTE",
+        "Admin resolution note is required.",
+        HTTP_STATUS.BAD_REQUEST,
+      );
     }
 
     const dispute = await prisma.dispute.findUnique({
@@ -130,7 +157,11 @@ export class DisputeService {
     }
 
     if (dispute.status !== "OPEN" && dispute.status !== "UNDER_REVIEW") {
-      throw new AppError("ALREADY_RESOLVED", "This dispute has already been resolved.", HTTP_STATUS.CONFLICT);
+      throw new AppError(
+        "ALREADY_RESOLVED",
+        "This dispute has already been resolved.",
+        HTTP_STATUS.CONFLICT,
+      );
     }
 
     const { contract, milestone } = dispute;
@@ -255,8 +286,8 @@ export class DisputeService {
         where: { contractId: contract.id },
       });
 
-      const allSettled = updatedMilestones.every((m) =>
-        m.status === "RELEASED" || m.status === "REFUNDED"
+      const allSettled = updatedMilestones.every(
+        (m) => m.status === "RELEASED" || m.status === "REFUNDED",
       );
 
       const nextContractStatus = allSettled ? "COMPLETED" : "ACTIVE";
