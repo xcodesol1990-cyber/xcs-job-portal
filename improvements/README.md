@@ -47,7 +47,7 @@ Explore the comprehensive improvement blueprints contained in this directory:
    - **Feature 5:** Real-time WebRTC Video Contract Workrooms with Screen Sharing ✅ _Shipped_
 
 4. **[04. Frontend & Client / Freelancer UI/UX Enhancements](./04-frontend-and-ui-ux-enhancements.md)**
-   - **Phase 1:** Visual Milestone Escrow Timeline & Progress Stepper
-   - **Phase 2:** Transparent Take-Home Earnings Calculator & Skill Match Badges
-   - **Phase 3:** Interactive Side-by-Side Proposal Comparison Matrix
-   - **Phase 4:** Global Command Palette (`Cmd + K`) & Unified Persona Switcher
+   - **Phase 1:** Visual Milestone Escrow Timeline & Progress Stepper ✅ _Shipped_
+   - **Phase 2:** Transparent Take-Home Earnings Calculator & Skill Match Badges ✅ _Shipped_
+   - **Phase 3:** Interactive Side-by-Side Proposal Comparison Matrix ✅ _Shipped_
+   - **Phase 4:** Global Command Palette (`Cmd + K`) & Unified Persona Switcher ✅ _Shipped_

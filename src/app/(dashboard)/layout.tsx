@@ -2,6 +2,8 @@ import { auth } from "@/server/lib/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { logoutAction } from "@/server/actions/auth.actions";
+import { PersonaSwitcher } from "@/components/layout/persona-switcher";
+import { CommandPalette } from "@/components/layout/command-palette";
 import {
   ShieldCheck,
   LogOut,
@@ -84,11 +86,18 @@ export default async function DashboardLayout({ children }: { children: React.Re
                 <Bell className="h-3.5 w-3.5" />
                 Alerts
               </Link>
+
+              {isClient && isFreelancer && (
+                <div className="ml-2">
+                  <PersonaSwitcher isClient={isClient} isFreelancer={isFreelancer} />
+                </div>
+              )}
             </nav>
           </div>
 
           {/* User profile & actions */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3.5">
+            <CommandPalette />
             <div className="flex items-center gap-3">
               <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 text-xs font-bold text-white shadow-sm">
                 {user.name ? user.name.slice(0, 2).toUpperCase() : "WN"}

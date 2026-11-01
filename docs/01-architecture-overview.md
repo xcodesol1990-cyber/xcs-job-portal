@@ -35,8 +35,8 @@ graph TD
 - **Database & ORM**: PostgreSQL via Neon Serverless + Prisma ORM 6.6
 - **Authentication**: NextAuth.js v5 beta + Argon2id password hashing + JWT sessions
 - **Payment Processing**: Stripe Checkout & Webhooks (Escrow intent architecture)
-- **UI & Interaction**: Lucide React, Sonner rich toast notifications, Custom SVG Sparklines
-- **Testing**: Vitest 3.2+ with 56 unit tests across services, crypto, money math, and state machines
+- **UI & Interaction**: Lucide React, Sonner rich toast notifications, Global Command Palette (`Cmd+K`), Unified Persona Switcher
+- **Testing**: Vitest 3.2+ with 90 unit tests across 24 test suites covering services, crypto, money math, escrow state machines, AI decomposers, and UI telemetry
 
 ---
 
