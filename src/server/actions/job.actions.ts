@@ -79,3 +79,40 @@ export async function deleteJobAction(jobId: string): Promise<JobActionResult> {
   }
 }
 
+export async function toggleSaveJobAction(jobId: string): Promise<{ success: boolean; saved?: boolean; error?: string }> {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return { success: false, error: "Please sign in to save this job." };
+  }
+
+  try {
+    const res = await JobService.toggleSaveJob(session.user.id, jobId);
+    revalidatePath("/jobs");
+    revalidatePath(`/jobs/${jobId}`);
+    return { success: true, saved: res.saved };
+  } catch (error: unknown) {
+    if (error && typeof error === "object" && "message" in error) {
+      return { success: false, error: String((error as { message: string }).message) };
+    }
+    return { success: false, error: "Failed to save job." };
+  }
+}
+
+export async function reportJobAction(jobId: string, reason: string): Promise<{ success: boolean; error?: string }> {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return { success: false, error: "Please sign in to report this listing." };
+  }
+
+  try {
+    await JobService.reportJob(session.user.id, jobId, reason);
+    return { success: true };
+  } catch (error: unknown) {
+    if (error && typeof error === "object" && "message" in error) {
+      return { success: false, error: String((error as { message: string }).message) };
+    }
+    return { success: false, error: "Failed to report job." };
+  }
+}
+
+

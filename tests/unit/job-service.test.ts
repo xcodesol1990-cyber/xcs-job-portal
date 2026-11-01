@@ -34,6 +34,16 @@ describe("job service & sanitization", () => {
 
       expect(hash1).not.toBe(hash2);
     });
+
+    it("handles long job descriptions by sampling the first 500 characters", () => {
+      const longDesc1 = "A".repeat(500) + "XYZ";
+      const longDesc2 = "A".repeat(500) + "123";
+
+      const hash1 = JobService.computeDedupeHash("Engineer", longDesc1);
+      const hash2 = JobService.computeDedupeHash("Engineer", longDesc2);
+
+      expect(hash1).toBe(hash2);
+    });
   });
 });
 

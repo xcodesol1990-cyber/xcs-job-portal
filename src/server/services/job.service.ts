@@ -163,6 +163,21 @@ export class JobService {
       throw new AppError("JOB_NOT_FOUND", "Job not found or unauthorized.", HTTP_STATUS.NOT_FOUND);
     }
 
+    // Edge case: if proposals already exist, disallow lowering the budget
+    if (job.proposalsCount > 0) {
+      if (
+        input.budgetMaxCents !== undefined &&
+        job.budgetMaxCents !== null &&
+        input.budgetMaxCents < job.budgetMaxCents
+      ) {
+        throw new AppError(
+          "CANNOT_REDUCE_BUDGET_WITH_PROPOSALS",
+          "Budget cannot be reduced after proposals have been submitted.",
+          HTTP_STATUS.UNPROCESSABLE,
+        );
+      }
+    }
+
     const title = input.title ? input.title.trim() : job.title;
     const description = input.description ? sanitizeHtml(input.description) : job.description;
     const dedupeHash = this.computeDedupeHash(title, description);
@@ -201,6 +216,148 @@ export class JobService {
       }
 
       return updated;
+    });
+  }
+
+  /**
+   * Updates status of a job (e.g. pause/close or reopen).
+   */
+  static async updateJobStatus(clientId: string, jobId: string, status: JobStatus) {
+    const job = await prisma.job.findFirst({
+      where: { id: jobId, clientId, deletedAt: null },
+    });
+
+    if (!job) {
+      throw new AppError("JOB_NOT_FOUND", "Job not found or unauthorized.", HTTP_STATUS.NOT_FOUND);
+    }
+
+    return prisma.job.update({
+      where: { id: jobId },
+      data: {
+        status,
+        version: { increment: 1 },
+      },
+    });
+  }
+
+  /**
+   * Toggles bookmark/saved state for a freelancer on a job.
+   */
+  static async toggleSaveJob(userId: string, jobId: string): Promise<{ saved: boolean }> {
+    const job = await prisma.job.findFirst({
+      where: { id: jobId, deletedAt: null },
+    });
+
+    if (!job) {
+      throw new AppError("JOB_NOT_FOUND", "Job not found.", HTTP_STATUS.NOT_FOUND);
+    }
+
+    const existing = await prisma.savedJob.findUnique({
+      where: {
+        userId_jobId: {
+          userId,
+          jobId,
+        },
+      },
+    });
+
+    if (existing) {
+      await prisma.savedJob.delete({
+        where: {
+          userId_jobId: {
+            userId,
+            jobId,
+          },
+        },
+      });
+      return { saved: false };
+    }
+
+    await prisma.savedJob.create({
+      data: {
+        userId,
+        jobId,
+      },
+    });
+
+    return { saved: true };
+  }
+
+  /**
+   * Checks if a user has saved a job.
+   */
+  static async isJobSaved(userId: string, jobId: string): Promise<boolean> {
+    const saved = await prisma.savedJob.findUnique({
+      where: {
+        userId_jobId: {
+          userId,
+          jobId,
+        },
+      },
+    });
+    return Boolean(saved);
+  }
+
+  /**
+   * Retrieves all saved jobs for a user.
+   */
+  static async getSavedJobs(userId: string) {
+    const saved = await prisma.savedJob.findMany({
+      where: { userId },
+      include: {
+        job: {
+          include: {
+            client: {
+              select: {
+                id: true,
+                name: true,
+                clientProfile: {
+                  select: { companyName: true, paymentVerified: true },
+                },
+              },
+            },
+            category: true,
+            skills: { include: { skill: true } },
+          },
+        },
+      },
+      orderBy: { job: { createdAt: "desc" } },
+    });
+
+    return saved.map((s) => s.job);
+  }
+
+  /**
+   * Submits a community report against a job.
+   */
+  static async reportJob(reporterId: string, jobId: string, reason: string) {
+    const job = await prisma.job.findFirst({
+      where: { id: jobId, deletedAt: null },
+    });
+
+    if (!job) {
+      throw new AppError("JOB_NOT_FOUND", "Job not found.", HTTP_STATUS.NOT_FOUND);
+    }
+
+    return prisma.report.upsert({
+      where: {
+        reporterId_targetType_targetId: {
+          reporterId,
+          targetType: "JOB",
+          targetId: jobId,
+        },
+      },
+      update: {
+        reason: reason.trim(),
+        status: "OPEN",
+      },
+      create: {
+        reporterId,
+        targetType: "JOB",
+        targetId: jobId,
+        reason: reason.trim(),
+        status: "OPEN",
+      },
     });
   }
 

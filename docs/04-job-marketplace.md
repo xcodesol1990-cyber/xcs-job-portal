@@ -43,6 +43,12 @@ stateDiagram-v2
    - Filter by experience tier.
 4. **Proposal Counter Invariant**:
    - Each job maintains real-time proposal counters without exposing competitor bid amounts to rival freelancers.
+5. **Budget Modification Safeguard**:
+   - Once proposals have been submitted on a job (`job.proposalsCount > 0`), clients are prohibited from reducing the budget (`CANNOT_REDUCE_BUDGET_WITH_PROPOSALS`), protecting proposers from bait-and-switch tactics.
+6. **Freelancer Bookmark & Save Mechanism**:
+   - Freelancers can bookmark/save jobs (`SavedJob` model) to track opportunities across devices with instant optimistic UI feedback.
+7. **Community Moderation Flagging**:
+   - Freelancers can report suspicious listings directly to the Trust & Safety team via `ReportJobModal`.
 
 ---
 
@@ -60,12 +66,22 @@ stateDiagram-v2
   7. Clicks **Publish Job**.
   8. Job status becomes `OPEN`, and the posting immediately appears in the public `/jobs` marketplace.
 
-### Use Case 4.2: Freelancer Discovers and Evaluates an Opportunity
+### Use Case 4.2: Freelancer Discovers, Evaluates, and Bookmarks an Opportunity
 - **Actor**: Freelancer
 - **Workflow**:
   1. Freelancer navigates to `/jobs`.
   2. Searches for "Ledger" and filters by `FIXED_PRICE` with budget > `$2,000`.
   3. Selects the posting to open `/jobs/[id]`.
   4. Inspects client hiring history: total spend, rating, and verified payment badge.
-  5. Decides to pitch and clicks **Apply to Job**.
+  5. Clicks the **Save Job** button to bookmark the listing for later review.
+  6. Decides to pitch and clicks **Apply Now**.
+
+### Use Case 4.3: Community Report of Misleading Listing
+- **Actor**: Freelancer
+- **Workflow**:
+  1. Freelancer reads a job description asking to communicate and pay off-platform via Telegram.
+  2. Clicks **Report this job** on `/jobs/[id]`.
+  3. In the modal, enters reason: *"Client attempting to bypass platform escrow and take payments off-platform."*
+  4. Submits the report; Sonner confirms submission.
+  5. An urgent ticket is immediately routed to the Admin Moderation Queue (`/admin/reports`).
 
