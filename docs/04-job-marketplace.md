@@ -51,6 +51,9 @@ stateDiagram-v2
    - Freelancers can bookmark/save jobs (`SavedJob` model) to track opportunities across devices with instant optimistic UI feedback.
 7. **Community Moderation Flagging**:
    - Freelancers can report suspicious listings directly to the Trust & Safety team via `ReportJobModal`.
+8. **AI Architect & Milestone Scoping Co-Pilot**:
+   - Embedded directly in `/client/jobs/new` via `AiService.decomposeScope` and `decomposeScopeAction`.
+   - Analyzes natural language prompts, calculates market budget bounds, maps database taxonomy skills, and decomposes the scope into structured escrow milestones with verifiable acceptance criteria.
 
 ---
 
