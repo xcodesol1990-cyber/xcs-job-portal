@@ -95,6 +95,7 @@ flowchart TD
 ## 5. Header Architecture & Glassmorphic Navigation Overhaul
 
 ### A. Universal Public Header (`<PublicHeader />`)
+
 - **Target Routes**: `/`, `/jobs`, `/jobs/[id]`, `/terms`, `/privacy`, `/cookie-policy`
 - **Component**: [`src/components/layout/public-header.tsx`](file:///d:/mywork/xcs-job-portal/src/components/layout/public-header.tsx)
 - **Features**:
@@ -104,7 +105,8 @@ flowchart TD
   - Responsive mobile drawer menu with smooth toggle.
 
 ### B. High-Density Linear-Grade Dashboard Header
-- **Target Route**: [`src/app/(dashboard)/layout.tsx`](file:///d:/mywork/xcs-job-portal/src/app/(dashboard)/layout.tsx)
+
+- **Target Route**: [`src/app/(dashboard)/layout.tsx`](<file:///d:/mywork/xcs-job-portal/src/app/(dashboard)/layout.tsx>)
 - **Features**:
   - Top ambient glow line (`bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500`).
   - Pulsing notification ping badge on Alerts.

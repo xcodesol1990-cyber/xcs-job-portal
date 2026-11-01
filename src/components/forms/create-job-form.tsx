@@ -147,160 +147,164 @@ export function CreateJobForm({ categories, skills }: CreateJobFormProps) {
     });
   };
 
+  const SHOW_AI_CO_PILOT = false;
+
   return (
     <div className="space-y-8">
-      {/* AI Scope Decomposer Card */}
-      <div className="relative overflow-hidden rounded-2xl border border-indigo-500/20 bg-gradient-to-br from-indigo-50/70 via-white to-purple-50/60 p-6 shadow-sm dark:border-indigo-500/30 dark:from-indigo-950/20 dark:via-zinc-900 dark:to-purple-950/20">
-        <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
-          <Bot className="h-4 w-4" />
-          <span>WorkNest AI Architect & Milestone Co-Pilot</span>
-        </div>
-        <p className="mt-1 text-xs text-zinc-600 dark:text-zinc-400">
-          Describe your idea in plain English. Our AI analyzes market rates, recommends technical
-          stacks, and decomposes your project into actionable escrow milestones.
-        </p>
+      {/* AI Scope Decomposer Card (Hidden per user preference) */}
+      {SHOW_AI_CO_PILOT && (
+        <div className="relative overflow-hidden rounded-2xl border border-indigo-500/20 bg-gradient-to-br from-indigo-50/70 via-white to-purple-50/60 p-6 shadow-sm dark:border-indigo-500/30 dark:from-indigo-950/20 dark:via-zinc-900 dark:to-purple-950/20">
+          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
+            <Bot className="h-4 w-4" />
+            <span>WorkNest AI Architect & Milestone Co-Pilot</span>
+          </div>
+          <p className="mt-1 text-xs text-zinc-600 dark:text-zinc-400">
+            Describe your idea in plain English. Our AI analyzes market rates, recommends technical
+            stacks, and decomposes your project into actionable escrow milestones.
+          </p>
 
-        <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center">
-          <input
-            type="text"
-            value={aiPrompt}
-            onChange={(e) => setAiPrompt(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                handleAiDecompose();
-              }
-            }}
-            placeholder="e.g. Build a Next.js real-time analytics portal with Stripe billing and Tailwind..."
-            className="flex-1 rounded-xl border border-zinc-200 bg-white/90 px-4 py-2.5 text-xs text-zinc-900 shadow-xs focus:border-indigo-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100"
-          />
-          <button
-            type="button"
-            disabled={isAiDecomposing}
-            onClick={handleAiDecompose}
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 px-4 py-2.5 text-xs font-semibold text-white shadow-md shadow-indigo-500/20 hover:from-indigo-500 hover:to-purple-500 disabled:opacity-60 transition"
-          >
-            {isAiDecomposing ? (
-              <>
-                <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                <span>Decomposing Scope...</span>
-              </>
-            ) : (
-              <>
-                <Sparkles className="h-3.5 w-3.5" />
-                <span>Decompose with AI</span>
-              </>
-            )}
-          </button>
-        </div>
-
-        {/* AI Decomposed Result Preview */}
-        {aiResult && (
-          <div className="mt-5 space-y-4 rounded-xl border border-indigo-200/80 bg-white/90 p-5 dark:border-indigo-900/60 dark:bg-zinc-900/90 shadow-sm animate-in fade-in slide-in-from-top-3 duration-300">
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <div>
-                <span className="text-[11px] font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
-                  AI Recommended Architecture
-                </span>
-                <h4 className="font-bold text-sm text-zinc-900 dark:text-zinc-100">
-                  {aiResult.title}
-                </h4>
-              </div>
-              <button
-                type="button"
-                onClick={handleApplyAiScope}
-                className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-600 px-4 py-2 text-xs font-semibold text-white shadow-sm hover:bg-emerald-500 transition"
-              >
-                <CheckCircle2 className="h-3.5 w-3.5" />
-                <span>Apply to Form Fields</span>
-              </button>
-            </div>
-
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 text-xs">
-              <div className="rounded-lg bg-zinc-50 p-2.5 dark:bg-zinc-800/50">
-                <span className="text-zinc-400">Estimated Budget</span>
-                <p className="font-bold text-emerald-600 dark:text-emerald-400">
-                  ${aiResult.suggestedBudgetMin.toLocaleString()} – $
-                  {aiResult.suggestedBudgetMax.toLocaleString()}
-                </p>
-              </div>
-              <div className="rounded-lg bg-zinc-50 p-2.5 dark:bg-zinc-800/50">
-                <span className="text-zinc-400">Duration</span>
-                <p className="font-semibold text-zinc-800 dark:text-zinc-200">
-                  {aiResult.duration}
-                </p>
-              </div>
-              <div className="rounded-lg bg-zinc-50 p-2.5 dark:bg-zinc-800/50">
-                <span className="text-zinc-400">Target Level</span>
-                <p className="font-semibold text-zinc-800 dark:text-zinc-200">
-                  {aiResult.experienceLevel}
-                </p>
-              </div>
-              <div className="rounded-lg bg-zinc-50 p-2.5 dark:bg-zinc-800/50">
-                <span className="text-zinc-400">Milestone Phases</span>
-                <p className="font-semibold text-zinc-800 dark:text-zinc-200">
-                  {aiResult.milestones.length} Escrow Stages
-                </p>
-              </div>
-            </div>
-
-            {/* Collapsible Milestones Breakdown */}
-            <div className="border-t border-zinc-100 pt-3 dark:border-zinc-800">
-              <button
-                type="button"
-                onClick={() => setShowAiBreakdown(!showAiBreakdown)}
-                className="flex w-full items-center justify-between text-xs font-semibold text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-200"
-              >
-                <span>View {aiResult.milestones.length} Decomposed Escrow Milestones</span>
-                {showAiBreakdown ? (
-                  <ChevronUp className="h-4 w-4" />
-                ) : (
-                  <ChevronDown className="h-4 w-4" />
-                )}
-              </button>
-
-              {showAiBreakdown && (
-                <div className="mt-3 space-y-2.5">
-                  {aiResult.milestones.map((m, idx) => (
-                    <div
-                      key={idx}
-                      className="rounded-lg border border-zinc-100 bg-zinc-50/50 p-3 dark:border-zinc-800 dark:bg-zinc-950/40"
-                    >
-                      <div className="flex items-center justify-between">
-                        <span className="font-semibold text-xs text-zinc-900 dark:text-zinc-100">
-                          {m.title}
-                        </span>
-                        <Badge variant="purple">
-                          {m.percentage}% · {m.duration}
-                        </Badge>
-                      </div>
-                      <p className="mt-1 text-xs text-zinc-500">{m.description}</p>
-                      <div className="mt-2 flex flex-wrap gap-1.5">
-                        {m.acceptanceCriteria.map((ac, acIdx) => (
-                          <span
-                            key={acIdx}
-                            className="inline-flex items-center gap-1 rounded bg-zinc-200/60 px-2 py-0.5 text-[10px] text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300"
-                          >
-                            <CheckCircle2 className="h-2.5 w-2.5 text-emerald-500" />
-                            {ac}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-                </div>
+          <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center">
+            <input
+              type="text"
+              value={aiPrompt}
+              onChange={(e) => setAiPrompt(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  handleAiDecompose();
+                }
+              }}
+              placeholder="e.g. Build a Next.js real-time analytics portal with Stripe billing and Tailwind..."
+              className="flex-1 rounded-xl border border-zinc-200 bg-white/90 px-4 py-2.5 text-xs text-zinc-900 shadow-xs focus:border-indigo-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100"
+            />
+            <button
+              type="button"
+              disabled={isAiDecomposing}
+              onClick={handleAiDecompose}
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 px-4 py-2.5 text-xs font-semibold text-white shadow-md shadow-indigo-500/20 hover:from-indigo-500 hover:to-purple-500 disabled:opacity-60 transition"
+            >
+              {isAiDecomposing ? (
+                <>
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  <span>Decomposing Scope...</span>
+                </>
+              ) : (
+                <>
+                  <Sparkles className="h-3.5 w-3.5" />
+                  <span>Decompose with AI</span>
+                </>
               )}
-            </div>
+            </button>
           </div>
-        )}
 
-        {aiSuccessMessage && (
-          <div className="mt-3 flex items-center gap-2 rounded-xl bg-emerald-500/10 p-3 text-xs font-medium text-emerald-700 dark:text-emerald-400 animate-in fade-in duration-300">
-            <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600" />
-            <span>{aiSuccessMessage}</span>
-          </div>
-        )}
-      </div>
+          {/* AI Decomposed Result Preview */}
+          {aiResult && (
+            <div className="mt-5 space-y-4 rounded-xl border border-indigo-200/80 bg-white/90 p-5 dark:border-indigo-900/60 dark:bg-zinc-900/90 shadow-sm animate-in fade-in slide-in-from-top-3 duration-300">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
+                    AI Recommended Architecture
+                  </span>
+                  <h4 className="font-bold text-sm text-zinc-900 dark:text-zinc-100">
+                    {aiResult.title}
+                  </h4>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleApplyAiScope}
+                  className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-600 px-4 py-2 text-xs font-semibold text-white shadow-sm hover:bg-emerald-500 transition"
+                >
+                  <CheckCircle2 className="h-3.5 w-3.5" />
+                  <span>Apply to Form Fields</span>
+                </button>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 text-xs">
+                <div className="rounded-lg bg-zinc-50 p-2.5 dark:bg-zinc-800/50">
+                  <span className="text-zinc-400">Estimated Budget</span>
+                  <p className="font-bold text-emerald-600 dark:text-emerald-400">
+                    ${aiResult.suggestedBudgetMin.toLocaleString()} – $
+                    {aiResult.suggestedBudgetMax.toLocaleString()}
+                  </p>
+                </div>
+                <div className="rounded-lg bg-zinc-50 p-2.5 dark:bg-zinc-800/50">
+                  <span className="text-zinc-400">Duration</span>
+                  <p className="font-semibold text-zinc-800 dark:text-zinc-200">
+                    {aiResult.duration}
+                  </p>
+                </div>
+                <div className="rounded-lg bg-zinc-50 p-2.5 dark:bg-zinc-800/50">
+                  <span className="text-zinc-400">Target Level</span>
+                  <p className="font-semibold text-zinc-800 dark:text-zinc-200">
+                    {aiResult.experienceLevel}
+                  </p>
+                </div>
+                <div className="rounded-lg bg-zinc-50 p-2.5 dark:bg-zinc-800/50">
+                  <span className="text-zinc-400">Milestone Phases</span>
+                  <p className="font-semibold text-zinc-800 dark:text-zinc-200">
+                    {aiResult.milestones.length} Escrow Stages
+                  </p>
+                </div>
+              </div>
+
+              {/* Collapsible Milestones Breakdown */}
+              <div className="border-t border-zinc-100 pt-3 dark:border-zinc-800">
+                <button
+                  type="button"
+                  onClick={() => setShowAiBreakdown(!showAiBreakdown)}
+                  className="flex w-full items-center justify-between text-xs font-semibold text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-200"
+                >
+                  <span>View {aiResult.milestones.length} Decomposed Escrow Milestones</span>
+                  {showAiBreakdown ? (
+                    <ChevronUp className="h-4 w-4" />
+                  ) : (
+                    <ChevronDown className="h-4 w-4" />
+                  )}
+                </button>
+
+                {showAiBreakdown && (
+                  <div className="mt-3 space-y-2.5">
+                    {aiResult.milestones.map((m, idx) => (
+                      <div
+                        key={idx}
+                        className="rounded-lg border border-zinc-100 bg-zinc-50/50 p-3 dark:border-zinc-800 dark:bg-zinc-950/40"
+                      >
+                        <div className="flex items-center justify-between">
+                          <span className="font-semibold text-xs text-zinc-900 dark:text-zinc-100">
+                            {m.title}
+                          </span>
+                          <Badge variant="purple">
+                            {m.percentage}% · {m.duration}
+                          </Badge>
+                        </div>
+                        <p className="mt-1 text-xs text-zinc-500">{m.description}</p>
+                        <div className="mt-2 flex flex-wrap gap-1.5">
+                          {m.acceptanceCriteria.map((ac, acIdx) => (
+                            <span
+                              key={acIdx}
+                              className="inline-flex items-center gap-1 rounded bg-zinc-200/60 px-2 py-0.5 text-[10px] text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300"
+                            >
+                              <CheckCircle2 className="h-2.5 w-2.5 text-emerald-500" />
+                              {ac}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {aiSuccessMessage && (
+            <div className="mt-3 flex items-center gap-2 rounded-xl bg-emerald-500/10 p-3 text-xs font-medium text-emerald-700 dark:text-emerald-400 animate-in fade-in duration-300">
+              <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600" />
+              <span>{aiSuccessMessage}</span>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Main Job Creation Form */}
       <form onSubmit={handleSubmit} className="space-y-6">

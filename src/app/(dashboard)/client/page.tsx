@@ -193,8 +193,8 @@ export default async function ClientDashboardPage() {
                   Ready to scale your engineering team?
                 </h4>
                 <p className="mt-1 text-xs text-zinc-500 max-w-sm mx-auto">
-                  Post your first job opening with our built-in AI Scope Decomposer to attract
-                  vetted candidates within hours.
+                  Post your first job opening with milestone escrow protection to attract vetted
+                  candidates within hours.
                 </p>
                 <div className="mt-4">
                   <Link
@@ -324,17 +324,17 @@ export default async function ClientDashboardPage() {
             </div>
           </div>
 
-          {/* Quick AI Post Card */}
+          {/* Quick Post Project Brief Card */}
           <div className="rounded-2xl border border-indigo-200/80 bg-gradient-to-br from-indigo-50/80 via-white to-white p-6 shadow-xs dark:border-indigo-900/40 dark:bg-zinc-900 space-y-3">
             <div className="flex items-center gap-2">
-              <Sparkles className="h-4 w-4 text-indigo-600" />
+              <Briefcase className="h-4 w-4 text-indigo-600" />
               <h4 className="font-bold text-sm text-zinc-900 dark:text-zinc-100">
-                AI Scope Decomposer
+                Post Project Brief
               </h4>
             </div>
             <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
-              Create comprehensive project briefs with AI-generated milestones, budget benchmarks,
-              and technical requirements in under 30 seconds.
+              Define your deliverables, set escrow milestones, and receive verified proposals from
+              top engineers and designers.
             </p>
             <Link
               href="/client/jobs/new"

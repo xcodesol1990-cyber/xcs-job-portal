@@ -2,17 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import {
-  ShieldCheck,
-  ArrowRight,
-  Briefcase,
-  UserCheck,
-  Menu,
-  X,
-  Search,
-  Sparkles,
-  Lock,
-} from "lucide-react";
+import { ShieldCheck, ArrowRight, Briefcase, UserCheck, Menu, X, Search, Lock } from "lucide-react";
 
 interface PublicHeaderProps {
   user?: {
@@ -71,8 +61,8 @@ export function PublicHeader({ user }: PublicHeaderProps) {
               href="/client/jobs/new"
               className="inline-flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-semibold text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50/70 dark:text-indigo-400 dark:hover:bg-indigo-950/40 transition"
             >
-              <Sparkles className="h-3.5 w-3.5" />
-              <span>AI Job Architect</span>
+              <Briefcase className="h-3.5 w-3.5" />
+              <span>Post a Job</span>
             </Link>
           </nav>
         </div>
@@ -170,8 +160,8 @@ export function PublicHeader({ user }: PublicHeaderProps) {
             onClick={() => setMobileMenuOpen(false)}
             className="flex items-center gap-2 rounded-xl p-2.5 text-xs font-semibold text-zinc-800 hover:bg-zinc-50 dark:text-zinc-200 dark:hover:bg-zinc-900"
           >
-            <Sparkles className="h-4 w-4 text-purple-500" />
-            <span>AI Job Scoping Co-Pilot</span>
+            <Briefcase className="h-4 w-4 text-purple-500" />
+            <span>Post a Job Opportunity</span>
           </Link>
 
           <div className="pt-2 border-t border-zinc-100 dark:border-zinc-800 flex flex-col gap-2">
