@@ -247,6 +247,12 @@ model FreelancerProfile {
   experienceLevel   String?  @map("experience_level")
   jobSuccessScore   Decimal? @map("job_success_score") @db.Decimal(5, 2)
   totalEarnedCents  BigInt   @default(0) @map("total_earned_cents")
+  tags              String[] @default([])
+  githubUrl         String?  @map("github_url")
+  linkedinUrl       String?  @map("linkedin_url")
+  websiteUrl        String?  @map("website_url")
+  yearsOfExperience Int?     @map("years_of_experience")
+  englishProficiency String? @map("english_proficiency")
   searchVector      Unsupported("tsvector")? @map("search_vector")
   createdAt         DateTime @default(now()) @map("created_at") @db.Timestamptz
   updatedAt         DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
@@ -262,6 +268,10 @@ model ClientProfile {
   userId           String   @id @map("user_id") @db.Uuid
   companyName      String?  @map("company_name")
   website          String?
+  companySize      String?  @map("company_size")
+  industry         String?  @map("industry")
+  about            String?  @map("about")
+  linkedinUrl      String?  @map("linkedin_url")
   paymentVerified  Boolean  @default(false) @map("payment_verified")
   totalSpentCents  BigInt   @default(0) @map("total_spent_cents")
   createdAt        DateTime @default(now()) @map("created_at") @db.Timestamptz
@@ -340,6 +350,10 @@ model Job {
   currency        String    @default("USD") @db.Char(3)
   experienceLevel String?   @map("experience_level")
   duration        String?
+  scope           String?   @map("scope")
+  timeCommitment  String?   @map("time_commitment")
+  deliverables    String?   @map("deliverables")
+  screeningQuestions String[] @default([]) @map("screening_questions")
   status          JobStatus @default(DRAFT)
   proposalsCount  Int       @default(0) @map("proposals_count")
   dedupeHash      String    @map("dedupe_hash")

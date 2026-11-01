@@ -8,16 +8,7 @@ import { ReportJobModal } from "@/components/forms/report-job-modal";
 import { JobFitBadge } from "@/components/jobs/job-fit-badge";
 import { PublicHeader } from "@/components/layout/public-header";
 import { Badge } from "@/components/ui/badge";
-import {
-  ShieldCheck,
-  Building2,
-  ArrowLeft,
-  Send,
-  Lock,
-  Clock,
-  Sparkles,
-  Users,
-} from "lucide-react";
+import { ShieldCheck, Building2, ArrowLeft, Send, Lock, Clock, Users } from "lucide-react";
 
 interface JobDetailsPageProps {
   params: Promise<{ id: string }>;
@@ -212,22 +203,21 @@ export default async function JobDetailsPage({ params }: JobDetailsPageProps) {
               </p>
             </div>
             <div>
-              <span className="text-xs text-zinc-500">Experience Tier</span>
+              <span className="text-xs text-zinc-500">Project Scale</span>
               <p className="mt-1 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-                {job.experienceLevel ?? "Intermediate"}
+                {job.scope ?? "Medium"} Scope
               </p>
             </div>
             <div>
-              <span className="text-xs text-zinc-500">Escrow Security</span>
-              <p className="mt-1 flex items-center gap-1 text-sm font-semibold text-emerald-600 dark:text-emerald-400">
-                <Sparkles className="h-3.5 w-3.5" />
-                <span>Escrow Funded</span>
+              <span className="text-xs text-zinc-500">Time Commitment</span>
+              <p className="mt-1 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+                {job.timeCommitment ?? "Flexible"}
               </p>
             </div>
             <div>
-              <span className="text-xs text-zinc-500">Proposals Received</span>
+              <span className="text-xs text-zinc-500">Duration</span>
               <p className="mt-1 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-                {job.proposalsCount} submitted
+                {job.duration ?? "1 to 3 months"}
               </p>
             </div>
           </div>
@@ -241,6 +231,32 @@ export default async function JobDetailsPage({ params }: JobDetailsPageProps) {
               {job.description}
             </div>
           </div>
+
+          {/* Structured Deliverables */}
+          {job.deliverables && (
+            <div className="mt-6 space-y-3">
+              <h2 className="text-xs font-bold uppercase tracking-wider text-zinc-500">
+                Milestone Deliverables & Acceptance Criteria
+              </h2>
+              <div className="whitespace-pre-line text-xs font-mono leading-relaxed text-zinc-700 dark:text-zinc-300 bg-zinc-50/60 p-4 rounded-xl border border-zinc-200/80 dark:border-zinc-800 dark:bg-zinc-950/60">
+                {job.deliverables}
+              </div>
+            </div>
+          )}
+
+          {/* Screening Questions */}
+          {job.screeningQuestions && job.screeningQuestions.length > 0 && (
+            <div className="mt-6 space-y-3">
+              <h2 className="text-xs font-bold uppercase tracking-wider text-zinc-500">
+                Applicant Screening Question
+              </h2>
+              <div className="rounded-xl border border-amber-500/20 bg-amber-50/40 p-4 text-xs font-medium text-amber-900 dark:bg-amber-950/20 dark:text-amber-200">
+                {job.screeningQuestions.map((q, i) => (
+                  <p key={i}>• {q}</p>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Skills Required */}
           {job.skills.length > 0 && (

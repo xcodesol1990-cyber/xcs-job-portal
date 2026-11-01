@@ -27,6 +27,16 @@ export async function createJobAction(
   const budgetMax = Number(formData.get("budgetMax"));
   const experienceLevel = formData.get("experienceLevel")?.toString();
   const duration = formData.get("duration")?.toString();
+  const scope = formData.get("scope")?.toString();
+  const timeCommitment = formData.get("timeCommitment")?.toString();
+  const deliverables = formData.get("deliverables")?.toString();
+
+  const rawQuestions = formData.getAll("screeningQuestions");
+  const screeningQuestions: string[] = rawQuestions
+    .flatMap((q) => q.toString().split("\n"))
+    .map((q) => q.trim())
+    .filter(Boolean);
+
   const skillIds = formData
     .getAll("skillIds")
     .map(Number)
@@ -46,6 +56,10 @@ export async function createJobAction(
       budgetMaxCents: !isNaN(budgetMax) && budgetMax > 0 ? Math.round(budgetMax * 100) : undefined,
       experienceLevel,
       duration,
+      scope,
+      timeCommitment,
+      deliverables,
+      screeningQuestions,
       skillIds,
     });
 

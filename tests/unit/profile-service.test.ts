@@ -4,6 +4,14 @@ import { prisma } from "@/server/db/prisma";
 
 vi.mock("@/server/db/prisma", () => ({
   prisma: {
+    $transaction: vi.fn((callback) =>
+      callback({
+        user: { update: vi.fn() },
+        freelancerProfile: { upsert: vi.fn() },
+        freelancerSkill: { deleteMany: vi.fn(), createMany: vi.fn() },
+        clientProfile: { upsert: vi.fn() },
+      }),
+    ),
     freelancerProfile: {
       findUnique: vi.fn(),
       upsert: vi.fn(),
@@ -18,9 +26,15 @@ vi.mock("@/server/db/prisma", () => ({
     },
     category: {
       findMany: vi.fn().mockResolvedValue([]),
+      create: vi.fn(),
+      findUnique: vi.fn(),
+      delete: vi.fn(),
     },
     skill: {
       findMany: vi.fn().mockResolvedValue([]),
+      create: vi.fn(),
+      findUnique: vi.fn(),
+      delete: vi.fn(),
     },
   },
 }));
@@ -53,7 +67,6 @@ describe("ProfileService", () => {
   });
 
   it("auto-provisions freelancer profile if not yet created for an existing user", async () => {
-    // 1st call to findUnique returns null
     (vi.mocked(prisma.freelancerProfile.findUnique) as unknown as ReturnType<typeof vi.fn>)
       .mockResolvedValueOnce(null)
       .mockResolvedValueOnce({
@@ -65,7 +78,6 @@ describe("ProfileService", () => {
         user: { id: "user-new", name: "New User" },
       });
 
-    // user exists
     (
       vi.mocked(prisma.user.findUnique) as unknown as ReturnType<typeof vi.fn>
     ).mockResolvedValueOnce({
@@ -120,5 +132,38 @@ describe("ProfileService", () => {
       }),
     );
     expect(profile.companyName).toBe("Acme Corp");
+  });
+
+  it("creates a new category with generated slug", async () => {
+    const mockCreated = { id: 10, name: "AI Agents", slug: "ai-agents", parentId: null };
+    (
+      vi.mocked(prisma.category.create) as unknown as ReturnType<typeof vi.fn>
+    ).mockResolvedValueOnce(mockCreated);
+
+    const result = await ProfileService.createCategory("AI Agents");
+    expect(prisma.category.create).toHaveBeenCalledWith({
+      data: {
+        name: "AI Agents",
+        slug: "ai-agents",
+        parentId: null,
+      },
+    });
+    expect(result.slug).toBe("ai-agents");
+  });
+
+  it("creates a new skill with normalized slug", async () => {
+    const mockSkill = { id: 50, name: "Next.js 15", slug: "next-js-15" };
+    (vi.mocked(prisma.skill.create) as unknown as ReturnType<typeof vi.fn>).mockResolvedValueOnce(
+      mockSkill,
+    );
+
+    const result = await ProfileService.createSkill("Next.js 15");
+    expect(prisma.skill.create).toHaveBeenCalledWith({
+      data: {
+        name: "Next.js 15",
+        slug: "next-js-15",
+      },
+    });
+    expect(result.name).toBe("Next.js 15");
   });
 });

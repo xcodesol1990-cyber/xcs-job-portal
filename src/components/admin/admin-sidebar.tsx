@@ -15,6 +15,7 @@ import {
   LogOut,
   ShieldCheck,
   ChevronRight,
+  Tags,
   type LucideIcon,
 } from "lucide-react";
 
@@ -68,6 +69,12 @@ export function AdminSidebar({
           href: "/admin/users",
           icon: Users,
           badge: null,
+        },
+        {
+          label: "Categories & Skills",
+          href: "/admin/categories",
+          icon: Tags,
+          badge: "Taxonomy",
         },
         {
           label: "Marketplace Jobs",

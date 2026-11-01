@@ -14,6 +14,10 @@ export interface CreateJobInput {
   currency?: string;
   duration?: string;
   experienceLevel?: string;
+  scope?: string;
+  timeCommitment?: string;
+  deliverables?: string;
+  screeningQuestions?: string[];
   skillIds?: number[];
 }
 
@@ -108,6 +112,10 @@ export class JobService {
           currency: input.currency ?? "USD",
           duration: input.duration,
           experienceLevel: input.experienceLevel,
+          scope: input.scope,
+          timeCommitment: input.timeCommitment,
+          deliverables: input.deliverables,
+          screeningQuestions: input.screeningQuestions ?? [],
           status: JobStatus.OPEN,
           publishedAt: new Date(),
           dedupeHash,

@@ -12,14 +12,22 @@ import {
   Sparkles,
   Bot,
   CheckCircle2,
-  ChevronDown,
-  ChevronUp,
+  FolderTree,
+  Layers,
+  ShieldCheck,
+  Search,
+  ListChecks,
+  HelpCircle,
+  Briefcase,
 } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 
 interface Category {
   id: number;
   name: string;
+  slug?: string;
+  parentId?: number | null;
+  parent?: { id: number; name: string; slug: string } | null;
+  children?: Array<{ id: number; name: string; slug: string }>;
 }
 
 interface Skill {
@@ -37,23 +45,52 @@ export function CreateJobForm({ categories, skills }: CreateJobFormProps) {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
+  // Parent Categories & Child Categories separation
+  const parentCategories = categories.filter((c) => !c.parentId);
+  const initialParent = parentCategories[0]?.id?.toString() ?? "";
+  const initialChildren = categories.filter((c) => c.parentId?.toString() === initialParent);
+
   // Form inputs
   const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [categoryId, setCategoryId] = useState<string>(categories[0]?.id?.toString() ?? "");
+  const [parentCategoryId, setParentCategoryId] = useState<string>(initialParent);
+  const [categoryId, setCategoryId] = useState<string>(
+    initialChildren[0]?.id?.toString() ?? categories[0]?.id?.toString() ?? "",
+  );
+  const [scope, setScope] = useState<"LARGE" | "MEDIUM" | "SMALL">("MEDIUM");
+  const [timeCommitment, setTimeCommitment] = useState("Milestone-driven / Flexible");
+  const [duration, setDuration] = useState("1 to 3 months");
+  const [experienceLevel, setExperienceLevel] = useState("INTERMEDIATE");
   const [budgetType, setBudgetType] = useState<"FIXED" | "HOURLY">("FIXED");
   const [budgetMin, setBudgetMin] = useState("500");
-  const [budgetMax, setBudgetMax] = useState("1500");
-  const [experienceLevel, setExperienceLevel] = useState("INTERMEDIATE");
-  const [duration, setDuration] = useState("1 to 3 months");
-  const [selectedSkills, setSelectedSkills] = useState<number[]>([]);
+  const [budgetMax, setBudgetMax] = useState("2500");
+  const [description, setDescription] = useState("");
+  const [deliverables, setDeliverables] = useState("");
+  const [screeningQuestion, setScreeningQuestion] = useState("");
 
-  // AI Architect State
+  // Skills Filter & Selection
+  const [selectedSkills, setSelectedSkills] = useState<number[]>([]);
+  const [skillSearch, setSkillSearch] = useState("");
+
+  // AI Architect State (Hidden by default per user request)
+  const SHOW_AI_CO_PILOT = false;
   const [aiPrompt, setAiPrompt] = useState("");
   const [isAiDecomposing, setIsAiDecomposing] = useState(false);
   const [aiResult, setAiResult] = useState<AiScopeResult | null>(null);
-  const [showAiBreakdown, setShowAiBreakdown] = useState(false);
-  const [aiSuccessMessage, setAiSuccessMessage] = useState<string | null>(null);
+
+  // Handle Parent Category Change
+  const handleParentCategoryChange = (newParentId: string) => {
+    setParentCategoryId(newParentId);
+    const subcats = categories.filter((c) => c.parentId?.toString() === newParentId);
+    if (subcats.length > 0) {
+      setCategoryId(subcats[0].id.toString());
+    } else {
+      setCategoryId(newParentId);
+    }
+  };
+
+  const currentSubcategories = categories.filter(
+    (c) => c.parentId?.toString() === parentCategoryId,
+  );
 
   const toggleSkill = (id: number) => {
     setSelectedSkills((prev) =>
@@ -62,23 +99,18 @@ export function CreateJobForm({ categories, skills }: CreateJobFormProps) {
   };
 
   const handleAiDecompose = async () => {
-    if (!aiPrompt.trim() || aiPrompt.trim().length < 5) {
-      setError("Please provide a project brief of at least 5 characters for AI analysis.");
-      return;
-    }
-    setError(null);
+    if (!aiPrompt.trim()) return;
     setIsAiDecomposing(true);
 
     try {
-      const response = await decomposeScopeAction(aiPrompt);
-      if (!response.success || !response.result) {
-        setError(response.error ?? "AI scoping failed.");
+      const res = await decomposeScopeAction(aiPrompt);
+      if (res.success && res.result) {
+        setAiResult(res.result);
       } else {
-        setAiResult(response.result);
-        setShowAiBreakdown(true);
+        setError(res.error ?? "Failed to decompose scope.");
       }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "AI Scoping service unavailable.");
+    } catch {
+      setError("An unexpected error occurred while consulting AI co-pilot.");
     } finally {
       setIsAiDecomposing(false);
     }
@@ -86,38 +118,21 @@ export function CreateJobForm({ categories, skills }: CreateJobFormProps) {
 
   const handleApplyAiScope = () => {
     if (!aiResult) return;
-
     setTitle(aiResult.title);
     setDescription(aiResult.description);
-    setBudgetType(aiResult.budgetType);
     setBudgetMin(aiResult.suggestedBudgetMin.toString());
     setBudgetMax(aiResult.suggestedBudgetMax.toString());
-    setExperienceLevel(aiResult.experienceLevel);
     setDuration(aiResult.duration);
 
-    // Match category
-    const matchedCategory = categories.find(
-      (c) => c.name.toLowerCase() === aiResult.suggestedCategory.toLowerCase(),
-    );
-    if (matchedCategory) {
-      setCategoryId(matchedCategory.id.toString());
+    if (aiResult.milestones && aiResult.milestones.length > 0) {
+      const formattedDeliverables = aiResult.milestones
+        .map(
+          (m, idx) =>
+            `Milestone ${idx + 1}: ${m.title} (${m.percentage}% - ${m.duration})\nDeliverables: ${m.description}\nAcceptance Criteria: ${m.acceptanceCriteria.join("; ")}`,
+        )
+        .join("\n\n");
+      setDeliverables(formattedDeliverables);
     }
-
-    // Match skills
-    const matchingSkillIds = skills
-      .filter((s) =>
-        aiResult.suggestedSkills.some((sk) => sk.toLowerCase() === s.name.toLowerCase()),
-      )
-      .map((s) => s.id);
-
-    if (matchingSkillIds.length > 0) {
-      setSelectedSkills(matchingSkillIds);
-    }
-
-    setAiSuccessMessage(
-      `Applied AI Scope: "${aiResult.title}" with ${aiResult.milestones.length} structured milestones!`,
-    );
-    setTimeout(() => setAiSuccessMessage(null), 6000);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -127,27 +142,36 @@ export function CreateJobForm({ categories, skills }: CreateJobFormProps) {
     const formData = new FormData();
     formData.append("title", title);
     formData.append("description", description);
-    formData.append("categoryId", categoryId);
+    formData.append("categoryId", categoryId || parentCategoryId);
+    formData.append("scope", scope);
+    formData.append("timeCommitment", timeCommitment);
+    formData.append("duration", duration);
+    formData.append("experienceLevel", experienceLevel);
     formData.append("budgetType", budgetType);
     formData.append("budgetMin", budgetMin);
     formData.append("budgetMax", budgetMax);
-    formData.append("experienceLevel", experienceLevel);
-    formData.append("duration", duration);
-    for (const sId of selectedSkills) {
-      formData.append("skillIds", sId.toString());
+    formData.append("deliverables", deliverables);
+    if (screeningQuestion.trim()) {
+      formData.append("screeningQuestions", screeningQuestion.trim());
+    }
+
+    for (const id of selectedSkills) {
+      formData.append("skillIds", id.toString());
     }
 
     startTransition(async () => {
       const result = await createJobAction(null, formData);
       if (!result.success) {
-        setError(result.error ?? "Failed to publish job.");
+        setError(result.error ?? "Failed to publish job brief.");
       } else {
         router.push(`/jobs/${result.jobId}`);
       }
     });
   };
 
-  const SHOW_AI_CO_PILOT = false;
+  const filteredSkills = skills.filter((s) =>
+    s.name.toLowerCase().includes(skillSearch.toLowerCase()),
+  );
 
   return (
     <div className="space-y-8">
@@ -168,12 +192,6 @@ export function CreateJobForm({ categories, skills }: CreateJobFormProps) {
               type="text"
               value={aiPrompt}
               onChange={(e) => setAiPrompt(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
-                  handleAiDecompose();
-                }
-              }}
               placeholder="e.g. Build a Next.js real-time analytics portal with Stripe billing and Tailwind..."
               className="flex-1 rounded-xl border border-zinc-200 bg-white/90 px-4 py-2.5 text-xs text-zinc-900 shadow-xs focus:border-indigo-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100"
             />
@@ -197,7 +215,6 @@ export function CreateJobForm({ categories, skills }: CreateJobFormProps) {
             </button>
           </div>
 
-          {/* AI Decomposed Result Preview */}
           {aiResult && (
             <div className="mt-5 space-y-4 rounded-xl border border-indigo-200/80 bg-white/90 p-5 dark:border-indigo-900/60 dark:bg-zinc-900/90 shadow-sm animate-in fade-in slide-in-from-top-3 duration-300">
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -218,286 +235,419 @@ export function CreateJobForm({ categories, skills }: CreateJobFormProps) {
                   <span>Apply to Form Fields</span>
                 </button>
               </div>
-
-              <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 text-xs">
-                <div className="rounded-lg bg-zinc-50 p-2.5 dark:bg-zinc-800/50">
-                  <span className="text-zinc-400">Estimated Budget</span>
-                  <p className="font-bold text-emerald-600 dark:text-emerald-400">
-                    ${aiResult.suggestedBudgetMin.toLocaleString()} – $
-                    {aiResult.suggestedBudgetMax.toLocaleString()}
-                  </p>
-                </div>
-                <div className="rounded-lg bg-zinc-50 p-2.5 dark:bg-zinc-800/50">
-                  <span className="text-zinc-400">Duration</span>
-                  <p className="font-semibold text-zinc-800 dark:text-zinc-200">
-                    {aiResult.duration}
-                  </p>
-                </div>
-                <div className="rounded-lg bg-zinc-50 p-2.5 dark:bg-zinc-800/50">
-                  <span className="text-zinc-400">Target Level</span>
-                  <p className="font-semibold text-zinc-800 dark:text-zinc-200">
-                    {aiResult.experienceLevel}
-                  </p>
-                </div>
-                <div className="rounded-lg bg-zinc-50 p-2.5 dark:bg-zinc-800/50">
-                  <span className="text-zinc-400">Milestone Phases</span>
-                  <p className="font-semibold text-zinc-800 dark:text-zinc-200">
-                    {aiResult.milestones.length} Escrow Stages
-                  </p>
-                </div>
-              </div>
-
-              {/* Collapsible Milestones Breakdown */}
-              <div className="border-t border-zinc-100 pt-3 dark:border-zinc-800">
-                <button
-                  type="button"
-                  onClick={() => setShowAiBreakdown(!showAiBreakdown)}
-                  className="flex w-full items-center justify-between text-xs font-semibold text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-200"
-                >
-                  <span>View {aiResult.milestones.length} Decomposed Escrow Milestones</span>
-                  {showAiBreakdown ? (
-                    <ChevronUp className="h-4 w-4" />
-                  ) : (
-                    <ChevronDown className="h-4 w-4" />
-                  )}
-                </button>
-
-                {showAiBreakdown && (
-                  <div className="mt-3 space-y-2.5">
-                    {aiResult.milestones.map((m, idx) => (
-                      <div
-                        key={idx}
-                        className="rounded-lg border border-zinc-100 bg-zinc-50/50 p-3 dark:border-zinc-800 dark:bg-zinc-950/40"
-                      >
-                        <div className="flex items-center justify-between">
-                          <span className="font-semibold text-xs text-zinc-900 dark:text-zinc-100">
-                            {m.title}
-                          </span>
-                          <Badge variant="purple">
-                            {m.percentage}% · {m.duration}
-                          </Badge>
-                        </div>
-                        <p className="mt-1 text-xs text-zinc-500">{m.description}</p>
-                        <div className="mt-2 flex flex-wrap gap-1.5">
-                          {m.acceptanceCriteria.map((ac, acIdx) => (
-                            <span
-                              key={acIdx}
-                              className="inline-flex items-center gap-1 rounded bg-zinc-200/60 px-2 py-0.5 text-[10px] text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300"
-                            >
-                              <CheckCircle2 className="h-2.5 w-2.5 text-emerald-500" />
-                              {ac}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-
-          {aiSuccessMessage && (
-            <div className="mt-3 flex items-center gap-2 rounded-xl bg-emerald-500/10 p-3 text-xs font-medium text-emerald-700 dark:text-emerald-400 animate-in fade-in duration-300">
-              <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600" />
-              <span>{aiSuccessMessage}</span>
             </div>
           )}
         </div>
       )}
 
       {/* Main Job Creation Form */}
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-8">
         {error && (
-          <div className="rounded-lg bg-red-500/10 p-3 text-sm text-red-700 dark:text-red-400">
+          <div className="rounded-xl bg-red-500/10 p-4 text-xs font-semibold text-red-700 dark:text-red-400 border border-red-500/20">
             {error}
           </div>
         )}
 
-        <div>
-          <label className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
-            Job Title
-          </label>
-          <input
-            type="text"
-            required
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="e.g. Build a Responsive Next.js Marketplace with Stripe Connect"
-            className="mt-1.5 w-full rounded-lg border border-zinc-300 bg-white px-3.5 py-2.5 text-sm text-zinc-900 focus:border-indigo-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100"
-          />
-        </div>
-
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-          <div>
-            <label className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
-              Category
-            </label>
-            <select
-              value={categoryId}
-              onChange={(e) => setCategoryId(e.target.value)}
-              className="mt-1.5 w-full rounded-lg border border-zinc-300 bg-white px-3.5 py-2.5 text-sm text-zinc-900 focus:border-indigo-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100"
-            >
-              {categories.map((cat) => (
-                <option key={cat.id} value={cat.id}>
-                  {cat.name}
-                </option>
-              ))}
-            </select>
+        {/* SECTION 1: TITLE & CASCADING CATEGORIES */}
+        <div className="space-y-5">
+          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-zinc-400">
+            <Briefcase className="h-3.5 w-3.5 text-indigo-500" />
+            <span>Project Scope & Taxonomy</span>
           </div>
 
           <div>
             <label className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
-              Experience Level Desired
+              Job Brief Title *
             </label>
-            <select
-              value={experienceLevel}
-              onChange={(e) => setExperienceLevel(e.target.value)}
-              className="mt-1.5 w-full rounded-lg border border-zinc-300 bg-white px-3.5 py-2.5 text-sm text-zinc-900 focus:border-indigo-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100"
-            >
-              <option value="ENTRY">Entry Level (Competitive pricing)</option>
-              <option value="INTERMEDIATE">Intermediate (Solid experience)</option>
-              <option value="EXPERT">Expert (Deep domain mastery)</option>
-            </select>
+            <input
+              type="text"
+              required
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="e.g. Build High-Throughput Escrow Protocol with Next.js 15 & Stripe Connect"
+              className="mt-1.5 w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2.5 text-xs font-medium text-zinc-900 focus:border-indigo-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100"
+            />
+          </div>
+
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+            <div>
+              <label className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
+                Primary Industry Sector (Parent) *
+              </label>
+              <div className="relative mt-1.5">
+                <FolderTree className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
+                <select
+                  value={parentCategoryId}
+                  onChange={(e) => handleParentCategoryChange(e.target.value)}
+                  className="w-full rounded-xl border border-zinc-300 bg-white py-2.5 pl-9 pr-3.5 text-xs text-zinc-900 focus:border-indigo-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100"
+                >
+                  {parentCategories.map((p) => (
+                    <option key={p.id} value={p.id}>
+                      {p.name}
+                    </option>
+                  ))}
+                  {/* Fallback to any remaining flat categories */}
+                  {categories
+                    .filter(
+                      (c) => c.parentId === null && !parentCategories.some((p) => p.id === c.id),
+                    )
+                    .map((c) => (
+                      <option key={c.id} value={c.id}>
+                        {c.name}
+                      </option>
+                    ))}
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
+                Specialized Subcategory *
+              </label>
+              <div className="relative mt-1.5">
+                <Layers className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
+                <select
+                  value={categoryId}
+                  onChange={(e) => setCategoryId(e.target.value)}
+                  className="w-full rounded-xl border border-zinc-300 bg-white py-2.5 pl-9 pr-3.5 text-xs text-zinc-900 focus:border-indigo-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100"
+                >
+                  {currentSubcategories.length > 0 ? (
+                    currentSubcategories.map((sub) => (
+                      <option key={sub.id} value={sub.id}>
+                        {sub.name}
+                      </option>
+                    ))
+                  ) : (
+                    <option value={parentCategoryId}>General / Direct Sector</option>
+                  )}
+                </select>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div>
-          <label className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
-            Budget Model
-          </label>
-          <div className="mt-1.5 grid grid-cols-2 gap-3">
+        {/* SECTION 2: SCOPE, DURATION & COMMITMENT */}
+        <div className="space-y-5 border-t border-zinc-100 pt-6 dark:border-zinc-800">
+          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-zinc-400">
+            <Clock className="h-3.5 w-3.5 text-purple-500" />
+            <span>Scope, Seniority & Time Commitment</span>
+          </div>
+
+          <div>
+            <label className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
+              Project Scale & Scope
+            </label>
+            <div className="mt-1.5 grid grid-cols-1 gap-3 sm:grid-cols-3">
+              <button
+                type="button"
+                onClick={() => setScope("LARGE")}
+                className={`rounded-xl border p-3.5 text-left transition ${
+                  scope === "LARGE"
+                    ? "border-indigo-600 bg-indigo-50/50 shadow-xs dark:border-indigo-400 dark:bg-indigo-950/30"
+                    : "border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900"
+                }`}
+              >
+                <div className="font-bold text-xs text-zinc-900 dark:text-zinc-100">
+                  Large / Initiative
+                </div>
+                <p className="mt-1 text-[11px] text-zinc-500">
+                  Multi-month timeline, complex systems & multiple deliverables.
+                </p>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setScope("MEDIUM")}
+                className={`rounded-xl border p-3.5 text-left transition ${
+                  scope === "MEDIUM"
+                    ? "border-indigo-600 bg-indigo-50/50 shadow-xs dark:border-indigo-400 dark:bg-indigo-950/30"
+                    : "border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900"
+                }`}
+              >
+                <div className="font-bold text-xs text-zinc-900 dark:text-zinc-100">
+                  Medium / Well-Defined
+                </div>
+                <p className="mt-1 text-[11px] text-zinc-500">
+                  1 to 3 months, 2-4 distinct milestone verification stages.
+                </p>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setScope("SMALL")}
+                className={`rounded-xl border p-3.5 text-left transition ${
+                  scope === "SMALL"
+                    ? "border-indigo-600 bg-indigo-50/50 shadow-xs dark:border-indigo-400 dark:bg-indigo-950/30"
+                    : "border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900"
+                }`}
+              >
+                <div className="font-bold text-xs text-zinc-900 dark:text-zinc-100">
+                  Small / Focused
+                </div>
+                <p className="mt-1 text-[11px] text-zinc-500">
+                  Quick turnaround, discrete bug fixes or focused sprint deliverables.
+                </p>
+              </button>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
+            <div>
+              <label className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
+                Experience Desired
+              </label>
+              <select
+                value={experienceLevel}
+                onChange={(e) => setExperienceLevel(e.target.value)}
+                className="mt-1.5 w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2.5 text-xs text-zinc-900 focus:border-indigo-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100"
+              >
+                <option value="ENTRY">Entry Level (Competitive pricing)</option>
+                <option value="INTERMEDIATE">Intermediate (Solid experience)</option>
+                <option value="EXPERT">Expert / Staff (Domain mastery)</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
+                Estimated Duration
+              </label>
+              <select
+                value={duration}
+                onChange={(e) => setDuration(e.target.value)}
+                className="mt-1.5 w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2.5 text-xs text-zinc-900 focus:border-indigo-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100"
+              >
+                <option value="Less than 1 month">Less than 1 month</option>
+                <option value="1 to 3 months">1 to 3 months</option>
+                <option value="3 to 6 months">3 to 6 months</option>
+                <option value="More than 6 months">More than 6 months</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
+                Time Commitment
+              </label>
+              <select
+                value={timeCommitment}
+                onChange={(e) => setTimeCommitment(e.target.value)}
+                className="mt-1.5 w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2.5 text-xs text-zinc-900 focus:border-indigo-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100"
+              >
+                <option value="Milestone-driven / Flexible">Milestone-driven / Flexible</option>
+                <option value="Part-time (< 30 hrs/wk)">Part-time (&lt; 30 hrs/wk)</option>
+                <option value="Full-time (30+ hrs/wk)">Full-time (30+ hrs/wk)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        {/* SECTION 3: BUDGET MODEL & ESCROW */}
+        <div className="space-y-5 border-t border-zinc-100 pt-6 dark:border-zinc-800">
+          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-zinc-400">
+            <DollarSign className="h-3.5 w-3.5 text-emerald-500" />
+            <span>Budget Model & Escrow Protection</span>
+          </div>
+
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <button
               type="button"
               onClick={() => setBudgetType("FIXED")}
-              className={`rounded-xl border p-3.5 text-left transition ${
+              className={`rounded-xl border p-4 text-left transition ${
                 budgetType === "FIXED"
-                  ? "border-indigo-600 bg-indigo-50/50 shadow-sm dark:border-indigo-400 dark:bg-indigo-950/30"
+                  ? "border-emerald-600 bg-emerald-50/50 shadow-xs dark:border-emerald-400 dark:bg-emerald-950/30"
                   : "border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900"
               }`}
             >
-              <div className="flex items-center gap-2 font-semibold text-sm text-zinc-900 dark:text-zinc-100">
-                <DollarSign className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
-                <span>Fixed Price (Escrow)</span>
+              <div className="flex items-center gap-2 font-bold text-xs text-zinc-900 dark:text-zinc-100">
+                <DollarSign className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+                <span>Fixed Price (Escrow Protected)</span>
               </div>
               <p className="mt-1 text-xs text-zinc-500">
-                Pay per milestone upon approved deliverable.
+                Deposit funds into secure milestone escrow. Payouts released upon deliverable
+                approval.
               </p>
             </button>
 
             <button
               type="button"
               onClick={() => setBudgetType("HOURLY")}
-              className={`rounded-xl border p-3.5 text-left transition ${
+              className={`rounded-xl border p-4 text-left transition ${
                 budgetType === "HOURLY"
-                  ? "border-indigo-600 bg-indigo-50/50 shadow-sm dark:border-indigo-400 dark:bg-indigo-950/30"
+                  ? "border-emerald-600 bg-emerald-50/50 shadow-xs dark:border-emerald-400 dark:bg-emerald-950/30"
                   : "border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900"
               }`}
             >
-              <div className="flex items-center gap-2 font-semibold text-sm text-zinc-900 dark:text-zinc-100">
-                <Clock className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
-                <span>Hourly Rate</span>
+              <div className="flex items-center gap-2 font-bold text-xs text-zinc-900 dark:text-zinc-100">
+                <Clock className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+                <span>Hourly Engagement</span>
               </div>
-              <p className="mt-1 text-xs text-zinc-500">Track hours and pay weekly.</p>
+              <p className="mt-1 text-xs text-zinc-500">
+                Track hours logged with weekly invoicing and automatic time tracking verification.
+              </p>
             </button>
           </div>
+
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+            <div>
+              <label className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
+                {budgetType === "FIXED" ? "Minimum Project Budget ($)" : "Minimum Rate ($/hr)"} *
+              </label>
+              <div className="relative mt-1.5">
+                <DollarSign className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
+                <input
+                  type="number"
+                  min="10"
+                  required
+                  value={budgetMin}
+                  onChange={(e) => setBudgetMin(e.target.value)}
+                  className="w-full rounded-xl border border-zinc-300 bg-white py-2.5 pl-9 pr-3.5 text-xs font-semibold text-zinc-900 focus:border-indigo-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
+                {budgetType === "FIXED" ? "Maximum Project Budget ($)" : "Maximum Rate ($/hr)"} *
+              </label>
+              <div className="relative mt-1.5">
+                <DollarSign className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
+                <input
+                  type="number"
+                  min="10"
+                  required
+                  value={budgetMax}
+                  onChange={(e) => setBudgetMax(e.target.value)}
+                  className="w-full rounded-xl border border-zinc-300 bg-white py-2.5 pl-9 pr-3.5 text-xs font-semibold text-zinc-900 focus:border-indigo-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Escrow Guarantee Callout */}
+          <div className="flex items-center gap-2.5 rounded-xl bg-blue-500/10 p-3 text-xs text-blue-900 dark:text-blue-200 border border-blue-500/20">
+            <ShieldCheck className="h-4 w-4 shrink-0 text-blue-600 dark:text-blue-400" />
+            <span>
+              <strong>100% Escrow Guarantee:</strong> Funds remain securely held until you inspect
+              git commits, code diffs, and approve the deliverables.
+            </span>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
+        {/* SECTION 4: DETAILED DESCRIPTION & DELIVERABLES */}
+        <div className="space-y-5 border-t border-zinc-100 pt-6 dark:border-zinc-800">
+          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-zinc-400">
+            <ListChecks className="h-3.5 w-3.5 text-indigo-500" />
+            <span>Description, Milestones & Screening</span>
+          </div>
+
           <div>
             <label className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
-              {budgetType === "FIXED" ? "Min Budget ($)" : "Min Rate ($/hr)"}
+              Detailed Project Description *
             </label>
-            <input
-              type="number"
-              min="10"
+            <textarea
+              rows={6}
               required
-              value={budgetMin}
-              onChange={(e) => setBudgetMin(e.target.value)}
-              className="mt-1.5 w-full rounded-lg border border-zinc-300 bg-white px-3.5 py-2.5 text-sm text-zinc-900 focus:border-indigo-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Outline your application goals, target users, technical requirements, integrations (e.g. Stripe, AWS), and architecture constraints..."
+              className="mt-1.5 w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2.5 text-xs text-zinc-900 focus:border-indigo-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 font-sans leading-relaxed"
             />
           </div>
 
           <div>
             <label className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
-              {budgetType === "FIXED" ? "Max Budget ($)" : "Max Rate ($/hr)"}
+              Structured Milestone Deliverables & Acceptance Criteria
             </label>
-            <input
-              type="number"
-              min="10"
-              required
-              value={budgetMax}
-              onChange={(e) => setBudgetMax(e.target.value)}
-              className="mt-1.5 w-full rounded-lg border border-zinc-300 bg-white px-3.5 py-2.5 text-sm text-zinc-900 focus:border-indigo-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100"
+            <textarea
+              rows={4}
+              value={deliverables}
+              onChange={(e) => setDeliverables(e.target.value)}
+              placeholder="e.g.&#10;Milestone 1: Database schemas & authentication routes (25%)&#10;Milestone 2: Stripe Connect escrow integration & webhook listeners (50%)&#10;Milestone 3: Production QA, load testing & Vercel deployment (25%)"
+              className="mt-1.5 w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2.5 text-xs text-zinc-900 focus:border-indigo-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 font-mono text-[11px] leading-relaxed"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
-              Estimated Duration
-            </label>
+            <div className="flex items-center gap-1.5">
+              <label className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
+                Applicant Screening Question (Optional)
+              </label>
+              <HelpCircle className="h-3.5 w-3.5 text-zinc-400" />
+            </div>
             <input
               type="text"
-              required
-              value={duration}
-              onChange={(e) => setDuration(e.target.value)}
-              placeholder="e.g. 1 to 3 months"
-              className="mt-1.5 w-full rounded-lg border border-zinc-300 bg-white px-3.5 py-2.5 text-sm text-zinc-900 focus:border-indigo-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100"
+              value={screeningQuestion}
+              onChange={(e) => setScreeningQuestion(e.target.value)}
+              placeholder="e.g. Please link 1-2 production repos or case studies demonstrating similar Next.js architectures."
+              className="mt-1.5 w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2.5 text-xs text-zinc-900 focus:border-indigo-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100"
             />
           </div>
         </div>
 
-        <div>
-          <label className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
-            Job Description & Deliverables
-          </label>
-          <textarea
-            rows={7}
-            required
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="Detailed project requirements, technical specifications, deadlines, and expected milestone deliveries..."
-            className="mt-1.5 w-full rounded-lg border border-zinc-300 bg-white px-3.5 py-2.5 text-sm text-zinc-900 focus:border-indigo-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100 font-sans leading-relaxed"
-          />
-        </div>
+        {/* SECTION 5: REQUIRED SKILLS & KEYWORDS */}
+        <div className="space-y-4 border-t border-zinc-100 pt-6 dark:border-zinc-800">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-zinc-400">
+              <Sparkles className="h-3.5 w-3.5 text-purple-500" />
+              <span>Required Technology Skills ({skills.length} available)</span>
+            </div>
+            {selectedSkills.length > 0 && (
+              <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400">
+                {selectedSkills.length} Selected
+              </span>
+            )}
+          </div>
 
-        <div>
-          <label className="block text-xs font-medium uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
-            Required Skills & Technologies
-          </label>
-          <div className="mt-2.5 flex flex-wrap gap-2">
-            {skills.map((skill) => {
-              const isSelected = selectedSkills.includes(skill.id);
-              return (
-                <button
-                  type="button"
-                  key={skill.id}
-                  onClick={() => toggleSkill(skill.id)}
-                  className={`rounded-lg px-3 py-1.5 text-xs font-medium transition ${
-                    isSelected
-                      ? "bg-indigo-600 text-white shadow-sm dark:bg-indigo-500"
-                      : "border border-zinc-200 bg-zinc-50 text-zinc-700 hover:bg-zinc-100 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300"
-                  }`}
-                >
-                  {skill.name}
-                </button>
-              );
-            })}
+          {/* Search bar */}
+          <div className="relative">
+            <Search className="pointer-events-none absolute left-3.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-zinc-400" />
+            <input
+              type="text"
+              value={skillSearch}
+              onChange={(e) => setSkillSearch(e.target.value)}
+              placeholder="Search required skills (e.g. TypeScript, Next.js, Stripe, PostgreSQL)..."
+              className="w-full rounded-xl border border-zinc-200 bg-white py-2 pl-9 pr-3 text-xs text-zinc-900 shadow-xs focus:border-indigo-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100"
+            />
+          </div>
+
+          <div className="max-h-56 overflow-y-auto rounded-xl border border-zinc-100 bg-zinc-50/50 p-4 dark:border-zinc-800 dark:bg-zinc-950/30">
+            <div className="flex flex-wrap gap-2">
+              {filteredSkills.map((skill) => {
+                const isSelected = selectedSkills.includes(skill.id);
+                return (
+                  <button
+                    type="button"
+                    key={skill.id}
+                    onClick={() => toggleSkill(skill.id)}
+                    className={`rounded-xl px-3 py-1.5 text-xs font-semibold transition ${
+                      isSelected
+                        ? "bg-indigo-600 text-white shadow-xs dark:bg-indigo-500"
+                        : "border border-zinc-200 bg-white text-zinc-700 hover:bg-zinc-100 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800"
+                    }`}
+                  >
+                    {skill.name}
+                  </button>
+                );
+              })}
+            </div>
           </div>
         </div>
 
+        {/* SUBMIT BUTTON */}
         <div className="flex justify-end pt-4">
           <button
             type="submit"
             disabled={isPending}
-            className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-6 py-2.5 text-sm font-semibold text-white shadow-md shadow-indigo-500/20 transition hover:bg-indigo-500 disabled:opacity-60"
+            className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 px-7 py-3 text-xs font-bold text-white shadow-md shadow-indigo-500/20 hover:from-indigo-500 hover:to-purple-500 disabled:opacity-60 transition"
           >
             {isPending ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" />
+                <span>Publishing Job Brief...</span>
+              </>
             ) : (
               <>
                 <Sparkles className="h-4 w-4" />
-                <span>Post Opportunity Now</span>
+                <span>Publish Project Brief</span>
               </>
             )}
           </button>

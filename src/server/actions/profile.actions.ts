@@ -24,6 +24,26 @@ export async function updateFreelancerProfileAction(
   const hourlyRateDollars = Number(formData.get("hourlyRate"));
   const experienceLevel = formData.get("experienceLevel")?.toString();
   const availability = formData.get("availability")?.toString();
+  const githubUrl = formData.get("githubUrl")?.toString();
+  const linkedinUrl = formData.get("linkedinUrl")?.toString();
+  const websiteUrl = formData.get("websiteUrl")?.toString();
+  const yearsOfExperienceRaw = formData.get("yearsOfExperience")?.toString();
+  const yearsOfExperience =
+    yearsOfExperienceRaw && !isNaN(Number(yearsOfExperienceRaw))
+      ? Number(yearsOfExperienceRaw)
+      : undefined;
+  const englishProficiency = formData.get("englishProficiency")?.toString();
+
+  // Extract tags from form data (supports multiple fields or comma-separated string)
+  const rawTags = formData.getAll("tags");
+  let tags: string[] = [];
+  if (rawTags.length > 0) {
+    tags = rawTags
+      .flatMap((t) => t.toString().split(","))
+      .map((s) => s.trim())
+      .filter(Boolean);
+  }
+
   const skillIds = formData
     .getAll("skillIds")
     .map(Number)
@@ -37,6 +57,12 @@ export async function updateFreelancerProfileAction(
       hourlyRateCents: !isNaN(hourlyRateDollars) ? Math.round(hourlyRateDollars * 100) : undefined,
       experienceLevel,
       availability,
+      tags,
+      githubUrl,
+      linkedinUrl,
+      websiteUrl,
+      yearsOfExperience,
+      englishProficiency,
       skillIds,
     });
 
@@ -63,12 +89,20 @@ export async function updateClientProfileAction(
   const name = formData.get("name")?.toString();
   const companyName = formData.get("companyName")?.toString();
   const website = formData.get("website")?.toString();
+  const companySize = formData.get("companySize")?.toString();
+  const industry = formData.get("industry")?.toString();
+  const about = formData.get("about")?.toString();
+  const linkedinUrl = formData.get("linkedinUrl")?.toString();
 
   try {
     await ProfileService.updateClientProfile(session.user.id, {
       name,
       companyName,
       website,
+      companySize,
+      industry,
+      about,
+      linkedinUrl,
     });
 
     revalidatePath("/client/profile");
