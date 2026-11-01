@@ -54,6 +54,9 @@ stateDiagram-v2
 8. **AI Architect & Milestone Scoping Co-Pilot**:
    - Embedded directly in `/client/jobs/new` via `AiService.decomposeScope` and `decomposeScopeAction`.
    - Analyzes natural language prompts, calculates market budget bounds, maps database taxonomy skills, and decomposes the scope into structured escrow milestones with verifiable acceptance criteria.
+9. **Skill Match Radar & Transparent Take-Home Earnings Calculator**:
+   - **Skill Fit Radar (`<JobFitBadge />`)**: Live on `/jobs` and `/jobs/[id]`, computing match percentages between job requirements and freelancer profile skills, highlighting matching capabilities in emerald and missing ones in amber.
+   - **Take-Home Calculator (`<ApplyJobForm />`)**: Transparent financial breakdown at proposal submission demonstrating 0% platform freelancer commission, direct Stripe merchant processing fees, and exact net bank deposits (with live comparison against Upwork/Fiverr 10% take-rate).
 
 ---
 

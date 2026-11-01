@@ -5,6 +5,7 @@ import { JobService } from "@/server/services/job.service";
 import { auth } from "@/server/lib/auth";
 import { SaveJobButton } from "@/components/forms/save-job-button";
 import { ReportJobModal } from "@/components/forms/report-job-modal";
+import { JobFitBadge } from "@/components/jobs/job-fit-badge";
 import { Badge } from "@/components/ui/badge";
 import {
   ShieldCheck,
@@ -240,7 +241,9 @@ export default async function JobDetailsPage({ params }: JobDetailsPageProps) {
 
           {/* Skills Required */}
           {job.skills.length > 0 && (
-            <div className="mt-8 border-t border-zinc-100 pt-6 dark:border-zinc-800 space-y-3">
+            <div className="mt-8 border-t border-zinc-100 pt-6 dark:border-zinc-800 space-y-4">
+              <JobFitBadge jobSkills={job.skills.map((s) => s.skill.name)} />
+
               <h2 className="text-xs font-bold uppercase tracking-wider text-zinc-500">
                 Required Technical Skills
               </h2>

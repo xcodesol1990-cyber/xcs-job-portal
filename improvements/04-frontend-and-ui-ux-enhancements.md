@@ -66,6 +66,6 @@ flowchart LR
 | Phase  | Module / Feature                          | Primary Audience | Status         |
 | :----- | :---------------------------------------- | :--------------- | :------------- |
 | **P1** | Milestone Escrow Timeline Stepper         | Client & Talent  | ✅ Shipped     |
-| **P2** | Earnings Calculator & Skill Match Radar   | Freelancers      | 🟡 In Progress |
-| **P3** | Side-by-Side Proposal Comparison Matrix   | Clients          | ⚪ Scheduled   |
+| **P2** | Earnings Calculator & Skill Match Radar   | Freelancers      | ✅ Shipped     |
+| **P3** | Side-by-Side Proposal Comparison Matrix   | Clients          | 🟡 In Progress |
 | **P4** | Global Command Palette & Persona Switcher | All Users        | ⚪ Scheduled   |

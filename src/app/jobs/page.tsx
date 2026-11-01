@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { JobService } from "@/server/services/job.service";
 import { ProfileService } from "@/server/services/profile.service";
+import { JobFitBadge } from "@/components/jobs/job-fit-badge";
 import { Search, Briefcase, ShieldCheck, ArrowRight, Filter } from "lucide-react";
 
 interface JobsPageProps {
@@ -125,6 +126,7 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
                     <span className="rounded-full bg-indigo-50 px-2.5 py-0.5 text-xs font-semibold text-indigo-700 dark:bg-indigo-950/40 dark:text-indigo-300">
                       {job.category?.name ?? "General"}
                     </span>
+                    <JobFitBadge jobSkills={job.skills.map((s) => s.skill.name)} compact />
                   </div>
 
                   <div className="mt-2 flex flex-wrap items-center gap-3 text-xs text-zinc-500">

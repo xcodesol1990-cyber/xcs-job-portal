@@ -3,7 +3,14 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { submitProposalAction } from "@/server/actions/proposal.actions";
-import { Loader2, DollarSign, Send, Clock } from "lucide-react";
+import {
+  Loader2,
+  DollarSign,
+  Send,
+  Clock,
+  ShieldCheck,
+  TrendingUp,
+} from "lucide-react";
 
 interface ApplyJobFormProps {
   jobId: string;
@@ -20,8 +27,11 @@ export function ApplyJobForm({ jobId, budgetType }: ApplyJobFormProps) {
   const [coverLetter, setCoverLetter] = useState("");
 
   const bidNum = Number(bid) || 0;
-  const platformFee = Math.round(bidNum * 0.1); // 10% platform fee
-  const freelancerReceives = Math.max(0, bidNum - platformFee);
+  // Transparent economic math: WorkNest 0% Freelancer Fee vs Legacy 10% platforms
+  const stripeEstimatedFee = bidNum > 0 ? Number((bidNum * 0.029 + 0.3).toFixed(2)) : 0;
+  const netEarnings = Math.max(0, Number((bidNum - stripeEstimatedFee).toFixed(2)));
+  const legacyPlatformTax = Math.round(bidNum * 0.1); // Upwork/Fiverr 10% cut
+  const additionalEarnings = Math.max(0, Math.round(legacyPlatformTax - stripeEstimatedFee));
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -91,18 +101,41 @@ export function ApplyJobForm({ jobId, budgetType }: ApplyJobFormProps) {
           </div>
         </div>
 
-        {/* Financial Transparency */}
-        <div className="border-t border-zinc-200/70 pt-3 text-xs text-zinc-600 dark:border-zinc-800 dark:text-zinc-400 space-y-1.5">
-          <div className="flex justify-between">
-            <span>WorkNest 10% Platform & Escrow Fee:</span>
-            <span className="font-mono text-zinc-700 dark:text-zinc-300">-${platformFee}</span>
-          </div>
-          <div className="flex justify-between font-bold text-sm text-zinc-900 dark:text-zinc-100 pt-1">
-            <span>You&apos;ll receive (after milestone approval):</span>
-            <span className="font-mono text-emerald-600 dark:text-emerald-400">
-              ${freelancerReceives}
+        {/* Transparent Take-Home Earnings Breakdown */}
+        <div className="border-t border-zinc-200/70 pt-4 text-xs dark:border-zinc-800 space-y-2.5">
+          <div className="flex items-center justify-between text-zinc-600 dark:text-zinc-400">
+            <span className="flex items-center gap-1.5 font-medium">
+              <ShieldCheck className="h-3.5 w-3.5 text-emerald-600" />
+              <span>WorkNest Freelancer Commission (0% Protocol):</span>
+            </span>
+            <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400">
+              $0.00 (Zero Fee)
             </span>
           </div>
+
+          <div className="flex items-center justify-between text-zinc-500">
+            <span>Direct Stripe Merchant Rails (2.9% + $0.30):</span>
+            <span className="font-mono">-${stripeEstimatedFee.toFixed(2)}</span>
+          </div>
+
+          <div className="flex items-center justify-between rounded-xl bg-emerald-500/10 p-3 text-emerald-900 dark:text-emerald-200">
+            <span className="font-bold text-xs sm:text-sm">
+              Estimated Net Payout (Direct to Bank):
+            </span>
+            <span className="font-mono text-base font-black text-emerald-700 dark:text-emerald-300">
+              ${netEarnings.toFixed(2)}
+            </span>
+          </div>
+
+          {bidNum >= 100 && (
+            <div className="flex items-center gap-2 rounded-lg bg-indigo-50 p-2.5 text-[11px] font-semibold text-indigo-700 dark:bg-indigo-950/40 dark:text-indigo-300">
+              <TrendingUp className="h-3.5 w-3.5 flex-shrink-0 text-indigo-600 dark:text-indigo-400" />
+              <span>
+                You keep <strong>+${additionalEarnings}</strong> more on WorkNest compared to Upwork
+                / Fiverr&apos;s 10% fee.
+              </span>
+            </div>
+          )}
         </div>
       </div>
 
