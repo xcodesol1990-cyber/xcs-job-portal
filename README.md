@@ -1,8 +1,8 @@
-# WorkNest &mdash; Production-Grade Freelance Marketplace
+# WorkWasl &mdash; Production-Grade Freelance Marketplace
 
-WorkNest is an enterprise-ready, high-trust freelance talent marketplace engineered with **Next.js 15 (App Router)**, **React 19**, **TypeScript**, **Tailwind CSS**, **PostgreSQL with Prisma**, **Auth.js v5**, and **Stripe Connect**.
+WorkWasl is an enterprise-ready, high-trust freelance talent marketplace engineered with **Next.js 15 (App Router)**, **React 19**, **TypeScript**, **Tailwind CSS**, **PostgreSQL with Prisma**, **Auth.js v5**, and **Stripe Connect**.
 
-Designed specifically for mission-critical client-freelancer interactions, WorkNest features milestone-based escrow state machines, double-entry financial ledger auditing, dispute arbitration, real-time messaging, and automated Vercel background workers.
+Designed specifically for mission-critical client-freelancer interactions, WorkWasl features a transparent **flat $1 client + $1 freelancer** contract fee model, milestone-based escrow state machines, double-entry financial ledger auditing, dispute arbitration, real-time messaging, and automated PostgreSQL background workers.
 
 ---
 

@@ -61,10 +61,10 @@ describe("crypto service", () => {
 
     it("builds a standard otpauth URI", () => {
       const secret = generateTotpSecret();
-      const uri = buildTotpUri("user@example.com", secret, "WorkNest");
+      const uri = buildTotpUri("user@example.com", secret, "WorkWasl");
       expect(uri).toContain("otpauth://totp/");
       expect(uri).toContain("secret=");
-      expect(uri).toContain("issuer=WorkNest");
+      expect(uri).toContain("issuer=WorkWasl");
     });
   });
 });

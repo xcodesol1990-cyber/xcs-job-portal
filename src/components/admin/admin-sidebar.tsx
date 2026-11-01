@@ -154,7 +154,7 @@ export function AdminSidebar({
           </div>
           <div>
             <div className="flex items-center gap-1.5">
-              <span className="font-extrabold text-white text-base tracking-tight">WorkNest</span>
+              <span className="font-extrabold text-white text-base tracking-tight">WorkWasl</span>
               <span className="rounded bg-purple-500/20 px-1.5 py-0.5 text-[10px] font-bold text-purple-300 uppercase tracking-wider">
                 Admin
               </span>

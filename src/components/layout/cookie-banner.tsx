@@ -9,7 +9,9 @@ export function CookieBanner() {
 
   useEffect(() => {
     try {
-      const consent = localStorage.getItem("worknest_cookie_consent");
+      const consent =
+        localStorage.getItem("workwasl_cookie_consent") ||
+        localStorage.getItem("worknest_cookie_consent");
       if (!consent) {
         setShowBanner(true);
       }
@@ -20,7 +22,7 @@ export function CookieBanner() {
 
   const handleAccept = () => {
     try {
-      localStorage.setItem("worknest_cookie_consent", "accepted");
+      localStorage.setItem("workwasl_cookie_consent", "accepted");
     } catch {
       // Ignore storage errors
     }
@@ -29,7 +31,7 @@ export function CookieBanner() {
 
   const handleDismiss = () => {
     try {
-      localStorage.setItem("worknest_cookie_consent", "dismissed");
+      localStorage.setItem("workwasl_cookie_consent", "dismissed");
     } catch {
       // Ignore storage errors
     }

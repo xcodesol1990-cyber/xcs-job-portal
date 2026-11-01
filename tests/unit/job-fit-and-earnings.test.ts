@@ -21,7 +21,7 @@ describe("Job Fit & Transparent Earnings Utilities", () => {
     expect(missingSkills).toEqual(["Next.js", "GraphQL"]);
   });
 
-  it("calculates WorkNest 0% commission vs legacy 10% platform take-rate savings accurately", () => {
+  it("calculates WorkWasl 0% commission vs legacy 10% platform take-rate savings accurately", () => {
     const bidAmount = 1000;
     const stripeEstimatedFee = Number((bidAmount * 0.029 + 0.3).toFixed(2));
     const netTakeHome = Number((bidAmount - stripeEstimatedFee).toFixed(2));
@@ -31,7 +31,7 @@ describe("Job Fit & Transparent Earnings Utilities", () => {
     expect(stripeEstimatedFee).toBe(29.3);
     expect(netTakeHome).toBe(970.7);
     expect(legacyUpworkTax).toBe(100);
-    expect(savings).toBe(71); // $71 more in pocket on WorkNest
+    expect(savings).toBe(71); // $71 more in pocket on WorkWasl
   });
 
   it("calculates WorkWasl flat $1 client and $1 freelancer fee model accurately", () => {

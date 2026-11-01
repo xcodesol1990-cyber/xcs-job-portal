@@ -18,7 +18,7 @@ export async function generateMetadata({ params }: JobDetailsPageProps): Promise
   const { id } = await params;
   try {
     const job = await JobService.getJobById(id);
-    const company = job.client?.clientProfile?.companyName ?? job.client?.name ?? "WorkNest Client";
+    const company = job.client?.clientProfile?.companyName ?? job.client?.name ?? "WorkWasl Client";
     const budget = job.budgetMaxCents
       ? `$${(job.budgetMaxCents / 100).toLocaleString()}`
       : "Custom Budget";
@@ -34,8 +34,8 @@ export async function generateMetadata({ params }: JobDetailsPageProps): Promise
     };
   } catch {
     return {
-      title: "Job Opportunity · WorkNest",
-      description: "View details of this freelance job opportunity on WorkNest.",
+      title: "Job Opportunity · WorkWasl",
+      description: "View details of this freelance job opportunity on WorkWasl.",
     };
   }
 }

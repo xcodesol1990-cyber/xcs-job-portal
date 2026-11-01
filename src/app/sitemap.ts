@@ -3,7 +3,7 @@ import { prisma } from "@/server/db/prisma";
 import { JobStatus } from "@prisma/client";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = process.env.APP_URL || "https://worknest.dev";
+  const baseUrl = process.env.APP_URL || "https://workwasl.com";
 
   // Static marketing & public indexing routes
   const staticRoutes: MetadataRoute.Sitemap = [

@@ -130,7 +130,7 @@ export function AdminTopbar({
                   <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-purple-600 text-white">
                     <ShieldCheck className="h-4 w-4" />
                   </div>
-                  <span className="font-bold text-white text-base">WorkNest Admin</span>
+                  <span className="font-bold text-white text-base">WorkWasl Admin</span>
                 </div>
                 <button
                   onClick={() => setMobileOpen(false)}

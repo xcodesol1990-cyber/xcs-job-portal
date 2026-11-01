@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 
 export const metadata: Metadata = {
   title: "Terms of Service",
-  description: "WorkNest Marketplace Terms of Service and Escrow Rules.",
+  description: "WorkWasl Marketplace Terms of Service and Escrow Rules.",
 };
 
 export default function TermsOfServicePage() {
@@ -17,7 +17,7 @@ export default function TermsOfServicePage() {
           className="inline-flex items-center gap-2 text-xs font-semibold text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition"
         >
           <ArrowLeft className="h-4 w-4" />
-          <span>Back to WorkNest</span>
+          <span>Back to WorkWasl</span>
         </Link>
 
         <div className="space-y-4">
@@ -35,8 +35,8 @@ export default function TermsOfServicePage() {
               1. Acceptance of Terms
             </h2>
             <p>
-              By accessing, browsing, registering for, or using the WorkNest platform
-              (&quot;WorkNest&quot;, &quot;we&quot;, &quot;us&quot;, or &quot;our&quot;), you
+              By accessing, browsing, registering for, or using the WorkWasl platform
+              (&quot;WorkWasl&quot;, &quot;we&quot;, &quot;us&quot;, or &quot;our&quot;), you
               acknowledge that you have read, understood, and agree to be bound by these Terms of
               Service (&quot;Terms&quot;) and our Privacy Policy. If you do not agree to these
               Terms, you must immediately discontinue use of the platform.
@@ -49,7 +49,7 @@ export default function TermsOfServicePage() {
               2. Milestone Escrow & Payment Processing
             </h2>
             <p>
-              WorkNest facilitates freelance engagements utilizing cryptographic milestone escrow.
+              WorkWasl facilitates freelance engagements utilizing cryptographic milestone escrow.
               Clients fund milestone balances in advance through our payment partner, Stripe. Funds
               are secured in an escrow holding account until:
             </p>

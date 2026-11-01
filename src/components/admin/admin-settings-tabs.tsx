@@ -93,7 +93,7 @@ export function AdminSettingsTabs({ initialSettings, auditLogs }: AdminSettingsT
     getSetting<number>("stripe_payout_delay_days", 2),
   );
   const [statementDescriptor, setStatementDescriptor] = useState<string>(
-    getSetting<string>("stripe_statement_descriptor", "WORKNEST ESCROW"),
+    getSetting<string>("stripe_statement_descriptor", "WORKWASL ESCROW"),
   );
   const [minPayoutThresholdDollars, setMinPayoutThresholdDollars] = useState<number>(
     getSetting<number>("min_payout_threshold_dollars", 25),
@@ -153,16 +153,16 @@ export function AdminSettingsTabs({ initialSettings, auditLogs }: AdminSettingsT
     getSetting<string>("email_provider", "RESEND"),
   );
   const [emailFromName, setEmailFromName] = useState<string>(
-    getSetting<string>("email_from_name", "WorkNest Notifications"),
+    getSetting<string>("email_from_name", "WorkWasl Notifications"),
   );
   const [emailFromAddress, setEmailFromAddress] = useState<string>(
-    getSetting<string>("email_from_address", "notifications@worknest.dev"),
+    getSetting<string>("email_from_address", "notifications@workwasl.com"),
   );
   const [emailSupportAddress, setEmailSupportAddress] = useState<string>(
-    getSetting<string>("email_support_address", "support@worknest.dev"),
+    getSetting<string>("email_support_address", "support@workwasl.com"),
   );
   const [emailBillingAddress, setEmailBillingAddress] = useState<string>(
-    getSetting<string>("email_billing_address", "billing@worknest.dev"),
+    getSetting<string>("email_billing_address", "billing@workwasl.com"),
   );
   const [emailDigestFrequency, setEmailDigestFrequency] = useState<string>(
     getSetting<string>("email_digest_frequency", "INSTANT"),
@@ -222,7 +222,7 @@ export function AdminSettingsTabs({ initialSettings, auditLogs }: AdminSettingsT
     getSetting<boolean>("require_email_verification", true),
   );
   const [supportEmail, setSupportEmail] = useState<string>(
-    getSetting<string>("support_contact_email", "governance@worknest.dev"),
+    getSetting<string>("support_contact_email", "governance@workwasl.com"),
   );
   const [maxTeamSeats, setMaxTeamSeats] = useState<number>(
     getSetting<number>("max_team_seats_per_org", 10),
@@ -672,7 +672,7 @@ export function AdminSettingsTabs({ initialSettings, auditLogs }: AdminSettingsT
                   maxLength={22}
                   value={statementDescriptor}
                   onChange={(e) => setStatementDescriptor(e.target.value)}
-                  placeholder="WORKNEST ESCROW"
+                  placeholder="WORKWASL ESCROW"
                   className="w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2 text-xs text-zinc-900 focus:border-purple-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 font-mono uppercase"
                 />
               </div>
@@ -1069,7 +1069,7 @@ export function AdminSettingsTabs({ initialSettings, auditLogs }: AdminSettingsT
                   type="text"
                   value={emailFromName}
                   onChange={(e) => setEmailFromName(e.target.value)}
-                  placeholder="WorkNest Notifications"
+                  placeholder="WorkWasl Notifications"
                   className="w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2 text-xs text-zinc-900 focus:border-purple-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100"
                 />
               </div>
@@ -1084,7 +1084,7 @@ export function AdminSettingsTabs({ initialSettings, auditLogs }: AdminSettingsT
                   type="email"
                   value={emailFromAddress}
                   onChange={(e) => setEmailFromAddress(e.target.value)}
-                  placeholder="notifications@worknest.dev"
+                  placeholder="notifications@workwasl.com"
                   className="w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2 text-xs text-zinc-900 focus:border-purple-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 font-mono"
                 />
               </div>
@@ -1102,7 +1102,7 @@ export function AdminSettingsTabs({ initialSettings, auditLogs }: AdminSettingsT
                   type="email"
                   value={emailSupportAddress}
                   onChange={(e) => setEmailSupportAddress(e.target.value)}
-                  placeholder="support@worknest.dev"
+                  placeholder="support@workwasl.com"
                   className="w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2 text-xs text-zinc-900 focus:border-purple-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 font-mono"
                 />
               </div>
@@ -1117,7 +1117,7 @@ export function AdminSettingsTabs({ initialSettings, auditLogs }: AdminSettingsT
                   type="email"
                   value={emailBillingAddress}
                   onChange={(e) => setEmailBillingAddress(e.target.value)}
-                  placeholder="billing@worknest.dev"
+                  placeholder="billing@workwasl.com"
                   className="w-full rounded-xl border border-zinc-300 bg-white px-3.5 py-2 text-xs text-zinc-900 focus:border-purple-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 font-mono"
                 />
               </div>
@@ -1281,7 +1281,7 @@ export function AdminSettingsTabs({ initialSettings, auditLogs }: AdminSettingsT
             <div className="flex items-center justify-between rounded-xl border border-zinc-200 bg-zinc-50/70 p-4 dark:border-zinc-800 dark:bg-zinc-950/40">
               <div>
                 <p className="text-xs font-semibold text-zinc-900 dark:text-zinc-100">
-                  WorkNest AI Milestone Co-Pilot Engine
+                  WorkWasl AI Milestone Co-Pilot Engine
                 </p>
                 <p className="text-[11px] text-zinc-500">
                   Toggle AI milestone generation & proposal fit analysis for clients & contractors.

@@ -58,7 +58,7 @@ export function ContractReviewForm({ contractId, counterpartRole }: ContractRevi
           Leave a Review for {counterpartRole}
         </h4>
         <p className="text-xs text-zinc-500">
-          Your feedback helps build trust in the WorkNest community.
+          Your feedback helps build trust in the WorkWasl community.
         </p>
       </div>
 

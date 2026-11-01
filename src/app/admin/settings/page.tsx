@@ -3,7 +3,7 @@ import { AdminSettingsTabs } from "@/components/admin/admin-settings-tabs";
 import { Sliders, ShieldCheck, DollarSign, Clock } from "lucide-react";
 
 export const metadata = {
-  title: "Platform Settings & Governance | WorkNest Admin",
+  title: "Platform Settings & Governance | WorkWasl Admin",
 };
 
 export default async function AdminSettingsPage() {

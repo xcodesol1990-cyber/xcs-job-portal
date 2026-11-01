@@ -366,7 +366,7 @@ export async function seedDatabase() {
   // 3. Demo Personas
   const admin = await upsertDemoUser({
     email: "admin@worknest.dev",
-    name: "WorkNest Admin",
+    name: "WorkWasl Admin",
     roles: [UserRole.ADMIN],
   });
 

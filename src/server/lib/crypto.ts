@@ -155,7 +155,7 @@ export function verifyTotpCode(secretBase32: string, token: string, window = 1):
 export function buildTotpUri(
   accountEmail: string,
   secretBase32: string,
-  issuer = "WorkNest",
+  issuer = "WorkWasl",
 ): string {
   const label = encodeURIComponent(`${issuer}:${accountEmail}`);
   const encIssuer = encodeURIComponent(issuer);

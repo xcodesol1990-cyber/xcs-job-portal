@@ -234,7 +234,7 @@ export function CreateJobForm({ categories, skills }: CreateJobFormProps) {
         <div className="relative overflow-hidden rounded-2xl border border-indigo-500/20 bg-gradient-to-br from-indigo-50/70 via-white to-purple-50/60 p-6 shadow-sm dark:border-indigo-500/30 dark:from-indigo-950/20 dark:via-zinc-900 dark:to-purple-950/20">
           <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
             <Bot className="h-4 w-4" />
-            <span>WorkNest AI Architect & Milestone Co-Pilot</span>
+            <span>WorkWasl AI Architect & Milestone Co-Pilot</span>
           </div>
           <p className="mt-1 text-xs text-zinc-600 dark:text-zinc-400">
             Describe your idea in plain English. Our AI analyzes market rates, recommends technical

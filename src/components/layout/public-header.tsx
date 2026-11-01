@@ -49,7 +49,7 @@ export function PublicHeader({ user }: PublicHeaderProps) {
             </div>
             <div className="flex flex-col">
               <span className="text-xl font-black tracking-tight text-zinc-900 dark:text-zinc-50">
-                Work<span className="text-indigo-600 dark:text-indigo-400">Nest</span>
+                Work<span className="text-indigo-600 dark:text-indigo-400">Wasl</span>
               </span>
               <span className="hidden sm:inline-flex items-center gap-1 text-[10px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest">
                 <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />

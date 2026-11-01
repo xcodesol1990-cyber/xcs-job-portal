@@ -4,6 +4,7 @@ import { auth } from "@/server/lib/auth";
 import { JobService } from "@/server/services/job.service";
 import { VALIDATION_RULES } from "@/server/lib/validation-rules";
 import { revalidatePath } from "next/cache";
+import { JobStatus } from "@prisma/client";
 
 export interface JobActionResult {
   success: boolean;
@@ -169,6 +170,30 @@ export async function deleteJobAction(jobId: string): Promise<JobActionResult> {
       return { success: false, error: String((error as { message: string }).message) };
     }
     return { success: false, error: "Failed to delete job." };
+  }
+}
+
+export async function updateJobStatusAction(
+  jobId: string,
+  status: JobStatus,
+): Promise<JobActionResult> {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return { success: false, error: "Unauthorized." };
+  }
+
+  try {
+    await JobService.updateJobStatus(session.user.id, jobId, status);
+    revalidatePath("/jobs");
+    revalidatePath(`/jobs/${jobId}`);
+    revalidatePath("/client");
+    revalidatePath("/client/jobs");
+    return { success: true, jobId };
+  } catch (error: unknown) {
+    if (error && typeof error === "object" && "message" in error) {
+      return { success: false, error: String((error as { message: string }).message) };
+    }
+    return { success: false, error: "Failed to update job status." };
   }
 }
 

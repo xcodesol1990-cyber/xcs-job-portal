@@ -3,7 +3,7 @@ import { TaxonomyManager } from "@/components/admin/taxonomy-manager";
 import { FolderTree, Tags, Layers, Sparkles } from "lucide-react";
 
 export const metadata = {
-  title: "Taxonomy & Categories Management | WorkNest Admin",
+  title: "Taxonomy & Categories Management | WorkWasl Admin",
 };
 
 export default async function AdminCategoriesPage() {

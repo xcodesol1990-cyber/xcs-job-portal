@@ -33,7 +33,7 @@ export default function HomePage() {
           </h1>
 
           <p className="mx-auto max-w-2xl text-lg leading-8 text-zinc-600 dark:text-zinc-300">
-            WorkNest connects ambitious companies with vetted engineers and designers. Funds are
+            WorkWasl connects ambitious companies with vetted engineers and designers. Funds are
             locked in audited milestone escrow vaults until deliverables and code diffs are
             verified.
           </p>
@@ -79,7 +79,7 @@ export default function HomePage() {
               <span className="h-3 w-3 rounded-full bg-amber-400" />
               <span className="h-3 w-3 rounded-full bg-emerald-400" />
               <span className="ml-2 font-mono text-xs font-bold text-zinc-400">
-                WorkNest Contract Room #c42ca63
+                WorkWasl Contract Room #c42ca63
               </span>
             </div>
             <div className="flex items-center gap-2">
@@ -148,7 +148,7 @@ export default function HomePage() {
         <div className="space-y-8">
           <div className="text-center space-y-2">
             <h2 className="text-3xl font-black tracking-tight text-zinc-900 dark:text-zinc-50">
-              Why High-Growth Teams Choose WorkNest Over Upwork
+              Why High-Growth Teams Choose WorkWasl Over Upwork
             </h2>
             <p className="text-sm text-zinc-500 max-w-xl mx-auto">
               We eliminated bidding taxes, arbitrary dispute arbitration, and platform lock-in.
@@ -160,7 +160,7 @@ export default function HomePage() {
               <thead className="border-b border-zinc-200/80 bg-zinc-50/80 dark:border-zinc-800 dark:bg-zinc-800/50 text-xs font-bold uppercase tracking-wider text-zinc-500">
                 <tr>
                   <th className="p-4 px-6">Capability & Protocol</th>
-                  <th className="p-4 px-6 text-indigo-600 dark:text-indigo-400">WorkNest</th>
+                  <th className="p-4 px-6 text-indigo-600 dark:text-indigo-400">WorkWasl</th>
                   <th className="p-4 px-6 text-zinc-400">Upwork</th>
                   <th className="p-4 px-6 text-zinc-400">Fiverr Pro</th>
                 </tr>
@@ -326,7 +326,7 @@ export default function HomePage() {
       <footer className="border-t border-zinc-200/80 bg-white/50 backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-950/50">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-6 py-8 sm:flex-row lg:px-8">
           <div className="flex items-center gap-2 text-xs text-zinc-500">
-            <span>&copy; {new Date().getFullYear()} WorkNest Technologies Inc.</span>
+            <span>&copy; {new Date().getFullYear()} WorkWasl Technologies Inc.</span>
             <span>&middot;</span>
             <Link
               href="/api/health"

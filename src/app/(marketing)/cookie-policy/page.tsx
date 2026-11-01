@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 
 export const metadata: Metadata = {
   title: "Cookie Policy",
-  description: "WorkNest Cookie Usage and Tracking Disclosure.",
+  description: "WorkWasl Cookie Usage and Tracking Disclosure.",
 };
 
 export default function CookiePolicyPage() {
@@ -17,7 +17,7 @@ export default function CookiePolicyPage() {
           className="inline-flex items-center gap-2 text-xs font-semibold text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition"
         >
           <ArrowLeft className="h-4 w-4" />
-          <span>Back to WorkNest</span>
+          <span>Back to WorkWasl</span>
         </Link>
 
         <div className="space-y-4">
@@ -47,7 +47,7 @@ export default function CookiePolicyPage() {
               2. Strictly Necessary Cookies
             </h2>
             <p>
-              WorkNest uses strictly necessary cookies to ensure basic platform operations and
+              WorkWasl uses strictly necessary cookies to ensure basic platform operations and
               security:
             </p>
             <ul className="list-disc pl-5 space-y-1">

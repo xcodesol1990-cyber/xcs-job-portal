@@ -17,12 +17,12 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "WorkNest · Milestone Escrow Freelance Marketplace",
-    template: "%s · WorkNest",
+    default: "WorkWasl · Milestone Escrow Freelance Marketplace",
+    template: "%s · WorkWasl",
   },
   description:
     "Hire world-class freelance specialists and get paid with milestone-based escrow protection and audited double-entry accounting.",
-  metadataBase: new URL(process.env.APP_URL || "https://worknest.dev"),
+  metadataBase: new URL(process.env.APP_URL || "https://workwasl.com"),
   keywords: [
     "freelance marketplace",
     "hire developers",
@@ -31,17 +31,17 @@ export const metadata: Metadata = {
     "freelance platform",
     "secure payments",
   ],
-  authors: [{ name: "WorkNest Team" }],
+  authors: [{ name: "WorkWasl Team" }],
   openGraph: {
-    title: "WorkNest · Production-Grade Freelance Marketplace",
+    title: "WorkWasl · Production-Grade Freelance Marketplace",
     description:
       "Milestone-based escrow, double-entry financial ledger auditing, and verifiable freelance contracts.",
-    siteName: "WorkNest",
+    siteName: "WorkWasl",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "WorkNest Freelance Marketplace",
+    title: "WorkWasl Freelance Marketplace",
     description:
       "Milestone-based escrow, double-entry financial ledger auditing, and verifiable freelance contracts.",
   },

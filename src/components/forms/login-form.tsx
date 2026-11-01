@@ -194,7 +194,7 @@ export function LoginForm() {
             <Loader2 className="h-4 w-4 animate-spin" />
           ) : (
             <>
-              <span>Sign In to WorkNest</span>
+              <span>Sign In to WorkWasl</span>
               <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
             </>
           )}

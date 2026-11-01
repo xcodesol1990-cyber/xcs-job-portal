@@ -114,7 +114,7 @@ export class GitVerifierService {
   ): Promise<GitDeliverableInspection> {
     try {
       const headers: Record<string, string> = {
-        "User-Agent": "WorkNest-Escrow-Verifier",
+        "User-Agent": "WorkWasl-Escrow-Verifier",
         Accept: "application/vnd.github.v3+json",
       };
 

@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
-  description: "WorkNest Privacy Policy, GDPR Compliance, and Data Protection.",
+  description: "WorkWasl Privacy Policy, GDPR Compliance, and Data Protection.",
 };
 
 export default function PrivacyPolicyPage() {
@@ -17,7 +17,7 @@ export default function PrivacyPolicyPage() {
           className="inline-flex items-center gap-2 text-xs font-semibold text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition"
         >
           <ArrowLeft className="h-4 w-4" />
-          <span>Back to WorkNest</span>
+          <span>Back to WorkWasl</span>
         </Link>
 
         <div className="space-y-4">
@@ -64,7 +64,7 @@ export default function PrivacyPolicyPage() {
               <Database className="h-5 w-5 text-emerald-500" />
               2. How We Secure Your Data
             </h2>
-            <p>WorkNest implements defense-in-depth security:</p>
+            <p>WorkWasl implements defense-in-depth security:</p>
             <ul className="list-disc pl-5 space-y-1">
               <li>
                 All sensitive columns (such as 2FA TOTP backup seeds) are encrypted at rest using
@@ -88,7 +88,7 @@ export default function PrivacyPolicyPage() {
               3. GDPR & CCPA Rights
             </h2>
             <p>
-              Regardless of your geographic location, WorkNest affords all users fundamental digital
+              Regardless of your geographic location, WorkWasl affords all users fundamental digital
               privacy rights:
             </p>
             <ul className="list-disc pl-5 space-y-1">
@@ -117,7 +117,7 @@ export default function PrivacyPolicyPage() {
               To exercise your GDPR data export or deletion rights, or for any privacy-related
               inquiries, contact our Data Protection Officer at:
             </p>
-            <p className="font-semibold text-zinc-900 dark:text-zinc-100">privacy@worknest.dev</p>
+            <p className="font-semibold text-zinc-900 dark:text-zinc-100">privacy@workwasl.com</p>
           </section>
         </div>
       </div>

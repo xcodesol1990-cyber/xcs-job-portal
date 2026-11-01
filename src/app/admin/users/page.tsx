@@ -35,7 +35,7 @@ export default async function AdminUsersPage({ searchParams }: UsersPageProps) {
           <h2 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
             User Accounts & KYC Verification
           </h2>
-          <p className="text-xs text-zinc-500">Total {total} accounts registered on WorkNest.</p>
+          <p className="text-xs text-zinc-500">Total {total} accounts registered on WorkWasl.</p>
         </div>
 
         <form method="GET" className="flex items-center gap-2">

@@ -8,7 +8,7 @@ export async function GET() {
     const result = await seedDatabase();
     return NextResponse.json({
       success: true,
-      message: "WorkNest demo database seeded successfully!",
+      message: "WorkWasl demo database seeded successfully!",
       result,
     });
   } catch (error: unknown) {

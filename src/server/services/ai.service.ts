@@ -61,7 +61,7 @@ export class AiService {
     skills: string[],
     apiKey: string,
   ): Promise<AiScopeResult | null> {
-    const systemPrompt = `You are an elite enterprise software architect and technical project manager on WorkNest.
+    const systemPrompt = `You are an elite enterprise software architect and technical project manager on WorkWasl.
 Analyze the user's project requirements and decompose them into an industry-grade freelance contract scope with concrete milestone deliverables.
 Available Categories: ${categories.join(", ") || "Web Development, Mobile Development, Design, Writing, Marketing, Data Science"}
 Available Skills: ${skills.join(", ") || "TypeScript, React, Next.js, PostgreSQL, Node.js, Python, Figma, UI Design, SEO"}

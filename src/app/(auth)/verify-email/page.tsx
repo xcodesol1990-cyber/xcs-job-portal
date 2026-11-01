@@ -22,7 +22,7 @@ export default async function VerifyEmailPage({ searchParams }: VerifyEmailPageP
   }
 
   return (
-    <AuthCard title="Email Verification" subtitle="Verifying your WorkNest account email">
+    <AuthCard title="Email Verification" subtitle="Verifying your WorkWasl account email">
       <div className="space-y-6 text-center">
         {success ? (
           <div className="space-y-4">
@@ -33,7 +33,7 @@ export default async function VerifyEmailPage({ searchParams }: VerifyEmailPageP
               Email Verified Successfully!
             </h3>
             <p className="text-sm text-zinc-600 dark:text-zinc-400">
-              Your email has been confirmed. You now have full verified access to WorkNest.
+              Your email has been confirmed. You now have full verified access to WorkWasl.
             </p>
             <Link
               href="/dashboard"

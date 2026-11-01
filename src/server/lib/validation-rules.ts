@@ -1,5 +1,5 @@
 /**
- * Standard validation constants and limits across WorkNest platform.
+ * Standard validation constants and limits across WorkWasl platform.
  */
 export const VALIDATION_RULES = {
   JOB: {

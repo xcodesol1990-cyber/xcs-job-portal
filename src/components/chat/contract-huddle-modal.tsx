@@ -199,7 +199,7 @@ export function ContractHuddleModal({
                     <h4 className="font-bold text-base text-white">Start 1-on-1 Workroom Huddle</h4>
                     <p className="text-xs text-zinc-400 max-w-sm">
                       Discuss milestone deliverables, review code diffs, or conduct project standups
-                      directly inside WorkNest.
+                      directly inside WorkWasl.
                     </p>
                   </div>
                   <button
