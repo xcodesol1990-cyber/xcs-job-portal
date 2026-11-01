@@ -89,3 +89,26 @@ flowchart TD
    - WorkNest (0% Fee, Escrow Guarantee, GitHub Verification, Free Bidding) vs Upwork (10% Fee, Paid Connects, Buyer-biased disputes) vs Fiverr (20% Fee).
 4. **Curated Discipline Grid**:
    - 6 category cards with counts and gradient badges.
+
+---
+
+## 5. Header Architecture & Glassmorphic Navigation Overhaul
+
+### A. Universal Public Header (`<PublicHeader />`)
+- **Target Routes**: `/`, `/jobs`, `/jobs/[id]`, `/terms`, `/privacy`, `/cookie-policy`
+- **Component**: [`src/components/layout/public-header.tsx`](file:///d:/mywork/xcs-job-portal/src/components/layout/public-header.tsx)
+- **Features**:
+  - Sticky frosted-glass header with `backdrop-blur-xl bg-white/80 dark:bg-zinc-950/80`.
+  - Dynamic user auth awareness: Shows "Go to Dashboard" and user role pill when logged in; shows "Sign In" and "Get Started" when guest.
+  - Live protocol status beacon: green pulsing indicator `● Escrow Protocol Live`.
+  - Responsive mobile drawer menu with smooth toggle.
+
+### B. High-Density Linear-Grade Dashboard Header
+- **Target Route**: [`src/app/(dashboard)/layout.tsx`](file:///d:/mywork/xcs-job-portal/src/app/(dashboard)/layout.tsx)
+- **Features**:
+  - Top ambient glow line (`bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500`).
+  - Pulsing notification ping badge on Alerts.
+  - Direct 1-click `+ Post Job` button for clients.
+  - Direct `Marketplace` discovery navigation link.
+  - Quick Jump command bar shortcut trigger (`⌘K`).
+  - User avatar with gradient ring, online status dot, and sign-out action.

@@ -6,6 +6,7 @@ import { auth } from "@/server/lib/auth";
 import { SaveJobButton } from "@/components/forms/save-job-button";
 import { ReportJobModal } from "@/components/forms/report-job-modal";
 import { JobFitBadge } from "@/components/jobs/job-fit-badge";
+import { PublicHeader } from "@/components/layout/public-header";
 import { Badge } from "@/components/ui/badge";
 import {
   ShieldCheck,
@@ -105,14 +106,16 @@ export default async function JobDetailsPage({ params }: JobDetailsPageProps) {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-50 px-4 py-12 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-50 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-50">
+      <PublicHeader user={session?.user} />
+
       {/* JSON-LD Structured Data */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <div className="mx-auto max-w-4xl space-y-8">
+      <div className="mx-auto max-w-4xl space-y-8 px-4 py-12 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between">
           <Link
             href="/jobs"

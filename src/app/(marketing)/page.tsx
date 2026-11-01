@@ -18,45 +18,12 @@ import {
 
 export default function HomePage() {
   return (
-    <div className="relative min-h-screen bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-50 overflow-hidden flex flex-col justify-between">
+    <div className="relative min-h-screen overflow-hidden flex flex-col justify-between">
       {/* Background glow and ambient light */}
       <div className="pointer-events-none absolute -top-40 left-1/2 h-[650px] w-[1000px] -translate-x-1/2 rounded-full bg-gradient-to-tr from-indigo-500/20 via-purple-500/15 to-pink-500/10 blur-3xl" />
 
-      {/* Navigation */}
-      <header className="mx-auto flex h-20 w-full max-w-7xl items-center justify-between px-6 lg:px-8">
-        <Link href="/" className="flex items-center gap-2.5">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-600 to-purple-600 text-white shadow-lg shadow-indigo-500/25">
-            <ShieldCheck className="h-6 w-6" />
-          </div>
-          <span className="text-2xl font-black tracking-tight text-zinc-900 dark:text-zinc-50">
-            Work<span className="text-indigo-600 dark:text-indigo-400">Nest</span>
-          </span>
-        </Link>
-
-        <div className="flex items-center gap-4">
-          <Link
-            href="/jobs"
-            className="text-sm font-semibold text-zinc-700 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-zinc-100 hidden sm:inline-block"
-          >
-            Browse Jobs
-          </Link>
-          <Link
-            href="/login"
-            className="text-sm font-semibold text-zinc-700 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-zinc-100"
-          >
-            Sign In
-          </Link>
-          <Link
-            href="/register"
-            className="inline-flex items-center justify-center rounded-xl bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-md shadow-indigo-500/20 transition hover:bg-indigo-500"
-          >
-            Get Started
-          </Link>
-        </div>
-      </header>
-
       {/* Hero Section */}
-      <main className="mx-auto w-full max-w-7xl px-6 pt-12 pb-24 lg:px-8 lg:pt-20 flex-1 space-y-24">
+      <main className="mx-auto w-full max-w-7xl px-6 pt-12 pb-24 lg:px-8 lg:pt-16 flex-1 space-y-24">
         <div className="mx-auto max-w-4xl text-center space-y-6">
           <div className="inline-flex items-center gap-2 rounded-full border border-indigo-500/20 bg-indigo-500/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-indigo-700 dark:text-indigo-300">
             <ShieldCheck className="h-4 w-4" />
